@@ -1,0 +1,21 @@
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "appId": "1:502557711691:android:67a9419c08c94e54185cce",
+                    "fileOutput": "android/app/google-services.json",
+                    "projectId": "tiki-taka-scoreboard"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "configurations": {
+                        "android": "1:502557711691:android:67a9419c08c94e54185cce"
+                    },
+                    "projectId": "tiki-taka-scoreboard"
+                }
+            }
+        }
+    }
+}

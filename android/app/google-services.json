@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "502557711691",
+    "project_id": "tiki-taka-scoreboard",
+    "storage_bucket": "tiki-taka-scoreboard.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502557711691:android:67a9419c08c94e54185cce",
+        "android_client_info": {
+          "package_name": "com.pmorales.wearos.tikitaka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb_HIxmHXObUTeInB2pvqSKvsZhnp45wk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
