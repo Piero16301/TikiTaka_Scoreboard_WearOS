@@ -1,7 +1,96 @@
 {
     "@@locale": "es",
-    "counterAppBarTitle": "Contador",
-    "@counterAppBarTitle": {
-        "description": "Texto mostrado en la página del contador"
-    }
+
+    "titleMatches": "Partidos",
+    "@titleMatches": {},
+    "updatedMatches": "{seconds, plural, =0 {Actualizado ahora} one {Actualizado hace {seconds} segundo} other {Actualizado hace {seconds} segundos}}",
+    "@updatedMatches": {
+        "placeholders": {
+            "seconds": {
+                "type": "num"
+            }
+        }
+    },
+    "emptyMatches": "No hay partidos para hoy",
+    "@emptyMatches": {},
+    "errorMatches": "Error al cargar los partidos",
+    "@errorMatches": {},
+    "retryMatches": "Reintentar",
+    "@retryMatches": {},
+    "inPlayMatch": "En Curso",
+    "@inPlayMatch": {},
+    "pausedMatch": "Pausado",
+    "@pausedMatch": {},
+    "finishedMatch": "Finalizado",
+    "@finishedMatch": {},
+    "postponedMatch": "Aplazado",
+    "@postponedMatch": {},
+    "suspendMatch": "Suspendido",
+    "@suspendMatch": {},
+    "cancelledMatch": "Cancelado",
+    "@cancelledMatch": {},
+    "awardedMatch": "Otorgado",
+    "@awardedMatch": {},
+    "unknownMatch": "Desconocido",
+    "@unknownMatch": {},
+
+    "titleMatch": "Partido",
+    "@titleMatch": {},
+    "updatedAtMatch": "Actualizado a las",
+    "@updatedAtMatch": {},
+    "halfTimeAbbr": "HT",
+    "@halfTimeAbbr": {},
+    "fullTimeAbbr": "FT",
+    "@fullTimeAbbr": {},
+    "competitionMatch": "Competición",
+    "@competitionMatch": {},
+    "seasonMatch": "Temporada",
+    "@seasonMatch": {},
+    "matchdayMatch": "Jornada",
+    "@matchdayMatch": {},
+    "standingsMatch": "Clasificación",
+    "@standingsMatch": {},
+    "playedGamesAbbr": "PJ",
+    "@playedGamesAbbr": {},
+    "goalDifferenceAbbr": "DG",
+    "@goalDifferenceAbbr": {},
+    "pointsAbbr": "PT",
+    "@pointsAbbr": {},
+
+    "titleSettings": "Ajustes",
+    "@titleSettings": {},
+
+    "titleLeagues": "Ligas",
+    "@titleLeagues": {},
+    "emptyLeagues": "No hay ligas disponibles",
+    "@emptyLeagues": {},
+    "errorLeagues": "Error al cargar las ligas",
+    "@errorLeagues": {},
+    "retryLeagues": "Reintentar",
+    "@retryLeagues": {},
+
+    "titleLanguage": "Idioma",
+    "@titleLanguage": {},
+    "englishFlag": "🇺🇸",
+    "@englishFlag": {},
+    "spanishFlag": "🇪🇸",
+    "@spanishFlag": {},
+    "italianFlag": "🇮🇹",
+    "@italianFlag": {},
+    "englishLanguage": "Inglés",
+    "@englishLanguage": {},
+    "spanishLanguage": "Español",
+    "@spanishLanguage": {},
+    "italianLanguage": "Italiano",
+    "@italianLanguage": {},
+
+    "titleTheme": "Tema",
+    "@titleTheme": {},
+    "lightTheme": "Claro",
+    "@lightTheme": {},
+    "darkTheme": "Oscuro",
+    "@darkTheme": {},
+
+    "backText": "Volver",
+    "@backText": {}
 }

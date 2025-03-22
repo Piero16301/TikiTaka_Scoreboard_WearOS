@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+import 'package:tiki_taka/app/app.dart';
+import 'package:vector_graphics/vector_graphics.dart';
+
+class CrestImage extends StatelessWidget {
+  const CrestImage({
+    required this.crest,
+    this.dimension = 40,
+    this.fit = BoxFit.contain,
+    super.key,
+  });
+
+  final String crest;
+  final double dimension;
+  final BoxFit fit;
+
+  @override
+  Widget build(BuildContext context) {
+    if (crest.contains('.svg')) {
+      return SizedBox(
+        height: dimension,
+        width: dimension,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: VectorGraphic(
+            loader: NetworkSvgLoader(crest),
+            fit: fit,
+            errorBuilder: (context, error, stackTrace) => Icon(
+              Icons.image,
+              size: dimension,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Image.network(
+        crest,
+        width: dimension,
+        height: dimension,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Icon(
+          Icons.image,
+          size: dimension,
+        ),
+      );
+    }
+  }
+}

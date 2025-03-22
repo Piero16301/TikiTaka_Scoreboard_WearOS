@@ -1,0 +1,12 @@
+export 'area.dart';
+export 'competition.dart';
+export 'league.dart';
+export 'match.dart';
+export 'odds.dart';
+export 'referee.dart';
+export 'score.dart';
+export 'season.dart';
+export 'standing.dart';
+export 'standing_table.dart';
+export 'team.dart';
+export 'time.dart';

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
 import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/counter/counter.dart';
+import 'package:user_api_remote/user_api_remote.dart';
+import 'package:user_repository/user_repository.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -12,14 +14,20 @@ void main() {
       AmbientModeListener.instance.value = false;
     });
 
-    testWidgets('renders CounterPage', (tester) async {
-      await tester.pumpWidget(const App());
-      expect(find.byType(CounterPage), findsOneWidget);
+    testWidgets('renders AppPage', (tester) async {
+      final preferences = await SharedPreferences.getInstance();
+      final userApi = UserApiRemote(preferences: preferences);
+      final userRepository = UserRepository(userApi: userApi);
+      await tester.pumpWidget(AppPage(userRepository: userRepository));
+      expect(find.byType(AppPage), findsOneWidget);
     });
 
     group('renders the correct color scheme', () {
       testWidgets('on ambient mode updates', (tester) async {
-        await tester.pumpWidget(const App());
+        final preferences = await SharedPreferences.getInstance();
+        final userApi = UserApiRemote(preferences: preferences);
+        final userRepository = UserRepository(userApi: userApi);
+        await tester.pumpWidget(AppPage(userRepository: userRepository));
 
         MaterialApp getMaterialApp() {
           return find.byType(MaterialApp).evaluate().first.widget

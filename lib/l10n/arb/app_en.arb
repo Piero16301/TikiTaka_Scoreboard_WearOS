@@ -1,7 +1,96 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the Counter Page"
-    }
+
+    "titleMatches": "Matches",
+    "@titleMatches": {},
+    "updatedMatches": "{seconds, plural, =0 {Updated now} one {Updated {seconds} second ago} other {Updated {seconds} seconds ago}}",
+    "@updatedMatches": {
+        "placeholders": {
+            "seconds": {
+                "type": "num"
+            }
+        }
+    },
+    "emptyMatches": "No matches for today",
+    "@emptyMatches": {},
+    "errorMatches": "Error loading matches",
+    "@errorMatches": {},
+    "retryMatches": "Retry",
+    "@retryMatches": {},
+    "inPlayMatch": "In Play",
+    "@inPlayMatch": {},
+    "pausedMatch": "Paused",
+    "@pausedMatch": {},
+    "finishedMatch": "Finished",
+    "@finishedMatch": {},
+    "postponedMatch": "Postponed",
+    "@postponedMatch": {},
+    "suspendMatch": "Suspended",
+    "@suspendMatch": {},
+    "cancelledMatch": "Cancelled",
+    "@cancelledMatch": {},
+    "awardedMatch": "Awarded",
+    "@awardedMatch": {},
+    "unknownMatch": "Unknown",
+    "@unknownMatch": {},
+
+    "titleMatch": "Match",
+    "@titleMatch": {},
+    "updatedAtMatch": "Updated at",
+    "@updatedAtMatch": {},
+    "halfTimeAbbr": "HT",
+    "@halfTimeAbbr": {},
+    "fullTimeAbbr": "FT",
+    "@fullTimeAbbr": {},
+    "competitionMatch": "Competition",
+    "@competitionMatch": {},
+    "seasonMatch": "Season",
+    "@seasonMatch": {},
+    "matchdayMatch": "Matchday",
+    "@matchdayMatch": {},
+    "standingsMatch": "Standings",
+    "@standingsMatch": {},
+    "playedGamesAbbr": "PL",
+    "@playedGamesAbbr": {},
+    "goalDifferenceAbbr": "GD",
+    "@goalDifferenceAbbr": {},
+    "pointsAbbr": "PT",
+    "@pointsAbbr": {},
+
+    "titleSettings": "Settings",
+    "@titleSettings": {},
+
+    "titleLeagues": "Leagues",
+    "@titleLeagues": {},
+    "emptyLeagues": "No leagues available",
+    "@emptyLeagues": {},
+    "errorLeagues": "Error loading leagues",
+    "@errorLeagues": {},
+    "retryLeagues": "Retry",
+    "@retryLeagues": {},
+
+    "titleLanguage": "Language",
+    "@titleLanguage": {},
+    "englishFlag": "🇺🇸",
+    "@englishFlag": {},
+    "spanishFlag": "🇪🇸",
+    "@spanishFlag": {},
+    "italianFlag": "🇮🇹",
+    "@italianFlag": {},
+    "englishLanguage": "English",
+    "@englishLanguage": {},
+    "spanishLanguage": "Spanish",
+    "@spanishLanguage": {},
+    "italianLanguage": "Italian",
+    "@italianLanguage": {},
+
+    "titleTheme": "Theme",
+    "@titleTheme": {},
+    "lightTheme": "Light",
+    "@lightTheme": {},
+    "darkTheme": "Dark",
+    "@darkTheme": {},
+
+    "backText": "Back",
+    "@backText": {}
 }

@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/bootstrap.dart';
 import 'package:tiki_taka/firebase_options.dart';
+import 'package:user_api_remote/user_api_remote.dart';
+import 'package:user_repository/user_repository.dart';
 
 Future<void> main() async {
   // Ensure Firebase is initialized
@@ -13,5 +16,18 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await bootstrap(() => const App());
+  // Get SharedPreferences instance
+  final preferences = await SharedPreferences.getInstance();
+
+  // Initialize User API
+  final userApi = UserApiRemote(preferences: preferences);
+
+  // Initialize User Repository
+  final userRepository = UserRepository(userApi: userApi);
+
+  await bootstrap(
+    () => AppPage(
+      userRepository: userRepository,
+    ),
+  );
 }
