@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
 import 'package:tiki_taka/counter/counter.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 
@@ -7,16 +8,32 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
-      ),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+    return AmbientModeBuilder(
+      child: const CounterPage(),
+      builder: (context, isAmbientModeActive, child) {
+        return MaterialApp(
+          theme: ThemeData(
+            useMaterial3: true,
+            // This makes elements such as buttons have a fewer pixels in
+            // padding and general spacing. good for devices with limited screen
+            // real state.
+            visualDensity: VisualDensity.compact,
+            // When in ambient mode, change the apps color scheme
+            colorScheme: isAmbientModeActive
+                ? const ColorScheme.dark(
+                    primary: Colors.white24,
+                    onSurface: Colors.white10,
+                  )
+                : const ColorScheme.dark(
+                    primary: Color(0xFF00B5FF),
+                  ),
+          ),
+          debugShowCheckedModeBanner: false,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: child,
+        );
+      },
     );
   }
 }

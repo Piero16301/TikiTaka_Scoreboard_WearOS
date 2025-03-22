@@ -31,7 +31,7 @@ $ flutter run --flavor staging --target lib/main_staging.dart
 $ flutter run --flavor production --target lib/main_production.dart
 ```
 
-_\*Tiki Taka works on iOS, Android, Web, and Windows._
+_\*This template includes only the Android runner, as it is meant to run on Wear OS devices only._
 
 ---
 
@@ -68,7 +68,7 @@ This project relies on [flutter_localizations][flutter_localizations_link] and f
     "@@locale": "en",
     "counterAppBarTitle": "Counter",
     "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
+        "description": "Text shown in the Counter Page"
     }
 }
 ```
@@ -99,22 +99,6 @@ Widget build(BuildContext context) {
   final l10n = context.l10n;
   return Text(l10n.helloWorld);
 }
-```
-
-### Adding Supported Locales
-
-Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info.plist` to include the new locale.
-
-```xml
-    ...
-
-    <key>CFBundleLocalizations</key>
-	<array>
-		<string>en</string>
-		<string>es</string>
-	</array>
-
-    ...
 ```
 
 ### Adding Translations
@@ -149,22 +133,10 @@ Update the `CFBundleLocalizations` array in the `Info.plist` at `ios/Runner/Info
     "@@locale": "es",
     "counterAppBarTitle": "Contador",
     "@counterAppBarTitle": {
-        "description": "Texto mostrado en la AppBar de la página del contador"
+        "description": "Texto mostrado en la página del contador"
     }
 }
 ```
-
-### Generating Translations
-
-To use the latest translations changes, you will need to generate them:
-
-1. Generate localizations for the current project:
-
-```sh
-flutter gen-l10n --arb-dir="lib/l10n/arb"
-```
-
-Alternatively, run `flutter run` and code generation will take place automatically.
 
 [coverage_badge]: coverage_badge.svg
 [flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
