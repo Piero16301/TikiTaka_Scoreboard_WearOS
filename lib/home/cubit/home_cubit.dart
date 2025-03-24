@@ -23,14 +23,20 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  void reload({bool value = true}) {
+    emit(state.copyWith(reload: value));
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>>? getMatches() {
-    // final enabledLeagues = userRepository.getEnabledLeagues();
+    final enabledLeagues = userRepository.getEnabledLeagues();
     // final nowDate = DateTime.now();
-    final enabledLeagues = ['PL', 'PD'];
     final nowDate = DateTime(2025, 03, 16);
 
     final snapshots = state.matchesCollection
-        ?.where('competition.code', whereIn: enabledLeagues)
+        ?.where(
+          'competition.code',
+          whereIn: (enabledLeagues.isEmpty ? [emptyLeague] : enabledLeagues),
+        )
         .where(
           'utcDate',
           isGreaterThan: DateTime(nowDate.year, nowDate.month, nowDate.day),

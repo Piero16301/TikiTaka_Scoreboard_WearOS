@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/competitions/competitions.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/languages/languages.dart';
+import 'package:tiki_taka/leagues/leagues.dart';
 import 'package:tiki_taka/themes/themes.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -27,12 +27,8 @@ class _SettingsViewState extends State<SettingsView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -66,7 +62,7 @@ class _SettingsViewState extends State<SettingsView> {
                   ConfigurationSetting(
                     title: l10n.titleLeagues.toUpperCase(),
                     icon: Icons.sports_soccer,
-                    route: CompetitionsPage.routeName,
+                    route: LeaguesPage.routeName,
                   ),
                   ConfigurationSetting(
                     title: l10n.titleLanguage.toUpperCase(),

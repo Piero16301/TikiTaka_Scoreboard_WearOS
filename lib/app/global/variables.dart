@@ -6,3 +6,7 @@ const double scrollWidth = 5;
 const String matchesCollection = 'matches';
 const String configsCollection = 'configs';
 const String leaguesCollection = 'leagues';
+
+// Firestore fields
+const String utcDate = 'utcDate';
+const String emptyLeague = '';

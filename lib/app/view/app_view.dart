@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
 import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/competitions/competitions.dart';
 import 'package:tiki_taka/home/home.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/languages/languages.dart';
+import 'package:tiki_taka/leagues/leagues.dart';
 import 'package:tiki_taka/match/match.dart';
 import 'package:tiki_taka/settings/settings.dart';
 import 'package:tiki_taka/themes/themes.dart';
@@ -53,7 +53,7 @@ class _AppViewState extends State<AppView> {
                             Match.empty,
                   ),
               SettingsPage.routeName: (_) => const SettingsPage(),
-              CompetitionsPage.routeName: (_) => const CompetitionsPage(),
+              LeaguesPage.routeName: (_) => const LeaguesPage(),
               LanguagesPage.routeName: (_) => const LanguagesPage(),
               ThemesPage.routeName: (_) => const ThemesPage(),
             },

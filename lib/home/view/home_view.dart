@@ -30,111 +30,125 @@ class _HomeViewState extends State<HomeView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<HomeCubit>().getMatches(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Scaffold(
-            body: SizedBox.expand(
-              child: Center(
-                child: SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
-          );
-        }
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        context.read<HomeCubit>().reload(value: false);
 
-        if (snapshot.hasError) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.errorMatches,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          key: state.reload ? UniqueKey() : null,
+          stream: context.read<HomeCubit>().getMatches(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Scaffold(
+                body: SizedBox.expand(
+                  child: Center(
+                    child: SizedBox.square(
+                      dimension: 20,
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }
+              );
+            }
 
-        if (snapshot.data!.docs.isEmpty) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.emptyMatches,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
+            if (snapshot.hasError) {
+              return Scaffold(
+                body: SizedBox.expand(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            l10n.errorMatches,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SettingsHome(),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }
+              );
+            }
 
-        final matches = snapshot.data!.docs
-            .map((doc) => Match.fromJson(doc.data()))
-            .toList();
+            if (snapshot.data!.docs.isEmpty) {
+              return Scaffold(
+                body: SizedBox.expand(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            l10n.emptyMatches,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SettingsHome(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: RotaryScrollbar(
-              controller: _scrollController,
-              scrollAnimationCurve: Curves.easeInOut,
-              scrollAnimationDuration: scrollDuration,
-              scrollMagnitude: scrollMagnitude,
-              width: scrollWidth,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: SingleChildScrollView(
+            final matches = snapshot.data!.docs
+                .map((doc) => Match.fromJson(doc.data()))
+                .toList();
+
+            return Scaffold(
+              body: SizedBox.expand(
+                child: RotaryScrollbar(
                   controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        l10n.titleMatches.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                  scrollAnimationCurve: Curves.easeInOut,
+                  scrollAnimationDuration: scrollDuration,
+                  scrollMagnitude: scrollMagnitude,
+                  width: scrollWidth,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Text(
+                            l10n.titleMatches.toUpperCase(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          const LastUpdateHome(),
+                          const SizedBox(height: 10),
+                          ...matches
+                              .map((match) => MatchCardHome(match: match)),
+                          const SettingsHome(),
+                          const SizedBox(height: 50),
+                        ],
                       ),
-                      const LastUpdateHome(),
-                      const SizedBox(height: 10),
-                      ...matches.map((match) => MatchCardHome(match: match)),
-                      const SettingsHome(),
-                      const SizedBox(height: 50),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
@@ -351,8 +365,15 @@ class SettingsHome extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: ElevatedButton(
-        onPressed: () =>
-            Navigator.of(context).pushNamed(SettingsPage.routeName),
+        onPressed: () async {
+          final reload = (await Navigator.of(context)
+                  .pushNamed(SettingsPage.routeName)) as bool? ??
+              true;
+          if (reload) {
+            // ignore: use_build_context_synchronously
+            context.read<HomeCubit>().reload();
+          }
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
