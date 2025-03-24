@@ -18,14 +18,15 @@ Match _$MatchFromJson(Map<String, dynamic> json) {
       json['season'] as Map<String, dynamic>? ?? <String, dynamic>{},
     ),
     id: json['id'] as int? ?? 0,
-    utcDate: DateTime.parse(json['utcDate'] as String).toLocal(),
+    utcDate:
+        (json['utcDate'] as Timestamp? ?? Timestamp.now()).toDate().toLocal(),
     status: json['status'] as String? ?? '-',
     matchday: json['matchday'] as int? ?? 1,
     stage: json['stage'] as String? ?? '-',
     group: json['group'] as String? ?? '-',
-    lastUpdated: DateTime.parse(json['lastUpdated'] as String)
-        .toLocal()
-        .subtract(const Duration(hours: 1)),
+    lastUpdated: (json['lastUpdated'] as Timestamp? ?? Timestamp.now())
+        .toDate()
+        .toLocal(),
     homeTeam: Team.fromJson(
       json['homeTeam'] as Map<String, dynamic>? ?? <String, dynamic>{},
     ),

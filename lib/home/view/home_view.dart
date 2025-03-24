@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
@@ -25,171 +26,174 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
+class _HomeViewState extends State<HomeView> {
   final ScrollController _scrollController = ScrollController();
-  late StreamSubscription<void> _updateSubscription;
-  late StreamSubscription<void> _updatedAtSubscription;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: context.read<HomeCubit>().getMatches(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: SizedBox.expand(
+              child: Center(
+                child: SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        l10n.errorMatches,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.data!.docs.isEmpty) {
+          return Scaffold(
+            body: SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        l10n.emptyMatches,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SettingsHome(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final matches = snapshot.data!.docs
+            .map((doc) => Match.fromJson(doc.data()))
+            .toList();
+
+        return Scaffold(
+          body: SizedBox.expand(
+            child: RotaryScrollbar(
+              controller: _scrollController,
+              scrollAnimationCurve: Curves.easeInOut,
+              scrollAnimationDuration: scrollDuration,
+              scrollMagnitude: scrollMagnitude,
+              width: scrollWidth,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      Text(
+                        l10n.titleMatches.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const LastUpdateHome(),
+                      const SizedBox(height: 10),
+                      ...matches.map((match) => MatchCardHome(match: match)),
+                      const SettingsHome(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class LastUpdateHome extends StatefulWidget {
+  const LastUpdateHome({super.key});
+
+  @override
+  State<LastUpdateHome> createState() => _LastUpdateHomeState();
+}
+
+class _LastUpdateHomeState extends State<LastUpdateHome>
+    with WidgetsBindingObserver {
+  late StreamSubscription<void> _nowSubscription;
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _updateSubscription = Stream<void>.periodic(
-      const Duration(seconds: 20),
-    ).listen(
-      // ignore: use_build_context_synchronously
-      (_) => context.read<HomeCubit>().updateMatches(),
-    );
-    _updatedAtSubscription = Stream<void>.periodic(
-      const Duration(seconds: 1),
-    ).listen(
-      // ignore: use_build_context_synchronously
-      (_) => context.read<HomeCubit>().updateLastUpdated(),
-    );
+    _nowSubscription = Stream<void>.periodic(const Duration(seconds: 1))
+        .listen((_) => setState(() {}));
+    super.initState();
   }
 
   @override
   void dispose() {
-    _updateSubscription.cancel();
-    _updatedAtSubscription.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    _nowSubscription.cancel();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      context.read<HomeCubit>().updateMatches();
-      _updateSubscription.resume();
-      _updatedAtSubscription.resume();
-    } else {
-      if (!_updateSubscription.isPaused) _updateSubscription.pause();
-      if (!_updatedAtSubscription.isPaused) _updatedAtSubscription.pause();
-    }
-    super.didChangeAppLifecycleState(state);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case HomeStatus.initial:
-            return const SizedBox.shrink();
-          case HomeStatus.loading:
-            return const Scaffold(
-              body: SizedBox.expand(
-                child: Center(
-                  child: SizedBox.square(
-                    dimension: 20,
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              ),
-            );
-          case HomeStatus.success:
-            if (state.matches.isEmpty) {
-              return Scaffold(
-                body: SizedBox.expand(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            l10n.emptyMatches,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SettingsHome(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }
-            return Scaffold(
-              body: SizedBox.expand(
-                child: RotaryScrollbar(
-                  controller: _scrollController,
-                  scrollAnimationCurve: Curves.easeInOut,
-                  scrollAnimationDuration: scrollDuration,
-                  scrollMagnitude: scrollMagnitude,
-                  width: scrollWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          Text(
-                            l10n.titleMatches.toUpperCase(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          Text(
-                            l10n.updatedMatches(state.lastUpdated),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          ...state.matches
-                              .map((match) => MatchCardHome(match: match)),
-                          const SettingsHome(),
-                          const SizedBox(height: 50),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          case HomeStatus.failure:
-            return Scaffold(
-              body: SizedBox.expand(
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          l10n.errorMatches,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () =>
-                              context.read<HomeCubit>().initialLoadMatches(),
-                          child: Text(
-                            l10n.retryMatches,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
+    return StreamBuilder(
+      stream: context.read<HomeCubit>().getMatchConfigs(),
+      builder: (context, snapshot) {
+        final configs = snapshot.data?.docs
+                .map((doc) => Config.fromJson(doc.data()))
+                .toList() ??
+            [Config(id: matchesCollection, lastUpdate: DateTime.now())];
+
+        if (configs.isEmpty) {
+          configs.add(
+            Config(id: matchesCollection, lastUpdate: DateTime.now()),
+          );
         }
+
+        final delta = DateTime.now().difference(configs.first.lastUpdate);
+
+        return Text(
+          l10n.updatedMatches(delta.inSeconds),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 10,
+          ),
+        );
       },
     );
   }

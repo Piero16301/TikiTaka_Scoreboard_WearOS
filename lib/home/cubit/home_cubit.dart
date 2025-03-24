@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:user_api/user_api.dart';
+import 'package:tiki_taka/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'home_state.dart';
@@ -10,65 +11,45 @@ class HomeCubit extends Cubit<HomeState> {
 
   final UserRepository userRepository;
 
-  Future<void> initialLoadMatches() async {
-    emit(state.copyWith(status: HomeStatus.loading));
-    try {
-      final matches = <Match>[]..sort((a, b) {
-          final statusOrder = {
-            'IN_PLAY': 0,
-            'PAUSED': 1,
-            'SCHEDULED': 2,
-            'TIMED': 3,
-          };
-          final aStatus = a.status;
-          final bStatus = b.status;
-          final aOrder = statusOrder[aStatus] ?? 4;
-          final bOrder = statusOrder[bStatus] ?? 4;
-          if (aOrder != bOrder) {
-            return aOrder - bOrder;
-          }
-          return aStatus.compareTo(bStatus);
-        });
-      emit(
-        state.copyWith(
-          status: HomeStatus.success,
-          matches: matches,
-          updatedAt: DateTime.now(),
-        ),
-      );
-    } catch (_) {
-      emit(state.copyWith(status: HomeStatus.failure));
-    }
-  }
+  void initCollections() {
+    final matches = FirebaseFirestore.instance.collection(matchesCollection);
+    final configs = FirebaseFirestore.instance.collection(configsCollection);
 
-  Future<void> updateMatches() async {
-    try {
-      final matches = <Match>[]..sort((a, b) {
-          final statusOrder = {
-            'IN_PLAY': 0,
-            'PAUSED': 1,
-            'SCHEDULED': 2,
-            'TIMED': 3,
-          };
-          final aStatus = a.status;
-          final bStatus = b.status;
-          final aOrder = statusOrder[aStatus] ?? 4;
-          final bOrder = statusOrder[bStatus] ?? 4;
-          if (aOrder != bOrder) {
-            return aOrder - bOrder;
-          }
-          return aStatus.compareTo(bStatus);
-        });
-      emit(state.copyWith(matches: matches, updatedAt: DateTime.now()));
-    } catch (_) {}
-  }
-
-  void updateLastUpdated() {
-    if (state.updatedAt == null) return;
     emit(
       state.copyWith(
-        lastUpdated: DateTime.now().difference(state.updatedAt!).inSeconds,
+        matchesCollection: matches,
+        configsCollection: configs,
       ),
     );
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getMatches() {
+    // final enabledLeagues = userRepository.getEnabledLeagues();
+    // final nowDate = DateTime.now();
+    final enabledLeagues = ['PL', 'PD'];
+    final nowDate = DateTime(2025, 03, 16);
+
+    final snapshots = state.matchesCollection
+        ?.where('competition.code', whereIn: enabledLeagues)
+        .where(
+          'utcDate',
+          isGreaterThan: DateTime(nowDate.year, nowDate.month, nowDate.day),
+        )
+        .where(
+          'utcDate',
+          isLessThan: DateTime(nowDate.year, nowDate.month, nowDate.day + 1),
+        )
+        .orderBy('utcDate', descending: false)
+        .snapshots();
+
+    return snapshots;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getMatchConfigs() {
+    final snapshots = state.configsCollection
+        ?.where('id', isEqualTo: matchesCollection)
+        .snapshots();
+
+    return snapshots;
   }
 }

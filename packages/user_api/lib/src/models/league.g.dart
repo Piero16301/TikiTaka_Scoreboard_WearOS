@@ -18,6 +18,8 @@ League _$LeagueFromJson(Map<String, dynamic> json) {
     currentSeason:
         Season.fromJson(json['currentSeason'] as Map<String, dynamic>? ?? {}),
     numberOfAvailableSeasons: json['numberOfAvailableSeasons'] as int? ?? 0,
-    lastUpdated: DateTime.parse(json['lastUpdated'] as String).toLocal(),
+    lastUpdated: (json['lastUpdated'] as Timestamp? ?? Timestamp.now())
+        .toDate()
+        .toLocal(),
   );
 }
