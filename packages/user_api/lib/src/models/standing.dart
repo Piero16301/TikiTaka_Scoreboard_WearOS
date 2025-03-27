@@ -24,7 +24,7 @@ class Standing extends Equatable {
     stage: '',
     type: '',
     group: '',
-    table: <StandingTable>[],
+    table: <Table>[],
   );
 
   /// Etapa de la clasificación
@@ -37,7 +37,7 @@ class Standing extends Equatable {
   final String group;
 
   /// Tabla de clasificación
-  final List<StandingTable> table;
+  final List<Table> table;
 
   @override
   List<Object?> get props => [

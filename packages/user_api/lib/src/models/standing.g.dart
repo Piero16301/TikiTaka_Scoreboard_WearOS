@@ -13,7 +13,7 @@ Standing _$StandingFromJson(Map<String, dynamic> json) {
     group: json['group'] as String? ?? '',
     table: (json['table'] as List<dynamic>? ?? [])
         .map(
-          (e) => StandingTable.fromJson(e as Map<String, dynamic>? ?? const {}),
+          (e) => Table.fromJson(e as Map<String, dynamic>? ?? const {}),
         )
         .toList(),
   );

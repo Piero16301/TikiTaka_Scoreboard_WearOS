@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'standing_table.dart';
+part of 'table.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-StandingTable _$StandingTableFromJson(Map<String, dynamic> json) {
-  return StandingTable(
+Table _$TableFromJson(Map<String, dynamic> json) {
+  return Table(
     position: json['position'] as int? ?? 0,
     team: Team.fromJson(json['team'] as Map<String, dynamic>? ?? const {}),
     playedGames: json['playedGames'] as int? ?? 0,

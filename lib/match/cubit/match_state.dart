@@ -1,44 +1,27 @@
 part of 'match_cubit.dart';
 
-enum StandingsStatus {
-  initial,
-  loading,
-  success,
-  failure;
-
-  bool get isInitial => this == StandingsStatus.initial;
-  bool get isLoading => this == StandingsStatus.loading;
-  bool get isSuccess => this == StandingsStatus.success;
-  bool get isFailure => this == StandingsStatus.failure;
-}
-
 class MatchState extends Equatable {
   const MatchState({
-    this.status = StandingsStatus.initial,
     this.match = Match.empty,
-    this.standings = const <Standing>[],
+    this.standingsCollection,
   });
 
-  final StandingsStatus status;
   final Match match;
-  final List<Standing> standings;
+  final CollectionReference<Map<String, dynamic>>? standingsCollection;
 
   MatchState copyWith({
-    StandingsStatus? status,
     Match? match,
-    List<Standing>? standings,
+    CollectionReference<Map<String, dynamic>>? standingsCollection,
   }) {
     return MatchState(
-      status: status ?? this.status,
       match: match ?? this.match,
-      standings: standings ?? this.standings,
+      standingsCollection: standingsCollection ?? this.standingsCollection,
     );
   }
 
   @override
-  List<Object> get props => [
-        status,
+  List<Object?> get props => [
         match,
-        standings,
+        standingsCollection,
       ];
 }

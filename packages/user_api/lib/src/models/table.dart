@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:user_api/user_api.dart';
 
-part 'standing_table.g.dart';
+part 'table.g.dart';
 
 /// {@template standing_table}
 /// Modelo de datos para una tabla de clasificación
 /// {@endtemplate}
-class StandingTable extends Equatable {
+class Table extends Equatable {
   /// {@macro standing_table}
-  const StandingTable({
+  const Table({
     required this.position,
     required this.team,
     required this.playedGames,
@@ -22,12 +22,11 @@ class StandingTable extends Equatable {
     required this.goalDifference,
   });
 
-  /// Crea una instancia de [StandingTable] a partir de un [Map] json
-  factory StandingTable.fromJson(Map<String, dynamic> json) =>
-      _$StandingTableFromJson(json);
+  /// Crea una instancia de [Table] a partir de un [Map] json
+  factory Table.fromJson(Map<String, dynamic> json) => _$TableFromJson(json);
 
   /// Empty standing table
-  static const empty = StandingTable(
+  static const empty = Table(
     position: 0,
     team: Team.empty,
     playedGames: 0,

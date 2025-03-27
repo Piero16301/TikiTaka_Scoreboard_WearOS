@@ -8,6 +8,6 @@ export 'referee.dart';
 export 'score.dart';
 export 'season.dart';
 export 'standing.dart';
-export 'standing_table.dart';
+export 'table.dart';
 export 'team.dart';
 export 'time.dart';

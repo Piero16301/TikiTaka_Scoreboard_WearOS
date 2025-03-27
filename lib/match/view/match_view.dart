@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -28,12 +29,8 @@ class _MatchViewState extends State<MatchView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -301,97 +298,119 @@ class StandingsMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final match =
+        context.select<MatchCubit, Match>((cubit) => cubit.state.match);
 
-    return BlocBuilder<MatchCubit, MatchState>(
-      builder: (context, state) {
-        switch (state.status) {
-          case StandingsStatus.initial:
-            return const SizedBox.shrink();
-          case StandingsStatus.loading:
-            return const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Card(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Center(
-                    child: SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(),
-                    ),
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: context
+          .read<MatchCubit>()
+          .getStandings(leagueId: match.competition.id.toString()),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Card(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Center(
+                  child: SizedBox.square(
+                    dimension: 20,
+                    child: CircularProgressIndicator(),
                   ),
                 ),
               ),
-            );
-          case StandingsStatus.success:
-            if (state.standings.isEmpty) {
-              return const SizedBox.shrink();
-            }
-            if (state.standings[0].table.isEmpty) {
-              return const SizedBox.shrink();
-            }
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Card(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Column(
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return const SizedBox.shrink();
+        }
+
+        if (snapshot.data!.docs.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final result = snapshot.data!.docs.map((doc) => doc.data()).toList();
+        if (result.isEmpty || result.length > 1) {
+          return const SizedBox.shrink();
+        }
+
+        final standingsList =
+            result.first[standingsCollection] as List<dynamic>? ?? [];
+        if (standingsList.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        final standings = standingsList
+            .map(
+              (standing) =>
+                  Standing.fromJson(standing as Map<String, dynamic>? ?? {}),
+            )
+            .toList();
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Column(
+                children: [
+                  Text(
+                    l10n.standingsMatch.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Column(
+                    spacing: 5,
                     children: [
-                      Text(
-                        l10n.standingsMatch.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Column(
-                        spacing: 5,
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              const Expanded(child: SizedBox.shrink()),
-                              SizedBox(
-                                width: 20,
-                                child: Center(
-                                  child: Text(
-                                    l10n.playedGamesAbbr,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                          const Expanded(child: SizedBox.shrink()),
+                          SizedBox(
+                            width: 20,
+                            child: Center(
+                              child: Text(
+                                l10n.playedGamesAbbr,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 5),
-                              SizedBox(
-                                width: 20,
-                                child: Center(
-                                  child: Text(
-                                    l10n.goalDifferenceAbbr,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              SizedBox(
-                                width: 20,
-                                child: Center(
-                                  child: Text(
-                                    l10n.pointsAbbr,
-                                    style: const TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                          ...state.standings[0].table.map(
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            width: 20,
+                            child: Center(
+                              child: Text(
+                                l10n.goalDifferenceAbbr,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            width: 20,
+                            child: Center(
+                              child: Text(
+                                l10n.pointsAbbr,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      ...standings[0].table.map(
                             (standing) => Row(
                               spacing: 5,
                               children: [
@@ -428,16 +447,13 @@ class StandingsMatch extends StatelessWidget {
                               ],
                             ),
                           ),
-                        ],
-                      ),
                     ],
                   ),
-                ),
+                ],
               ),
-            );
-          case StandingsStatus.failure:
-            return const SizedBox.shrink();
-        }
+            ),
+          ),
+        );
       },
     );
   }

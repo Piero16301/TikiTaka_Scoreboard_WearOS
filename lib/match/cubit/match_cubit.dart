@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:tiki_taka/app/app.dart';
 import 'package:user_api/user_api.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -10,18 +12,27 @@ class MatchCubit extends Cubit<MatchState> {
 
   final UserRepository userRepository;
 
-  Future<void> init(Match match) async {
-    emit(state.copyWith(status: StandingsStatus.loading, match: match));
-    try {
-      final standings = <Standing>[];
-      emit(
-        state.copyWith(
-          status: StandingsStatus.success,
-          standings: standings,
-        ),
-      );
-    } catch (_) {
-      emit(state.copyWith(status: StandingsStatus.failure));
-    }
+  void initCollections(Match match) {
+    final standings = FirebaseFirestore.instance.collection(
+      standingsCollection,
+    );
+    emit(
+      state.copyWith(
+        standingsCollection: standings,
+        match: match,
+      ),
+    );
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getStandings({
+    required String leagueId,
+  }) {
+    final snapshots = state.standingsCollection
+        ?.where(
+          'id',
+          isEqualTo: leagueId,
+        )
+        .snapshots();
+    return snapshots;
   }
 }

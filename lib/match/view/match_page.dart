@@ -17,7 +17,8 @@ class MatchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => MatchCubit(context.read<UserRepository>())..init(match),
+      create: (_) =>
+          MatchCubit(context.read<UserRepository>())..initCollections(match),
       child: MatchView(),
     );
   }
