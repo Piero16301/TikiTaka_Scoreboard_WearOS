@@ -35,12 +35,21 @@ dependencies:
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.4.15
+  flutter_launcher_icons: ^0.14.3
   flutter_test:
     sdk: flutter
   mockito: ^5.4.5
   mocktail: ^1.0.4
   very_good_analysis: ^7.0.0
 
+flutter_launcher_icons:
+  image_path: "assets/logo.png"
+  android: true
+  image_path_android: "assets/logo.png"
+
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/logo.png
