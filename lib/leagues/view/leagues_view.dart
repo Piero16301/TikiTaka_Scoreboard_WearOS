@@ -125,7 +125,7 @@ class _LeaguesViewState extends State<LeaguesView> {
                         l10n.titleLeagues.toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                       ),
                       const SizedBox(height: 10),

@@ -57,7 +57,7 @@ class _ThemesViewState extends State<ThemesView> {
                     l10n.titleTheme.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 18,
                     ),
                   ),
                   const SizedBox(height: 10),

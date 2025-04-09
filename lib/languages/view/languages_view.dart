@@ -58,7 +58,7 @@ class _LanguagesViewState extends State<LanguagesView> {
                     l10n.titleLanguage.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 18,
                     ),
                   ),
                   const SizedBox(height: 10),

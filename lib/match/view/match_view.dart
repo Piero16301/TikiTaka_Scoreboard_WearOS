@@ -58,7 +58,7 @@ class _MatchViewState extends State<MatchView> {
                       l10n.titleMatch.toUpperCase(),
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
                     ),
                     Text(

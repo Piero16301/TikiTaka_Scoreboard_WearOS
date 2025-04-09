@@ -55,7 +55,7 @@ class _SettingsViewState extends State<SettingsView> {
                     l10n.titleSettings.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 18,
                     ),
                   ),
                   const SizedBox(height: 10),
