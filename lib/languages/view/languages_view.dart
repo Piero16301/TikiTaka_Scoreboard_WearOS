@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dash_flags/dash_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
@@ -104,27 +105,34 @@ class CardLanguages extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Row(
-          children: [
-            BlocBuilder<AppCubit, AppState>(
-              builder: (context, state) => Radio<String>(
-                value: value,
-                groupValue: state.language,
-                onChanged: (v) =>
-                    context.read<AppCubit>().changeLanguage(v ?? value),
+      child: SizedBox(
+        height: 50,
+        child: Card(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Stack(
+            children: [
+              Opacity(
+                opacity: 0.1,
+                child: CountryFlag(
+                  country: Country.fromCode(flag),
+                  height: double.infinity,
+                ),
               ),
-            ),
-            Text(
-              flag,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+              Row(
+                children: [
+                  BlocBuilder<AppCubit, AppState>(
+                    builder: (context, state) => Radio<String>(
+                      value: value,
+                      groupValue: state.language,
+                      onChanged: (v) =>
+                          context.read<AppCubit>().changeLanguage(v ?? value),
+                    ),
+                  ),
+                  Expanded(child: ScrollText(text: language)),
+                ],
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: ScrollText(text: language)),
-          ],
+            ],
+          ),
         ),
       ),
     );

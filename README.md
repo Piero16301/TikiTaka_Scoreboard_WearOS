@@ -10,6 +10,21 @@ WearOS application for Tiki-Taka system for real-time scoreboard.
 
 ---
 
+## To upload the app to the Play Store
+
+1. Upload debug symbols to the Play Store
+
+    - Go to `/build/app/intermediates/merged_native_libs/productionRelease/out/lib`
+    - Compress all the folders inside the `lib` folder
+    - Execute `zip -d Archivo.zip "__MACOSX*"` to remove the `__MACOSX` folders
+
+2. Upload the app bundle to the Play Store
+
+    - Build the app bundle using the command below
+    `flutter build appbundle --flavor production --target lib/main.dart`
+
+---
+
 ## Getting Started 🚀
 
 This project contains 3 flavors:
