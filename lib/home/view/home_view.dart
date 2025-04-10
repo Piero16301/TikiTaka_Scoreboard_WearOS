@@ -127,12 +127,12 @@ class _HomeViewState extends State<HomeView> {
                       controller: _scrollController,
                       child: Column(
                         children: [
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 20),
                           Text(
                             l10n.titleMatches.toUpperCase(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                              fontSize: titleSize,
                             ),
                           ),
                           const LastUpdateHome(),

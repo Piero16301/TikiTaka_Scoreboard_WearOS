@@ -120,12 +120,12 @@ class _LeaguesViewState extends State<LeaguesView> {
                   controller: _scrollController,
                   child: Column(
                     children: [
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 20),
                       Text(
                         l10n.titleLeagues.toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: titleSize,
                         ),
                       ),
                       const SizedBox(height: 10),

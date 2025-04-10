@@ -50,12 +50,12 @@ class _SettingsViewState extends State<SettingsView> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   Text(
                     l10n.titleSettings.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: titleSize,
                     ),
                   ),
                   const SizedBox(height: 10),
