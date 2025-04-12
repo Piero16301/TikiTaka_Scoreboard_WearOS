@@ -73,6 +73,7 @@ class _MatchViewState extends State<MatchView> {
                     ),
                     const SizedBox(height: 10),
                     TeamsCardMatch(match: state.match),
+                    RefereeCardMatch(referees: state.match.referees),
                     CompetitionCardMatch(match: state.match),
                     const StandingsMatch(),
                     const BackButtonMatch(),
@@ -225,6 +226,72 @@ class TeamsCardMatch extends StatelessWidget {
   }
 }
 
+class RefereeCardMatch extends StatelessWidget {
+  const RefereeCardMatch({
+    required this.referees,
+    super.key,
+  });
+
+  final List<Referee> referees;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Column(
+            children: [
+              Text(
+                context.l10n.refereeMatch.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 5),
+              ...referees.map((referee) {
+                return Row(
+                  children: [
+                    Icon(
+                      Icons.person,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            referee.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            referee.nationality,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class CompetitionCardMatch extends StatelessWidget {
   const CompetitionCardMatch({
     required this.match,
@@ -353,7 +420,7 @@ class StandingsMatch extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: Column(
                 children: [
                   Text(
@@ -363,7 +430,7 @@ class StandingsMatch extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 5),
                   Column(
                     spacing: 5,
                     children: [
@@ -371,7 +438,7 @@ class StandingsMatch extends StatelessWidget {
                         children: [
                           const Expanded(child: SizedBox.shrink()),
                           SizedBox(
-                            width: 20,
+                            width: 21,
                             child: Center(
                               child: Text(
                                 l10n.playedGamesAbbr,
@@ -384,7 +451,7 @@ class StandingsMatch extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           SizedBox(
-                            width: 20,
+                            width: 21,
                             child: Center(
                               child: Text(
                                 l10n.goalDifferenceAbbr,
@@ -397,7 +464,7 @@ class StandingsMatch extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           SizedBox(
-                            width: 20,
+                            width: 21,
                             child: Center(
                               child: Text(
                                 l10n.pointsAbbr,
@@ -431,8 +498,12 @@ class StandingsMatch extends StatelessWidget {
                                   dimension: 25,
                                 ),
                                 Expanded(
-                                  child: ScrollText(
-                                    text: standing.team.shortName,
+                                  child: Text(
+                                    standing.team.tla,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 PointTextMatch(
@@ -470,7 +541,7 @@ class PointTextMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 20,
+      width: 21,
       child: Center(
         child: Text(
           value.toString(),
