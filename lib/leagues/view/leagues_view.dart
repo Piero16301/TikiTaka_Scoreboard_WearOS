@@ -121,8 +121,8 @@ class _LeaguesViewState extends State<LeaguesView> {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-                      Text(
-                        l10n.titleLeagues.toUpperCase(),
+                      ScrollText(
+                        text: l10n.titleLeagues.toUpperCase(),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: titleSize,

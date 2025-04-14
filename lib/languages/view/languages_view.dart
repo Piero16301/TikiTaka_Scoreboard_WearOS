@@ -54,8 +54,8 @@ class _LanguagesViewState extends State<LanguagesView> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    l10n.titleLanguage.toUpperCase(),
+                  ScrollText(
+                    text: l10n.titleLanguage.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: titleSize,

@@ -38,53 +38,124 @@ class _MatchViewState extends State<MatchView> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocBuilder<MatchCubit, MatchState>(
-      builder: (context, state) => Scaffold(
-        body: SizedBox.expand(
-          child: RotaryScrollbar(
-            controller: _scrollController,
-            scrollAnimationCurve: Curves.easeInOut,
-            scrollAnimationDuration: scrollDuration,
-            scrollMagnitude: scrollMagnitude,
-            width: scrollWidth,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      l10n.titleMatch.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: titleSize,
+    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      stream: context.read<MatchCubit>().getMatch(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: SizedBox.expand(
+              child: Center(
+                child: SizedBox.square(
+                  dimension: 20,
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        l10n.errorMatches,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '${l10n.updatedAtMatch} '
-                      '${DateFormat('HH:mm:ss').format(
-                        state.match.lastUpdated!,
-                      )}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.data!.docs.isEmpty) {
+          return Scaffold(
+            body: SizedBox.expand(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        l10n.emptyMatches,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    TeamsCardMatch(match: state.match),
-                    RefereeCardMatch(referees: state.match.referees),
-                    CompetitionCardMatch(match: state.match),
-                    const StandingsMatch(),
-                    const BackButtonMatch(),
-                    const SizedBox(height: 50),
-                  ],
+                      const BackButtonMatch(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        final match = snapshot.data!.docs
+            .map((doc) => Match.fromJson(doc.data()))
+            .toList()
+            .first;
+
+        return Scaffold(
+          body: SizedBox.expand(
+            child: RotaryScrollbar(
+              controller: _scrollController,
+              scrollAnimationCurve: Curves.easeInOut,
+              scrollAnimationDuration: scrollDuration,
+              scrollMagnitude: scrollMagnitude,
+              width: scrollWidth,
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      ScrollText(
+                        text: l10n.titleMatch.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: titleSize,
+                        ),
+                      ),
+                      Text(
+                        '${l10n.updatedAtMatch} '
+                        '${DateFormat('HH:mm:ss').format(
+                          match.lastUpdated!,
+                        )}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TeamsCardMatch(match: match),
+                      if (match.referees.isNotEmpty)
+                        RefereeCardMatch(referees: match.referees),
+                      CompetitionCardMatch(match: match),
+                      StandingsMatch(match: match),
+                      const BackButtonMatch(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -360,13 +431,16 @@ class CompetitionCardMatch extends StatelessWidget {
 }
 
 class StandingsMatch extends StatelessWidget {
-  const StandingsMatch({super.key});
+  const StandingsMatch({
+    required this.match,
+    super.key,
+  });
+
+  final Match match;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final match =
-        context.select<MatchCubit, Match>((cubit) => cubit.state.match);
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: context

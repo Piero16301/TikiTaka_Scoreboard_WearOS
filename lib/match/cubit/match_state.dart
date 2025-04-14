@@ -2,26 +2,31 @@ part of 'match_cubit.dart';
 
 class MatchState extends Equatable {
   const MatchState({
-    this.match = Match.empty,
+    this.matchId = 0,
+    this.matchesCollection,
     this.standingsCollection,
   });
 
-  final Match match;
+  final int matchId;
+  final CollectionReference<Map<String, dynamic>>? matchesCollection;
   final CollectionReference<Map<String, dynamic>>? standingsCollection;
 
   MatchState copyWith({
-    Match? match,
+    int? matchId,
+    CollectionReference<Map<String, dynamic>>? matchesCollection,
     CollectionReference<Map<String, dynamic>>? standingsCollection,
   }) {
     return MatchState(
-      match: match ?? this.match,
+      matchId: matchId ?? this.matchId,
+      matchesCollection: matchesCollection ?? this.matchesCollection,
       standingsCollection: standingsCollection ?? this.standingsCollection,
     );
   }
 
   @override
   List<Object?> get props => [
-        match,
+        matchId,
+        matchesCollection,
         standingsCollection,
       ];
 }

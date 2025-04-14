@@ -111,7 +111,23 @@ class _HomeViewState extends State<HomeView> {
 
             final matches = snapshot.data!.docs
                 .map((doc) => Match.fromJson(doc.data()))
-                .toList();
+                .toList()
+              ..sort((a, b) {
+                final statusOrder = {
+                  'IN_PLAY': 0,
+                  'PAUSED': 1,
+                  'SCHEDULED': 2,
+                  'TIMED': 3,
+                };
+                final aStatus = a.status;
+                final bStatus = b.status;
+                final aOrder = statusOrder[aStatus] ?? 4;
+                final bOrder = statusOrder[bStatus] ?? 4;
+                if (aOrder != bOrder) {
+                  return aOrder - bOrder;
+                }
+                return aStatus.compareTo(bStatus);
+              });
 
             return Scaffold(
               body: SizedBox.expand(
@@ -128,8 +144,8 @@ class _HomeViewState extends State<HomeView> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          Text(
-                            l10n.titleMatches.toUpperCase(),
+                          ScrollText(
+                            text: l10n.titleMatches.toUpperCase(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: titleSize,
@@ -230,7 +246,7 @@ class MatchCardHome extends StatelessWidget {
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           MatchPage.routeName,
-          arguments: match,
+          arguments: match.id,
         ),
         child: Card(
           child: Padding(

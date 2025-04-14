@@ -16,9 +16,8 @@ class ScrollText extends StatelessWidget {
     return TextScroll(
       text,
       pauseBetween: const Duration(seconds: 1),
-      velocity: const Velocity(pixelsPerSecond: Offset(40, 0)),
+      velocity: const Velocity(pixelsPerSecond: Offset(20, 0)),
       style: style,
-      mode: TextScrollMode.bouncing,
     );
   }
 }

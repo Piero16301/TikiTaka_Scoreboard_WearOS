@@ -53,8 +53,8 @@ class _ThemesViewState extends State<ThemesView> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    l10n.titleTheme.toUpperCase(),
+                  ScrollText(
+                    text: l10n.titleTheme.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: titleSize,

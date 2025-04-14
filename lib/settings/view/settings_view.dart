@@ -51,8 +51,8 @@ class _SettingsViewState extends State<SettingsView> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    l10n.titleSettings.toUpperCase(),
+                  ScrollText(
+                    text: l10n.titleSettings.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: titleSize,
