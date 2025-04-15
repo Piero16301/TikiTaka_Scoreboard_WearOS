@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
@@ -64,12 +65,12 @@ class _ThemesViewState extends State<ThemesView> {
                   CardThemes(
                     isDark: false,
                     text: l10n.lightTheme,
-                    icon: Icons.light_mode,
+                    icon: HugeIcons.strokeRoundedSun01,
                   ),
                   CardThemes(
                     isDark: true,
                     text: l10n.darkTheme,
-                    icon: Icons.dark_mode,
+                    icon: HugeIcons.strokeRoundedMoon02,
                   ),
                   const BackButtonLanguages(),
                   const SizedBox(height: 50),
@@ -110,7 +111,10 @@ class CardThemes extends StatelessWidget {
                     context.read<AppCubit>().changeTheme(darkMode: v ?? true),
               ),
             ),
-            Icon(icon),
+            HugeIcon(
+              icon: icon,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             const SizedBox(width: 10),
             Expanded(child: ScrollText(text: text)),
           ],

@@ -395,13 +395,7 @@ class SettingsHome extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Text(
-                l10n.titleSettings.toUpperCase(),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              child: ScrollText(text: l10n.titleSettings.toUpperCase()),
             ),
           ],
         ),

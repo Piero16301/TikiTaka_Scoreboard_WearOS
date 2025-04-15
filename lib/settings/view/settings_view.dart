@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
@@ -61,17 +62,17 @@ class _SettingsViewState extends State<SettingsView> {
                   const SizedBox(height: 10),
                   ConfigurationSetting(
                     title: l10n.titleLeagues.toUpperCase(),
-                    icon: Icons.sports_soccer,
+                    icon: HugeIcons.strokeRoundedFootball,
                     route: LeaguesPage.routeName,
                   ),
                   ConfigurationSetting(
                     title: l10n.titleLanguage.toUpperCase(),
-                    icon: Icons.language,
+                    icon: HugeIcons.strokeRoundedLanguageSkill,
                     route: LanguagesPage.routeName,
                   ),
                   ConfigurationSetting(
                     title: l10n.titleTheme.toUpperCase(),
-                    icon: Icons.palette,
+                    icon: HugeIcons.strokeRoundedPaintBoard,
                     route: ThemesPage.routeName,
                   ),
                   const BackButtonSettings(),
@@ -107,7 +108,11 @@ class ConfigurationSetting extends StatelessWidget {
           spacing: 10,
           children: [
             const SizedBox(width: 0),
-            Icon(icon, size: 30),
+            HugeIcon(
+              icon: icon,
+              size: 30,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             Expanded(child: ScrollText(text: title)),
             IconButton(
               onPressed: () => Navigator.of(context).pushNamed(route),

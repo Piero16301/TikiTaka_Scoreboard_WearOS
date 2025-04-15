@@ -15,6 +15,9 @@ class MatchCubit extends Cubit<MatchState> {
     final matches = FirebaseFirestore.instance.collection(
       matchesCollection,
     );
+    final configs = FirebaseFirestore.instance.collection(
+      configsCollection,
+    );
     final standings = FirebaseFirestore.instance.collection(
       standingsCollection,
     );
@@ -22,6 +25,7 @@ class MatchCubit extends Cubit<MatchState> {
       state.copyWith(
         matchId: matchId,
         matchesCollection: matches,
+        configsCollection: configs,
         standingsCollection: standings,
       ),
     );
@@ -46,6 +50,14 @@ class MatchCubit extends Cubit<MatchState> {
           isEqualTo: leagueId,
         )
         .snapshots();
+    return snapshots;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getMatchConfigs() {
+    final snapshots = state.configsCollection
+        ?.where('id', isEqualTo: matchesCollection)
+        .snapshots();
+
     return snapshots;
   }
 }
