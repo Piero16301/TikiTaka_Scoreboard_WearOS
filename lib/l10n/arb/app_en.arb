@@ -95,6 +95,9 @@
     "darkTheme": "Dark",
     "@darkTheme": {},
 
+    "titleNotifications": "Notifications",
+    "@titleNotifications": {},
+
     "backText": "Back",
     "@backText": {}
 }

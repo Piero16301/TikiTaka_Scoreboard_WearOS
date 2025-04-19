@@ -7,6 +7,7 @@ import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/languages/languages.dart';
 import 'package:tiki_taka/leagues/leagues.dart';
 import 'package:tiki_taka/match/match.dart';
+import 'package:tiki_taka/notifications/notifications.dart';
 import 'package:tiki_taka/settings/settings.dart';
 import 'package:tiki_taka/themes/themes.dart';
 
@@ -54,6 +55,7 @@ class _AppViewState extends State<AppView> {
               LeaguesPage.routeName: (_) => const LeaguesPage(),
               LanguagesPage.routeName: (_) => const LanguagesPage(),
               ThemesPage.routeName: (_) => const ThemesPage(),
+              NotificationsPage.routeName: (_) => const NotificationsPage(),
             },
           );
         },

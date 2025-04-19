@@ -7,6 +7,7 @@ import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/languages/languages.dart';
 import 'package:tiki_taka/leagues/leagues.dart';
+import 'package:tiki_taka/notifications/notifications.dart';
 import 'package:tiki_taka/themes/themes.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -64,6 +65,11 @@ class _SettingsViewState extends State<SettingsView> {
                     title: l10n.titleLeagues.toUpperCase(),
                     icon: HugeIcons.strokeRoundedFootball,
                     route: LeaguesPage.routeName,
+                  ),
+                  ConfigurationSetting(
+                    title: l10n.titleNotifications.toUpperCase(),
+                    icon: HugeIcons.strokeRoundedNotification01,
+                    route: NotificationsPage.routeName,
                   ),
                   ConfigurationSetting(
                     title: l10n.titleLanguage.toUpperCase(),
