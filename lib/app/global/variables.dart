@@ -8,6 +8,7 @@ const String matchesCollection = 'matches';
 const String configsCollection = 'configs';
 const String leaguesCollection = 'leagues';
 const String standingsCollection = 'standings';
+const String teamsCollection = 'teams';
 
 // Firestore fields
 const String utcDate = 'utcDate';

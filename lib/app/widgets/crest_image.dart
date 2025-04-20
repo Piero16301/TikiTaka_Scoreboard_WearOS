@@ -33,14 +33,17 @@ class CrestImage extends StatelessWidget {
         ),
       );
     } else {
-      return Image.network(
-        crest,
-        width: dimension,
-        height: dimension,
-        fit: fit,
-        errorBuilder: (context, error, stackTrace) => Icon(
-          Icons.image,
-          size: dimension,
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Image.network(
+          crest,
+          width: dimension,
+          height: dimension,
+          fit: fit,
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.image,
+            size: dimension,
+          ),
         ),
       );
     }

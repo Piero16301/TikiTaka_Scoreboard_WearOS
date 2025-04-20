@@ -144,11 +144,14 @@ class _HomeViewState extends State<HomeView> {
                       child: Column(
                         children: [
                           const SizedBox(height: 20),
-                          ScrollText(
-                            text: l10n.titleMatches.toUpperCase(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: titleSize,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: ScrollText(
+                              text: l10n.titleMatches.toUpperCase(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: titleSize,
+                              ),
                             ),
                           ),
                           const LastUpdateHome(),

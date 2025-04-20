@@ -6,14 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:tiki_taka/leagues/leagues.dart';
+import 'package:tiki_taka/teams/teams.dart';
 import 'package:user_api/user_api.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class LeaguesView extends StatefulWidget {
-  LeaguesView({
+class TeamsView extends StatefulWidget {
+  TeamsView({
     super.key,
     @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
   }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
@@ -21,10 +21,10 @@ class LeaguesView extends StatefulWidget {
   final Stream<RotaryEvent> rotaryEvents;
 
   @override
-  State<LeaguesView> createState() => _LeaguesViewState();
+  State<TeamsView> createState() => _TeamsViewState();
 }
 
-class _LeaguesViewState extends State<LeaguesView> {
+class _TeamsViewState extends State<TeamsView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -38,7 +38,7 @@ class _LeaguesViewState extends State<LeaguesView> {
     final l10n = context.l10n;
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<LeaguesCubit>().getLeagues(),
+      stream: context.read<TeamsCubit>().getTeams(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Scaffold(
@@ -102,8 +102,8 @@ class _LeaguesViewState extends State<LeaguesView> {
           );
         }
 
-        final leagues = snapshot.data!.docs
-            .map((doc) => League.fromJson(doc.data()))
+        final teams = snapshot.data!.docs
+            .map((doc) => Team.fromJson(doc.data()))
             .toList();
 
         return Scaffold(
@@ -132,8 +132,8 @@ class _LeaguesViewState extends State<LeaguesView> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      ...leagues.map(
-                        (league) => LeagueCardCompetitions(league: league),
+                      ...teams.map(
+                        (team) => TeamCardTeams(team: team),
                       ),
                       const BackButtonCompetitions(),
                       const SizedBox(height: 50),
@@ -149,13 +149,13 @@ class _LeaguesViewState extends State<LeaguesView> {
   }
 }
 
-class LeagueCardCompetitions extends StatelessWidget {
-  const LeagueCardCompetitions({
-    required this.league,
+class TeamCardTeams extends StatelessWidget {
+  const TeamCardTeams({
+    required this.team,
     super.key,
   });
 
-  final League league;
+  final Team team;
 
   @override
   Widget build(BuildContext context) {
@@ -167,9 +167,10 @@ class LeagueCardCompetitions extends StatelessWidget {
           child: Row(
             children: [
               const SizedBox(width: 10),
-              BlocBuilder<LeaguesCubit, LeaguesState>(
+              BlocBuilder<TeamsCubit, TeamsState>(
                 builder: (context, state) {
-                  final enabled = state.enabledLeagues[league.code] ?? false;
+                  final enabled =
+                      state.enabledTeams[team.id.toString()] ?? false;
                   return SizedBox(
                     width: 40,
                     child: FittedBox(
@@ -178,8 +179,8 @@ class LeagueCardCompetitions extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         value: enabled,
                         onChanged: (value) {
-                          context.read<LeaguesCubit>().toggleLeague(
-                                league: league.code,
+                          context.read<TeamsCubit>().toggleTeam(
+                                team: team.id.toString(),
                                 enabled: value,
                               );
                         },
@@ -189,9 +190,9 @@ class LeagueCardCompetitions extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 10),
-              CrestImage(crest: league.emblem),
+              CrestImage(crest: team.crest),
               const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: league.name)),
+              Expanded(child: ScrollText(text: team.name)),
               const SizedBox(width: 10),
             ],
           ),

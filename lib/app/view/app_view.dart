@@ -9,6 +9,7 @@ import 'package:tiki_taka/leagues/leagues.dart';
 import 'package:tiki_taka/match/match.dart';
 import 'package:tiki_taka/notifications/notifications.dart';
 import 'package:tiki_taka/settings/settings.dart';
+import 'package:tiki_taka/teams/teams.dart';
 import 'package:tiki_taka/themes/themes.dart';
 
 class AppView extends StatefulWidget {
@@ -56,6 +57,10 @@ class _AppViewState extends State<AppView> {
               LanguagesPage.routeName: (_) => const LanguagesPage(),
               ThemesPage.routeName: (_) => const ThemesPage(),
               NotificationsPage.routeName: (_) => const NotificationsPage(),
+              TeamsPage.routeName: (context) => TeamsPage(
+                    leagueId:
+                        ModalRoute.of(context)!.settings.arguments as int? ?? 0,
+                  ),
             },
           );
         },

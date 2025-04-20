@@ -7,6 +7,7 @@ import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/notifications/notifications.dart';
+import 'package:tiki_taka/teams/teams.dart';
 import 'package:user_api/user_api.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -121,11 +122,14 @@ class _NotificationsViewState extends State<NotificationsView> {
                   child: Column(
                     children: [
                       const SizedBox(height: 20),
-                      ScrollText(
-                        text: l10n.titleNotifications.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: titleSize,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleNotifications.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -168,6 +172,17 @@ class LeagueCardNotifications extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(child: ScrollText(text: league.name)),
               const SizedBox(width: 10),
+              SizedBox.square(
+                dimension: 40,
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pushNamed(
+                    TeamsPage.routeName,
+                    arguments: league.id,
+                  ),
+                  icon: const Icon(Icons.arrow_forward_ios),
+                  padding: EdgeInsets.zero,
+                ),
+              ),
             ],
           ),
         ),
