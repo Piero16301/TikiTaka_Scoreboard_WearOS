@@ -16,6 +16,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Initialize Notification Service
+  await NotificationService.instance.initialize();
+
   // Get SharedPreferences instance
   final preferences = await SharedPreferences.getInstance();
 
