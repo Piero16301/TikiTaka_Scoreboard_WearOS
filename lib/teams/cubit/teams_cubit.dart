@@ -24,7 +24,8 @@ class TeamsCubit extends Cubit<TeamsState> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getTeams() {
     final snapshots = state.teamsCollection
-        ?.where('id', isEqualTo: state.leagueId)
+        ?.where('competition.id', isEqualTo: state.leagueId)
+        .orderBy('name')
         .snapshots();
     return snapshots;
   }

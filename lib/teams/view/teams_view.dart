@@ -64,7 +64,7 @@ class _TeamsViewState extends State<TeamsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.errorLeagues,
+                        l10n.errorTeams,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -88,7 +88,7 @@ class _TeamsViewState extends State<TeamsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.emptyLeagues,
+                        l10n.emptyTeams,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -124,7 +124,7 @@ class _TeamsViewState extends State<TeamsView> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: ScrollText(
-                          text: l10n.titleLeagues.toUpperCase(),
+                          text: l10n.titleTeams.toUpperCase(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: titleSize,

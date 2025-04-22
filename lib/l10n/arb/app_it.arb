@@ -97,6 +97,17 @@
 
     "titleNotifications": "Notifiche",
     "@titleNotifications": {},
+    "errorNotifications": "Errore nel caricamento delle notifiche",
+    "@errorNotifications": {},
+    "emptyNotifications": "Nessuna notifica disponibile",
+    "@emptyNotifications": {},
+
+    "titleTeams": "Squadre",
+    "@titleTeams": {},
+    "errorTeams": "Errore nel caricamento delle squadre",
+    "@errorTeams": {},
+    "emptyTeams": "Nessuna squadra disponibile",
+    "@emptyTeams": {},
 
     "backText": "Indietro",
     "@backText": {}

@@ -97,6 +97,17 @@
 
     "titleNotifications": "Notifications",
     "@titleNotifications": {},
+    "errorNotifications": "Error loading notifications",
+    "@errorNotifications": {},
+    "emptyNotifications": "No notifications available",
+    "@emptyNotifications": {},
+
+    "titleTeams": "Teams",
+    "@titleTeams": {},
+    "errorTeams": "Error loading teams",
+    "@errorTeams": {},
+    "emptyTeams": "No teams available",
+    "@emptyTeams": {},
 
     "backText": "Back",
     "@backText": {}

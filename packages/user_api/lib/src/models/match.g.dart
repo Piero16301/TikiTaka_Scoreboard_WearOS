@@ -35,12 +35,13 @@ Match _$MatchFromJson(Map<String, dynamic> json) {
     ),
     score: Score.fromJson(json['score'] as Map<String, dynamic>? ?? {}),
     odds: Odds.fromJson(json['odds'] as Map<String, dynamic>? ?? {}),
-    referees: (json['referees'] as List<dynamic>)
-        .map(
-          (e) => Referee.fromJson(
-            e as Map<String, dynamic>? ?? <String, dynamic>{},
-          ),
-        )
-        .toList(),
+    referees: (json['referees'] as List<dynamic>?)
+            ?.map(
+              (e) => Referee.fromJson(
+                e as Map<String, dynamic>? ?? <String, dynamic>{},
+              ),
+            )
+            .toList() ??
+        <Referee>[],
   );
 }

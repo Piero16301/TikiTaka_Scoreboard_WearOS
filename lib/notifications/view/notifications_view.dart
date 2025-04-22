@@ -65,7 +65,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.errorLeagues,
+                        l10n.errorNotifications,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -89,7 +89,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.emptyLeagues,
+                        l10n.emptyNotifications,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
