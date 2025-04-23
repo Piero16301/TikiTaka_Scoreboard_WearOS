@@ -4,22 +4,22 @@ class TeamsState extends Equatable {
   const TeamsState({
     this.leagueId = 0,
     this.teamsCollection,
-    this.enabledTeams = const <String, bool>{},
+    this.notDevicesCollection,
   });
 
   final int leagueId;
   final CollectionReference<Map<String, dynamic>>? teamsCollection;
-  final Map<String, bool> enabledTeams;
+  final CollectionReference<Map<String, dynamic>>? notDevicesCollection;
 
   TeamsState copyWith({
     int? leagueId,
     CollectionReference<Map<String, dynamic>>? teamsCollection,
-    Map<String, bool>? enabledTeams,
+    CollectionReference<Map<String, dynamic>>? notDevicesCollection,
   }) {
     return TeamsState(
       leagueId: leagueId ?? this.leagueId,
       teamsCollection: teamsCollection ?? this.teamsCollection,
-      enabledTeams: enabledTeams ?? this.enabledTeams,
+      notDevicesCollection: notDevicesCollection ?? this.notDevicesCollection,
     );
   }
 
@@ -27,6 +27,6 @@ class TeamsState extends Equatable {
   List<Object?> get props => [
         leagueId,
         teamsCollection,
-        enabledTeams,
+        notDevicesCollection,
       ];
 }

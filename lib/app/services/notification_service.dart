@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tiki_taka/app/app.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -14,6 +17,7 @@ class NotificationService {
   static final NotificationService instance = NotificationService._();
 
   final _messaging = FirebaseMessaging.instance;
+  String _token = '';
   final _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
 
@@ -29,7 +33,33 @@ class NotificationService {
 
     // Get FCM token
     final token = await _messaging.getToken();
-    debugPrint('FCM Token: $token');
+    if (token != null) {
+      _token = token;
+    } else {
+      return;
+    }
+
+    // Get device information
+    final deviceInfo = DeviceInfoPlugin();
+    final androidInfo = await deviceInfo.androidInfo;
+
+    // Setup Flutter local notifications
+    await FirebaseFirestore.instance
+        .collection(notDevicesCollection)
+        .doc(token)
+        .set(
+      {
+        'token': token,
+        'openedAt': FieldValue.serverTimestamp(),
+        'osVersion': androidInfo.version.release,
+        'device': androidInfo.model,
+      },
+      SetOptions(merge: true),
+    );
+  }
+
+  String getToken() {
+    return _token;
   }
 
   Future<void> _requestPermission() async {
@@ -63,7 +93,7 @@ class NotificationService {
         ?.createNotificationChannel(channel);
 
     const initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_logo');
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -97,7 +127,7 @@ class NotificationService {
             importance: Importance.high,
             priority: Priority.high,
             playSound: false,
-            icon: '@mipmap/ic_launcher',
+            icon: '@mipmap/ic_logo',
           ),
         ),
         payload: message.data.toString(),

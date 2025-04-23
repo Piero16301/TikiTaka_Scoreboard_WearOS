@@ -132,8 +132,37 @@ class _TeamsViewState extends State<TeamsView> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      ...teams.map(
-                        (team) => TeamCardTeams(team: team),
+                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: context.read<TeamsCubit>().getNotDevices(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const SizedBox.shrink();
+                          }
+
+                          if (snapshot.hasError) {
+                            return const SizedBox.shrink();
+                          }
+
+                          if (snapshot.data!.docs.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final enabledTeams =
+                              snapshot.data!.docs.first.data()['enabledTeams']
+                                      as Map<String, dynamic>? ??
+                                  {};
+
+                          return Column(
+                            children: teams
+                                .map(
+                                  (team) => TeamCardTeams(
+                                    enabledTeams: enabledTeams,
+                                    team: team,
+                                  ),
+                                )
+                                .toList(),
+                          );
+                        },
                       ),
                       const BackButtonCompetitions(),
                       const SizedBox(height: 50),
@@ -151,10 +180,12 @@ class _TeamsViewState extends State<TeamsView> {
 
 class TeamCardTeams extends StatelessWidget {
   const TeamCardTeams({
+    required this.enabledTeams,
     required this.team,
     super.key,
   });
 
+  final Map<String, dynamic> enabledTeams;
   final Team team;
 
   @override
@@ -170,7 +201,7 @@ class TeamCardTeams extends StatelessWidget {
               BlocBuilder<TeamsCubit, TeamsState>(
                 builder: (context, state) {
                   final enabled =
-                      state.enabledTeams[team.id.toString()] ?? false;
+                      enabledTeams[team.id.toString()] as bool? ?? false;
                   return SizedBox(
                     width: 40,
                     child: FittedBox(

@@ -13,11 +13,13 @@ class TeamsCubit extends Cubit<TeamsState> {
 
   void initCollections(int leagueId) {
     final teams = FirebaseFirestore.instance.collection(teamsCollection);
+    final notDevices =
+        FirebaseFirestore.instance.collection(notDevicesCollection);
     emit(
       state.copyWith(
         leagueId: leagueId,
         teamsCollection: teams,
-        enabledTeams: {},
+        notDevicesCollection: notDevices,
       ),
     );
   }
@@ -30,24 +32,41 @@ class TeamsCubit extends Cubit<TeamsState> {
     return snapshots;
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getNotDevices() {
+    final snapshots = state.notDevicesCollection
+        ?.where('token', isEqualTo: NotificationService.instance.getToken())
+        .snapshots();
+    return snapshots;
+  }
+
   Future<void> toggleTeam({
     required String team,
     required bool enabled,
   }) async {
-    try {
-      emit(
-        state.copyWith(
-          enabledTeams: Map<String, bool>.from(state.enabledTeams)
-            ..[team] = enabled,
-        ),
-      );
-    } catch (_) {
-      emit(
-        state.copyWith(
-          enabledTeams: Map<String, bool>.from(state.enabledTeams)
-            ..[team] = !enabled,
-        ),
-      );
-    }
+    // Get FCM token
+    final token = NotificationService.instance.getToken();
+
+    await state.notDevicesCollection?.doc(token).get().then((doc) {
+      if (doc.exists) {
+        // Get current enabled teams
+        final currentEnabledTeams =
+            doc.data()?['enabledTeams'] as Map<String, dynamic>? ?? {};
+
+        // Update the enabled teams
+        currentEnabledTeams[team] = enabled;
+
+        // Update the document with the new enabled teams
+        state.notDevicesCollection?.doc(token).update({
+          'enabledTeams': currentEnabledTeams,
+        });
+      } else {
+        // Create new document
+        state.notDevicesCollection?.doc(token).set({
+          'enabledTeams': {
+            team: enabled,
+          },
+        });
+      }
+    });
   }
 }

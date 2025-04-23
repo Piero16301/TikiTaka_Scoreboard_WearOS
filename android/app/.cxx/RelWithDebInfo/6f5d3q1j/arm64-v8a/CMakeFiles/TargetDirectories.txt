@@ -1,0 +1,2 @@
+/Users/piero.morales/Documents/StudioProjects/TikiTaka_Scoreboard_WearOS/android/app/.cxx/RelWithDebInfo/6f5d3q1j/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/piero.morales/Documents/StudioProjects/TikiTaka_Scoreboard_WearOS/android/app/.cxx/RelWithDebInfo/6f5d3q1j/arm64-v8a/CMakeFiles/rebuild_cache.dir

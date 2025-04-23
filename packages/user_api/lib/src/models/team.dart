@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:user_api/src/models/models.dart';
 
@@ -25,7 +24,6 @@ class Team extends Equatable {
     required this.coach,
     required this.squad,
     required this.staff,
-    required this.lastUpdated,
   });
 
   /// Crea una instancia de [Team] a partir de un [Map] json
@@ -48,7 +46,6 @@ class Team extends Equatable {
     coach: Staff.empty,
     squad: <Staff>[],
     staff: <Staff>[],
-    lastUpdated: null,
   );
 
   /// Id del equipo
@@ -95,9 +92,6 @@ class Team extends Equatable {
 
   /// Staff del equipo
   final List<Staff> staff;
-
-  /// Fecha de la última actualización del equipo
-  final DateTime? lastUpdated;
 
   @override
   List<Object> get props => [

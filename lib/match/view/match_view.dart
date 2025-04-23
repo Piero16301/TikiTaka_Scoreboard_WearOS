@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
@@ -558,76 +558,85 @@ class StandingsMatch extends StatelessWidget {
             )
             .toList();
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              child: Column(
-                children: [
-                  Text(
-                    l10n.standingsMatch.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Column(
-                    spacing: 5,
-                    children: [
-                      Row(
-                        children: [
-                          const Expanded(child: SizedBox.shrink()),
-                          SizedBox(
-                            width: 21,
-                            child: Center(
-                              child: Text(
-                                l10n.playedGamesAbbr,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          SizedBox(
-                            width: 21,
-                            child: Center(
-                              child: Text(
-                                l10n.goalDifferenceAbbr,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          SizedBox(
-                            width: 21,
-                            child: Center(
-                              child: Text(
-                                l10n.pointsAbbr,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+        if (standings.length == 1) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child: Column(
+                  children: [
+                    Text(
+                      l10n.standingsMatch.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
-                      ...standings[0].table.map(
-                            (standing) => Row(
+                    ),
+                    const SizedBox(height: 5),
+                    Column(
+                      spacing: 5,
+                      children: [
+                        Row(
+                          children: [
+                            const Expanded(child: SizedBox.shrink()),
+                            SizedBox(
+                              width: 21,
+                              child: Center(
+                                child: Text(
+                                  l10n.playedGamesAbbr,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 21,
+                              child: Center(
+                                child: Text(
+                                  l10n.goalDifferenceAbbr,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: 21,
+                              child: Center(
+                                child: Text(
+                                  l10n.pointsAbbr,
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        ...standings.first.table.map(
+                          (row) => Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 2.5,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: getRowStandingColor(row, match),
+                            ),
+                            child: Row(
                               spacing: 5,
                               children: [
                                 SizedBox(
                                   width: 20,
                                   child: Center(
                                     child: Text(
-                                      standing.position.toString(),
+                                      row.position.toString(),
                                       style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -636,12 +645,12 @@ class StandingsMatch extends StatelessWidget {
                                   ),
                                 ),
                                 CrestImage(
-                                  crest: standing.team.crest,
+                                  crest: row.team.crest,
                                   dimension: 25,
                                 ),
                                 Expanded(
                                   child: Text(
-                                    standing.team.tla,
+                                    row.team.tla,
                                     style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -649,26 +658,165 @@ class StandingsMatch extends StatelessWidget {
                                   ),
                                 ),
                                 PointTextMatch(
-                                  value: standing.playedGames,
+                                  value: row.playedGames,
                                 ),
                                 PointTextMatch(
-                                  value: standing.goalDifference,
+                                  value: row.goalDifference,
                                 ),
                                 PointTextMatch(
-                                  value: standing.points,
+                                  value: row.points,
                                 ),
                               ],
                             ),
                           ),
-                    ],
-                  ),
-                ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
+          );
+        } else {
+          return Column(
+            children: standings
+                .map(
+                  (standing) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              standing.group.toUpperCase(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Column(
+                              spacing: 5,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Expanded(child: SizedBox.shrink()),
+                                    SizedBox(
+                                      width: 21,
+                                      child: Center(
+                                        child: Text(
+                                          l10n.playedGamesAbbr,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    SizedBox(
+                                      width: 21,
+                                      child: Center(
+                                        child: Text(
+                                          l10n.goalDifferenceAbbr,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 5),
+                                    SizedBox(
+                                      width: 21,
+                                      child: Center(
+                                        child: Text(
+                                          l10n.pointsAbbr,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                ...standing.table.map(
+                                  (row) => Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 2.5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: getRowStandingColor(row, match),
+                                    ),
+                                    child: Row(
+                                      spacing: 5,
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                          child: Center(
+                                            child: Text(
+                                              row.position.toString(),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        CrestImage(
+                                          crest: row.team.crest,
+                                          dimension: 25,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            row.team.tla,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        PointTextMatch(
+                                          value: row.playedGames,
+                                        ),
+                                        PointTextMatch(
+                                          value: row.goalDifference,
+                                        ),
+                                        PointTextMatch(
+                                          value: row.points,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          );
+        }
       },
     );
+  }
+
+  Color? getRowStandingColor(Table row, Match match) {
+    if (row.team.id == match.homeTeam.id) {
+      return Colors.blue.withValues(alpha: 0.2);
+    } else if (row.team.id == match.awayTeam.id) {
+      return Colors.red.withValues(alpha: 0.2);
+    }
+    return null;
   }
 }
 

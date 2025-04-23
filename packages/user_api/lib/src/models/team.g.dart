@@ -36,8 +36,5 @@ Team _$TeamFromJson(Map<String, dynamic> json) {
             ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
             .toList() ??
         <Staff>[],
-    lastUpdated: (json['lastUpdated'] as Timestamp? ?? Timestamp.now())
-        .toDate()
-        .toLocal(),
   );
 }
