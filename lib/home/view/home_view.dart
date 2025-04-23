@@ -69,12 +69,9 @@ class _HomeViewState extends State<HomeView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            l10n.errorMatches,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: ScrollText(text: l10n.errorMatches),
                           ),
                         ],
                       ),
@@ -93,12 +90,9 @@ class _HomeViewState extends State<HomeView> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            l10n.emptyMatches,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: ScrollText(text: l10n.emptyMatches),
                           ),
                           const SettingsHome(),
                         ],
