@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka/match/match.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -31,6 +32,9 @@ class NotificationService {
     // Setup message handlers
     await _setupMessageHandlers();
 
+    // Setup Flutter local notifications
+    await setupFlutterNotifications();
+
     // Get FCM token
     final token = await _messaging.getToken();
     if (token != null) {
@@ -56,6 +60,9 @@ class NotificationService {
       },
       SetOptions(merge: true),
     );
+
+    // Subscribe to AllDevices topic
+    await subscribeToTopic(allDevicesTopic);
   }
 
   String getToken() {
@@ -101,10 +108,8 @@ class NotificationService {
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) async {
-        debugPrint('Notification tapped!');
-        // Handle notification tap
-      },
+      onDidReceiveNotificationResponse: (details) =>
+          _handleBackgroundMessage(details.payload ?? ''),
     );
 
     _isFlutterLocalNotificationsInitialized = true;
@@ -130,7 +135,7 @@ class NotificationService {
             icon: '@mipmap/ic_logo',
           ),
         ),
-        payload: message.data.toString(),
+        payload: message.data['type'].toString(),
       );
     }
   }
@@ -140,17 +145,34 @@ class NotificationService {
     FirebaseMessaging.onMessage.listen(showNotification);
 
     // Background message handler
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleBackgroundMessage);
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      _handleBackgroundMessage(message.data['type'] as String? ?? '');
+    });
 
     // Opened app
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleBackgroundMessage(initialMessage);
+      _handleBackgroundMessage(initialMessage.data['type'] as String? ?? '');
     }
   }
 
-  void _handleBackgroundMessage(RemoteMessage message) {
-    debugPrint('Handling a background message: ${message.messageId}');
-    // Handle background message
+  void _handleBackgroundMessage(String message) {
+    debugPrint('Handling a background message: $message');
+    if (message.contains('matchId')) {
+      final matchId = int.parse(
+        message.split('matchId:')[1],
+      );
+      navigatorKey.currentState
+          ?.pushNamed(
+            MatchPage.routeName,
+            arguments: matchId,
+          )
+          .ignore();
+    }
+  }
+
+  Future<void> subscribeToTopic(String topic) async {
+    await _messaging.subscribeToTopic(topic);
+    debugPrint('Subscribed to topic: $topic');
   }
 }
