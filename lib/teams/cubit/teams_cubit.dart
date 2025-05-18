@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:tiki_taka/app/app.dart';
+import 'package:user_api/user_api.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'teams_state.dart';
@@ -40,11 +41,22 @@ class TeamsCubit extends Cubit<TeamsState> {
   }
 
   Future<void> toggleTeam({
-    required String team,
+    required Team team,
     required bool enabled,
   }) async {
     // Get FCM token
     final token = NotificationService.instance.getToken();
+
+    // Add or remove to team topic
+    if (enabled) {
+      await NotificationService.instance.subscribeToTopic(
+        'team/${team.id}',
+      );
+    } else {
+      await NotificationService.instance.unsubscribeFromTopic(
+        'team/${team.id}',
+      );
+    }
 
     await state.notDevicesCollection?.doc(token).get().then((doc) {
       if (doc.exists) {
@@ -53,7 +65,7 @@ class TeamsCubit extends Cubit<TeamsState> {
             doc.data()?['enabledTeams'] as Map<String, dynamic>? ?? {};
 
         // Update the enabled teams
-        currentEnabledTeams[team] = enabled;
+        currentEnabledTeams[team.id.toString()] = enabled;
 
         // Update the document with the new enabled teams
         state.notDevicesCollection?.doc(token).update({

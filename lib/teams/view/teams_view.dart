@@ -211,7 +211,7 @@ class TeamCardTeams extends StatelessWidget {
                         value: enabled,
                         onChanged: (value) {
                           context.read<TeamsCubit>().toggleTeam(
-                                team: team.id.toString(),
+                                team: team,
                                 enabled: value,
                               );
                         },

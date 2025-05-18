@@ -114,3 +114,9 @@ app.*.map.json
 # Demo
 demo/node_modules/
 demo/service-account.json
+
+# Deploy files
+android/service-account.json
+android/keyPropsBase64
+android/keystoreBase64
+android/serviceAccountBase64

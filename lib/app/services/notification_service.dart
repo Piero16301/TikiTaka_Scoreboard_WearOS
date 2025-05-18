@@ -175,4 +175,9 @@ class NotificationService {
     await _messaging.subscribeToTopic(topic);
     debugPrint('Subscribed to topic: $topic');
   }
+
+  Future<void> unsubscribeFromTopic(String topic) async {
+    await _messaging.unsubscribeFromTopic(topic);
+    debugPrint('Unsubscribed from topic: $topic');
+  }
 }

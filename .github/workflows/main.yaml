@@ -1,7 +1,7 @@
 name: tiki_taka
 
 concurrency:
-  group: $-$
+  group: main-$-$
   cancel-in-progress: true
 
 on:
@@ -11,17 +11,95 @@ on:
 
 jobs:
   semantic-pull-request:
+    name: "📝 Semantic"
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
-
-  build:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
-    with:
-      flutter_channel: stable
-      min_coverage: 5
+    permissions:
+      contents: read
 
   spell-check:
+    name: "🔍 Spell Check"
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
     with:
       includes: |
         **/*.md
       modified_files_only: false
+
+  tests:
+    name: "🧪 Run Tests"
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      flutter_channel: stable
+      min_coverage: 5
+
+  build:
+    name: "🔨 Build Application"
+    needs: [semantic-pull-request, spell-check, tests]
+    runs-on: ubuntu-latest
+    env:
+      FLUTTER_VERSION: 3.29.3
+      APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
+      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
+      KEYSTORE_PATH: android/keystore.jks
+      KEY_PROPS_PATH: android/key.properties
+      SERVICE_ACCOUNT_PATH: service-account.json
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: 🔑 Decode Android Keystore
+        run: echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > ${{ env.KEYSTORE_PATH }}
+      - name: 🔑 Decode Android Key Properties
+        run: echo "${{ secrets.ANDROID_KEY_PROPERTIES }}" | base64 --decode > ${{ env.KEY_PROPS_PATH }}
+      - name: 🔑 Decode Service Account
+        run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          flutter pub global activate very_good_cli
+          very_good packages get --recursive
+
+      - name: 🛠️ Build the application (AAB)
+        run: |
+          flutter build appbundle --flavor production -t lib/main.dart
+
+      - name: ⬇️ Upload AAB to Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: aab-stores
+          path: ${{ env.AAB_PATH }}
+
+  deploy:
+    name: "🚀 Deploy to Play Store"
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
+      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
+      SERVICE_ACCOUNT_PATH: service-account.json
+    steps:
+      - name: 📚 Checkout repo
+        uses: actions/checkout@v4
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: aab-stores
+          path: ./downloaded
+      - name: 📁 Crear estructura de directorios
+        run: |
+          mkdir -p build/app/outputs/bundle/productionRelease/
+          cp ./downloaded/* build/app/outputs/bundle/productionRelease/
+          ls -la build/app/outputs/bundle/productionRelease/
+      - name: 🔑 Decode Service Account
+        run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}          
+      - name: 🚀 Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
+          packageName: ${{ env.APP_PACKAGE_NAME }}
+          releaseFiles: ${{ env.AAB_PATH }}
+          track: production
