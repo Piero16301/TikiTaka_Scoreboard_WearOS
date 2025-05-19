@@ -103,4 +103,4 @@ jobs:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
           packageName: ${{ env.APP_PACKAGE_NAME }}
           releaseFiles: ${{ env.AAB_PATH }}
-          track: production
+          track: wear:production
