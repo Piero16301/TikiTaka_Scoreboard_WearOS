@@ -26,6 +26,7 @@ jobs:
 
   tests:
     name: "🧪 Run Tests"
+    needs: [semantic-pull-request, spell-check]
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_channel: stable
@@ -33,7 +34,7 @@ jobs:
 
   build:
     name: "🔨 Build Application"
-    needs: [semantic-pull-request, spell-check, tests]
+    needs: tests
     runs-on: ubuntu-latest
     env:
       FLUTTER_VERSION: 3.29.3
