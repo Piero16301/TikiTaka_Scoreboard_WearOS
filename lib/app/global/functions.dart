@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:tiki_taka/app/global/global.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import 'package:vector_graphics_compiler/vector_graphics_compiler.dart';
@@ -31,6 +32,40 @@ String getMatchState(String status, DateTime date, AppLocalizations l10n) {
     default:
       return l10n.unknownMatch.toUpperCase();
   }
+}
+
+String notMatchState(String status, AppLocalizations l10n) {
+  switch (status) {
+    case 'IN_PLAY':
+      return l10n.inPlayMatch.toUpperCase();
+    case 'PAUSED':
+      return l10n.pausedMatch.toUpperCase();
+    case 'FINISHED':
+      return l10n.finishedMatch.toUpperCase();
+    case 'POSTPONED':
+      return l10n.postponedMatch.toUpperCase();
+    case 'SUSPENDED':
+      return l10n.suspendMatch.toUpperCase();
+    case 'CANCELED':
+      return l10n.cancelledMatch.toUpperCase();
+    case 'AWARDED':
+      return l10n.awardedMatch.toUpperCase();
+    default:
+      return l10n.unknownMatch.toUpperCase();
+  }
+}
+
+String getTeamColors(String colors) {
+  final list = colors.split(' / ');
+  final colorIcons = <String>[];
+  for (final color in list) {
+    colorIcons.add(colorMap[color] ?? defaultColorIcon);
+  }
+  return colorIcons.join();
+}
+
+String getTeamScore(int score) {
+  return scoreMap[score] ?? defaultScoreIcon;
 }
 
 class NetworkSvgLoader extends BytesLoader {

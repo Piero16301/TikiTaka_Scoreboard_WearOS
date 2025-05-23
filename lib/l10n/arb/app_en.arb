@@ -110,5 +110,22 @@
     "@emptyTeams": {},
 
     "backText": "Back",
-    "@backText": {}
+    "@backText": {},
+
+    "notificationTitle": "Goal for {team}! ⚽",
+    "@notificationTitle": {
+        "placeholders": {
+            "team": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationStatus": "Match has {status}! 🥅",
+    "@notificationStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    }
 }

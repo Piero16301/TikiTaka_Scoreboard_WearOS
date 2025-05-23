@@ -110,5 +110,22 @@
     "@emptyTeams": {},
 
     "backText": "Indietro",
-    "@backText": {}
+    "@backText": {},
+
+    "notificationTitle": "Goal per {team}! ⚽",
+    "@notificationTitle": {
+        "placeholders": {
+            "team": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationStatus": "La partita è {status}! 🥅",
+    "@notificationStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    }
 }

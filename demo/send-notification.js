@@ -18,6 +18,37 @@ async function sendNotification() {
         const token = await getAccessToken();
         const url = 'https://fcm.googleapis.com/v1/projects/tiki-taka-scoreboard/messages:send';
         
+        const goalHomePayload = {
+            message: {
+            topic: "team-81",
+            notification: {
+                title: "GOAL_HOME",
+                body: JSON.stringify({
+                    homeTeam: {
+                        colors: "Red / Navy Blue / Orange",
+                        name: "Barça",
+                        score: "4",
+                    },
+                    awayTeam: {
+                        colors: "White / Purple",
+                        name: "Real Madrid",
+                        score: "2",
+                    },
+                    "status": "IN_PLAY",
+                }),
+            },
+            data: {
+                type: "matchId:498957"
+            },
+            android: {
+                priority: "high",
+                notification: {
+                channel_id: "high_importance_channel"
+                }
+            },
+            }
+        };
+        
         const messagePayload = {
             message: {
                 topic: "all-devices",
@@ -42,7 +73,7 @@ async function sendNotification() {
             'Content-Type': 'application/json'
         };
         
-        const response = await axios.post(url, messagePayload, { headers });
+        const response = await axios.post(url, goalHomePayload, { headers });
         console.log('Notification sent successfully:', response.data);
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);

@@ -50,11 +50,11 @@ class TeamsCubit extends Cubit<TeamsState> {
     // Add or remove to team topic
     if (enabled) {
       await NotificationService.instance.subscribeToTopic(
-        'team/${team.id}',
+        'team-${team.id}',
       );
     } else {
       await NotificationService.instance.unsubscribeFromTopic(
-        'team/${team.id}',
+        'team-${team.id}',
       );
     }
 

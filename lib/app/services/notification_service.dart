@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/match/match.dart';
 
 @pragma('vm:entry-point')
@@ -63,6 +66,9 @@ class NotificationService {
 
     // Subscribe to AllDevices topic
     await subscribeToTopic(allDevicesTopic);
+
+    // Subscribe to WearOS topic
+    await subscribeToTopic(wearOSTopic);
   }
 
   String getToken() {
@@ -119,10 +125,23 @@ class NotificationService {
     final notification = message.notification;
     final android = message.notification?.android;
     if (notification != null && android != null) {
+      final notificationBody = NotificationBody.fromJson(
+        json.decode(notification.body ?? '{}') as Map<String, dynamic>,
+      );
+      final l10n = AppLocalizations.of(navigatorKey.currentContext!);
+
       await _localNotifications.show(
         notification.hashCode,
-        notification.title,
-        notification.body,
+        buildNotificationTitle(
+          l10n: l10n,
+          title: notification.title ?? '',
+          body: notificationBody,
+        ),
+        buildNotificationBody(
+          l10n: l10n,
+          title: notification.title ?? '',
+          body: notificationBody,
+        ),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel',
@@ -179,5 +198,54 @@ class NotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
     debugPrint('Unsubscribed from topic: $topic');
+  }
+
+  String buildNotificationTitle({
+    required AppLocalizations l10n,
+    required String title,
+    required NotificationBody body,
+  }) {
+    switch (title) {
+      case notificationTypeGoalHome:
+        return l10n.notificationTitle(body.homeTeam.name);
+      case notificationTypeGoalAway:
+        return l10n.notificationTitle(body.awayTeam.name);
+      case notificationTypeMatchStatus:
+        return l10n.notificationStatus(notMatchState(body.status, l10n));
+      default:
+        return title;
+    }
+  }
+
+  String buildNotificationBody({
+    required AppLocalizations l10n,
+    required String title,
+    required NotificationBody body,
+  }) {
+    switch (title) {
+      case notificationTypeGoalHome:
+        return '${getTeamColors(body.homeTeam.colors)} '
+            '${body.homeTeam.shortName} '
+            '${getTeamScore(body.homeTeam.score)} - '
+            '${getTeamScore(body.awayTeam.score)} '
+            '${body.awayTeam.shortName} '
+            '${getTeamColors(body.awayTeam.colors)}';
+      case notificationTypeGoalAway:
+        return '${getTeamColors(body.awayTeam.colors)} '
+            '${body.awayTeam.shortName} '
+            '${getTeamScore(body.awayTeam.score)} - '
+            '${getTeamScore(body.homeTeam.score)} '
+            '${body.homeTeam.shortName} '
+            '${getTeamColors(body.homeTeam.colors)}';
+      case notificationTypeMatchStatus:
+        return '${getTeamColors(body.homeTeam.colors)} '
+            '${body.homeTeam.shortName} '
+            '${getTeamScore(body.homeTeam.score)} - '
+            '${getTeamScore(body.awayTeam.score)} '
+            '${body.awayTeam.shortName} '
+            '${getTeamColors(body.awayTeam.colors)}';
+      default:
+        return title;
+    }
   }
 }

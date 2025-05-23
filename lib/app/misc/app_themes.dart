@@ -7,6 +7,7 @@ ThemeData appDarkTheme({required bool isAmbientModeActive}) {
     useMaterial3: true,
     visualDensity: VisualDensity.compact,
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.black,
     cardTheme: CardTheme(
       color: const Color.fromRGBO(50, 49, 47, 1),
       elevation: 0,
@@ -46,6 +47,7 @@ ThemeData appLightTheme({required bool isAmbientModeActive}) {
     useMaterial3: true,
     visualDensity: VisualDensity.compact,
     brightness: Brightness.light,
+    scaffoldBackgroundColor: Colors.white,
     cardTheme: CardTheme(
       color: const Color.fromARGB(255, 207, 207, 207),
       elevation: 0,

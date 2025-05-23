@@ -110,5 +110,22 @@
     "@emptyTeams": {},
 
     "backText": "Volver",
-    "@backText": {}
+    "@backText": {},
+
+    "notificationTitle": "¡Gol para {team}! ⚽",
+    "@notificationTitle": {
+        "placeholders": {
+            "team": {
+                "type": "String"
+            }
+        }
+    },
+    "notificationStatus": "¡El partido ha {status}! 🥅",
+    "@notificationStatus": {
+        "placeholders": {
+            "status": {
+                "type": "String"
+            }
+        }
+    }
 }
