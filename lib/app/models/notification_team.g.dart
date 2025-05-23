@@ -11,7 +11,7 @@ NotificationTeam _$NotificationTeamFromJson(Map<String, dynamic> json) =>
       colors: json['colors'] as String? ?? '',
       name: json['name'] as String? ?? '',
       shortName: json['shortName'] as String? ?? '',
-      score: json['score'] as int? ?? 0,
+      score: int.parse(json['score'] as String? ?? ''),
     );
 
 Map<String, dynamic> _$NotificationTeamToJson(NotificationTeam instance) =>

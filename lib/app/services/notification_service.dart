@@ -122,6 +122,7 @@ class NotificationService {
   }
 
   Future<void> showNotification(RemoteMessage message) async {
+    debugPrint('Mostrando notificación: ${message.notification?.title}');
     final notification = message.notification;
     final android = message.notification?.android;
     if (notification != null && android != null) {
