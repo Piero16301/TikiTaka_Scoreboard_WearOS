@@ -6,17 +6,27 @@ const double scrollMagnitude = 10;
 const Duration scrollDuration = Duration(milliseconds: 600);
 const double scrollWidth = 5;
 const double titleSize = 18;
-const String defaultColorIcon = '⚪';
+const String defaultColorIcon = '⚫';
 const colorMap = <String, String>{
   'Black': '⚫',
   'Blue': '🔵',
-  'White': '⚪',
+  'Brown': '🟤',
+  'Claret': '🔴',
+  'Cyan': '🔵',
+  'Dark Blue': '🔵',
   'Gold': '🟡',
-  'Red': '🔴',
   'Green': '🟢',
-  'Yellow': '🟡',
-  'Orange': '🟠',
+  'Light Blue': '🔵',
   'Maroon': '🟤',
+  'Navy Blue': '🔵',
+  'Orange': '🟠',
+  'Purple': '🟣',
+  'Red': '🔴',
+  'Royal Blue': '🔵',
+  'Sky Blue': '🔵',
+  'Violet': '🟣',
+  'White': '⚪',
+  'Yellow': '🟡',
 };
 const String defaultScoreIcon = '0️⃣';
 const scoreMap = <int, String>{

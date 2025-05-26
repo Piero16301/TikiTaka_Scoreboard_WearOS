@@ -67,8 +67,12 @@ class NotificationService {
     // Subscribe to AllDevices topic
     await subscribeToTopic(allDevicesTopic);
 
-    // Subscribe to WearOS topic
-    await subscribeToTopic(wearOSTopic);
+    // Subscribe to WearOS topic if not emulator
+    if (androidInfo.isPhysicalDevice) {
+      await subscribeToTopic(wearOSTopic);
+    } else {
+      debugPrint('Emulator detected, not subscribing to WearOS topic');
+    }
   }
 
   String getToken() {
@@ -129,7 +133,8 @@ class NotificationService {
       final notificationBody = NotificationBody.fromJson(
         json.decode(notification.body ?? '{}') as Map<String, dynamic>,
       );
-      final l10n = AppLocalizations.of(navigatorKey.currentContext!);
+
+      final l10n = await LocalizationService.getLocalizations();
 
       await _localNotifications.show(
         notification.hashCode,

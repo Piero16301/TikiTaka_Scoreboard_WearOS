@@ -61,6 +61,17 @@ String getTeamColors(String colors) {
   for (final color in list) {
     colorIcons.add(colorMap[color] ?? defaultColorIcon);
   }
+
+  if (colorIcons.isEmpty) {
+    colorIcons
+      ..add(defaultColorIcon)
+      ..add(defaultColorIcon);
+  } else if (colorIcons.length == 1) {
+    colorIcons.add(colorIcons.first);
+  } else if (colorIcons.length > 2) {
+    colorIcons.removeRange(2, colorIcons.length);
+  }
+
   return colorIcons.join();
 }
 
