@@ -48,6 +48,7 @@ dev_dependencies:
     sdk: flutter
   mockito: ^5.4.6
   mocktail: ^1.0.4
+  test_coverage_badge: ^0.3.2
   very_good_analysis: ^8.0.0
 
 flutter_launcher_icons:
