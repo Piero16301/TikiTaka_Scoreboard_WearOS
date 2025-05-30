@@ -1,13 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'notification_body.dart';
+part of 'notification_payload.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-NotificationBody _$NotificationBodyFromJson(Map<String, dynamic> json) =>
-    NotificationBody(
+NotificationPayload _$NotificationPayloadFromJson(Map<String, dynamic> json) =>
+    NotificationPayload(
+      type: json['type'] as String? ?? '',
+      deepLink: json['deepLink'] as String? ?? '',
       homeTeam: NotificationTeam.fromJson(
         json['homeTeam'] as Map<String, dynamic>? ?? {},
       ),
@@ -17,8 +19,12 @@ NotificationBody _$NotificationBodyFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String? ?? '',
     );
 
-Map<String, dynamic> _$NotificationBodyToJson(NotificationBody instance) =>
+Map<String, dynamic> _$NotificationPayloadToJson(
+  NotificationPayload instance,
+) =>
     <String, dynamic>{
+      'type': instance.type,
+      'deepLink': instance.deepLink,
       'homeTeam': instance.homeTeam.toJson(),
       'awayTeam': instance.awayTeam.toJson(),
       'status': instance.status,

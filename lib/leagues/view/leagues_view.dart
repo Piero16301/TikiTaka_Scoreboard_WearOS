@@ -35,7 +35,7 @@ class _LeaguesViewState extends State<LeaguesView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: context.read<LeaguesCubit>().getLeagues(),
@@ -206,7 +206,7 @@ class BackButtonCompetitions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

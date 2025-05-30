@@ -37,7 +37,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
@@ -196,7 +196,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder(
       stream: context.read<HomeCubit>().getMatchConfigs(),
@@ -236,7 +236,8 @@ class MatchCardHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final state = getMatchState(match.status, match.utcDate!, context.l10n);
+    final l10n = AppLocalizations.of(context);
+    final state = getMatchState(match.status, match.utcDate!, l10n);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -373,7 +374,7 @@ class SettingsHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

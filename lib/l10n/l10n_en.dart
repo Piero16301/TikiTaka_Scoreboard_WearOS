@@ -1,0 +1,173 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'l10n.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for English (`en`).
+class AppLocalizationsEn extends AppLocalizations {
+  AppLocalizationsEn([String locale = 'en']) : super(locale);
+
+  @override
+  String get titleMatches => 'Matches';
+
+  @override
+  String updatedMatches(num seconds) {
+    String _temp0 = intl.Intl.pluralLogic(
+      seconds,
+      locale: localeName,
+      other: 'Updated $seconds seconds ago',
+      one: 'Updated $seconds second ago',
+      zero: 'Updated now',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get emptyMatches => 'No matches for today';
+
+  @override
+  String get errorMatches => 'Error loading matches';
+
+  @override
+  String get retryMatches => 'Retry';
+
+  @override
+  String get inPlayMatch => 'In Play';
+
+  @override
+  String get pausedMatch => 'Paused';
+
+  @override
+  String get finishedMatch => 'Finished';
+
+  @override
+  String get postponedMatch => 'Postponed';
+
+  @override
+  String get suspendMatch => 'Suspended';
+
+  @override
+  String get cancelledMatch => 'Cancelled';
+
+  @override
+  String get awardedMatch => 'Awarded';
+
+  @override
+  String get unknownMatch => 'Unknown';
+
+  @override
+  String get titleMatch => 'Match';
+
+  @override
+  String get updatedAtMatch => 'Updated at';
+
+  @override
+  String get halfTimeAbbr => 'HT';
+
+  @override
+  String get fullTimeAbbr => 'FT';
+
+  @override
+  String get refereeMatch => 'Referee';
+
+  @override
+  String get refereeNationalityMatch => 'Nationality';
+
+  @override
+  String get competitionMatch => 'Competition';
+
+  @override
+  String get seasonMatch => 'Season';
+
+  @override
+  String get matchdayMatch => 'Matchday';
+
+  @override
+  String get standingsMatch => 'Standings';
+
+  @override
+  String get playedGamesAbbr => 'PL';
+
+  @override
+  String get goalDifferenceAbbr => 'GD';
+
+  @override
+  String get pointsAbbr => 'PT';
+
+  @override
+  String get titleSettings => 'Settings';
+
+  @override
+  String get titleLeagues => 'Leagues';
+
+  @override
+  String get emptyLeagues => 'No leagues available';
+
+  @override
+  String get errorLeagues => 'Error loading leagues';
+
+  @override
+  String get retryLeagues => 'Retry';
+
+  @override
+  String get titleLanguage => 'Language';
+
+  @override
+  String get englishFlag => 'us';
+
+  @override
+  String get spanishFlag => 'es';
+
+  @override
+  String get italianFlag => 'it';
+
+  @override
+  String get englishLanguage => 'English';
+
+  @override
+  String get spanishLanguage => 'Spanish';
+
+  @override
+  String get italianLanguage => 'Italian';
+
+  @override
+  String get titleTheme => 'Theme';
+
+  @override
+  String get lightTheme => 'Light';
+
+  @override
+  String get darkTheme => 'Dark';
+
+  @override
+  String get titleNotifications => 'Notifications';
+
+  @override
+  String get errorNotifications => 'Error loading notifications';
+
+  @override
+  String get emptyNotifications => 'No notifications available';
+
+  @override
+  String get titleTeams => 'Teams';
+
+  @override
+  String get errorTeams => 'Error loading teams';
+
+  @override
+  String get emptyTeams => 'No teams available';
+
+  @override
+  String get backText => 'Back';
+
+  @override
+  String notificationTitle(String team) {
+    return 'Goal for $team! ⚽';
+  }
+
+  @override
+  String notificationStatus(String status) {
+    return 'Match has $status! 🥅';
+  }
+}

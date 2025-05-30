@@ -37,7 +37,7 @@ class _LanguagesViewState extends State<LanguagesView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: SizedBox.expand(
@@ -147,7 +147,7 @@ class BackButtonLanguages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

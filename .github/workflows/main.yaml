@@ -1,4 +1,8 @@
-name: tiki_taka
+name: tiki_taka_scoreboard_wearos
+description: |
+  CI workflow for Tiki Taka Scoreboard WearOS application.
+  This workflow checks the commit author, runs semantic checks, spell checks,
+  executes tests, builds the application, and deploys it to the Play Store.
 
 concurrency:
   group: main-$-$
@@ -10,6 +14,29 @@ on:
       - main
 
 jobs:
+  check-commit-author:
+    name: "🔍 Check Commit Author"
+    runs-on: ubuntu-latest
+    outputs:
+      is_bot: ${{ steps.check_author.outputs.is_bot }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check commit author
+        id: check_author
+        run: |
+          AUTHOR=$(git log -1 --pretty=format:'%an')
+          echo "Commit author: $AUTHOR"
+          if [[ "$AUTHOR" == "github-actions[bot]" ]]; then
+            echo "is_bot=true" >> $GITHUB_OUTPUT
+            echo "Commit was made by github-actions[bot], skipping jobs"
+          else
+            echo "is_bot=false" >> $GITHUB_OUTPUT
+            echo "Commit was made by a user, continuing"
+          fi
+
   semantic-pull-request:
     name: "📝 Semantic"
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
@@ -27,18 +54,40 @@ jobs:
   tests:
     name: "🧪 Run Tests"
     needs: [semantic-pull-request, spell-check]
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
-    with:
-      flutter_channel: stable
-      flutter_version: '3.29.3'
-      min_coverage: 5
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v4
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: 3.32.0
+      - name: 📦 Install Dependencies
+        run: |
+          flutter pub global activate very_good_cli
+          very_good packages get --recursive
+      - name: 🧪 Run Tests
+        run: very_good test --coverage
+      - name: 📊 Generate Coverage Badge
+        run: |
+          dart run test_coverage_badge
+      - name: 📊 Upload Coverage Report
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add coverage_badge.svg
+          git commit -m "Update coverage badge [skip ci]"
+          git push origin dev
 
   build:
     name: "🔨 Build Application"
     needs: tests
     runs-on: ubuntu-latest
     env:
-      FLUTTER_VERSION: 3.29.3
+      FLUTTER_VERSION: 3.32.0
       APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
       AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
       KEYSTORE_PATH: android/keystore.jks

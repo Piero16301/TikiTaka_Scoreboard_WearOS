@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -126,41 +124,27 @@ class NotificationService {
   }
 
   Future<void> showNotification(RemoteMessage message) async {
-    debugPrint('Mostrando notificación: ${message.notification?.title}');
     final notification = message.notification;
     final android = message.notification?.android;
     if (notification != null && android != null) {
-      final notificationBody = NotificationBody.fromJson(
-        json.decode(notification.body ?? '{}') as Map<String, dynamic>,
-      );
+      final notificationPayload = NotificationPayload.fromJson(message.data);
 
       final l10n = await LocalizationService.getLocalizations();
 
       await _localNotifications.show(
         notification.hashCode,
-        buildNotificationTitle(
-          l10n: l10n,
-          title: notification.title ?? '',
-          body: notificationBody,
-        ),
-        buildNotificationBody(
-          l10n: l10n,
-          title: notification.title ?? '',
-          body: notificationBody,
-        ),
+        buildNotificationTitle(l10n: l10n, payload: notificationPayload),
+        buildNotificationBody(l10n: l10n, payload: notificationPayload),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel',
             'High Importance Notifications',
-            channelDescription:
-                'This channel is used for important notifications.',
-            importance: Importance.high,
+            importance: Importance.max,
             priority: Priority.high,
             playSound: false,
-            icon: '@mipmap/ic_logo',
           ),
         ),
-        payload: message.data['type'].toString(),
+        payload: notificationPayload.deepLink,
       );
     }
   }
@@ -208,50 +192,48 @@ class NotificationService {
 
   String buildNotificationTitle({
     required AppLocalizations l10n,
-    required String title,
-    required NotificationBody body,
+    required NotificationPayload payload,
   }) {
-    switch (title) {
+    switch (payload.type) {
       case notificationTypeGoalHome:
-        return l10n.notificationTitle(body.homeTeam.name);
+        return l10n.notificationTitle(payload.homeTeam.name);
       case notificationTypeGoalAway:
-        return l10n.notificationTitle(body.awayTeam.name);
+        return l10n.notificationTitle(payload.awayTeam.name);
       case notificationTypeMatchStatus:
-        return l10n.notificationStatus(notMatchState(body.status, l10n));
+        return l10n.notificationStatus(notMatchState(payload.status, l10n));
       default:
-        return title;
+        return payload.type;
     }
   }
 
   String buildNotificationBody({
     required AppLocalizations l10n,
-    required String title,
-    required NotificationBody body,
+    required NotificationPayload payload,
   }) {
-    switch (title) {
+    switch (payload.type) {
       case notificationTypeGoalHome:
-        return '${getTeamColors(body.homeTeam.colors)} '
-            '${body.homeTeam.shortName} '
-            '${getTeamScore(body.homeTeam.score)} - '
-            '${getTeamScore(body.awayTeam.score)} '
-            '${body.awayTeam.shortName} '
-            '${getTeamColors(body.awayTeam.colors)}';
+        return '${getTeamColors(payload.homeTeam.colors)} '
+            '${payload.homeTeam.shortName} '
+            '${getTeamScore(payload.homeTeam.score)} - '
+            '${getTeamScore(payload.awayTeam.score)} '
+            '${payload.awayTeam.shortName} '
+            '${getTeamColors(payload.awayTeam.colors)}';
       case notificationTypeGoalAway:
-        return '${getTeamColors(body.awayTeam.colors)} '
-            '${body.awayTeam.shortName} '
-            '${getTeamScore(body.awayTeam.score)} - '
-            '${getTeamScore(body.homeTeam.score)} '
-            '${body.homeTeam.shortName} '
-            '${getTeamColors(body.homeTeam.colors)}';
+        return '${getTeamColors(payload.awayTeam.colors)} '
+            '${payload.awayTeam.shortName} '
+            '${getTeamScore(payload.awayTeam.score)} - '
+            '${getTeamScore(payload.homeTeam.score)} '
+            '${payload.homeTeam.shortName} '
+            '${getTeamColors(payload.homeTeam.colors)}';
       case notificationTypeMatchStatus:
-        return '${getTeamColors(body.homeTeam.colors)} '
-            '${body.homeTeam.shortName} '
-            '${getTeamScore(body.homeTeam.score)} - '
-            '${getTeamScore(body.awayTeam.score)} '
-            '${body.awayTeam.shortName} '
-            '${getTeamColors(body.awayTeam.colors)}';
+        return '${getTeamColors(payload.homeTeam.colors)} '
+            '${payload.homeTeam.shortName} '
+            '${getTeamScore(payload.homeTeam.score)} - '
+            '${getTeamScore(payload.awayTeam.score)} '
+            '${payload.awayTeam.shortName} '
+            '${getTeamColors(payload.awayTeam.colors)}';
       default:
-        return title;
+        return payload.type;
     }
   }
 }

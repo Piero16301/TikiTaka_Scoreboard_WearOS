@@ -20,32 +20,28 @@ async function sendNotification() {
         
         const goalHomePayload = {
             message: {
-            topic: "team-81",
-            notification: {
-                title: "GOAL_HOME",
-                body: JSON.stringify({
-                    homeTeam: {
+                topic: "team-81",
+                data: {
+                    type: "GOAL_HOME",
+                    deepLink: "matchId:498957",
+                    homeTeam: JSON.stringify({
                         colors: "Red / Navy Blue / Orange",
                         name: "Barça",
                         score: "4",
-                    },
-                    awayTeam: {
+                    }),
+                    awayTeam: JSON.stringify({
                         colors: "White / Purple",
                         name: "Real Madrid",
                         score: "2",
-                    },
-                    "status": "IN_PLAY",
-                }),
-            },
-            data: {
-                type: "matchId:498957"
-            },
-            android: {
-                priority: "high",
-                notification: {
-                channel_id: "high_importance_channel"
-                }
-            },
+                    }),
+                    status: "IN_PLAY",
+                },
+                android: {
+                    priority: "high",
+                    notification: {
+                        channel_id: "high_importance_channel"
+                    }
+                },
             }
         };
         

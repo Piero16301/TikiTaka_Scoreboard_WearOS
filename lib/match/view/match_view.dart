@@ -36,7 +36,7 @@ class _MatchViewState extends State<MatchView> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: context.read<MatchCubit>().getMatch(),
@@ -182,7 +182,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder(
       stream: context.read<MatchCubit>().getMatchConfigs(),
@@ -222,7 +222,7 @@ class TeamsCardMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -367,6 +367,8 @@ class RefereeCardMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
@@ -375,7 +377,7 @@ class RefereeCardMatch extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                context.l10n.refereeMatch.toUpperCase(),
+                l10n.refereeMatch.toUpperCase(),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
@@ -433,7 +435,7 @@ class CompetitionCardMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -508,7 +510,7 @@ class StandingsMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: context
@@ -850,7 +852,7 @@ class BackButtonMatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

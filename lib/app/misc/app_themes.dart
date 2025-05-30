@@ -8,7 +8,7 @@ ThemeData appDarkTheme({required bool isAmbientModeActive}) {
     visualDensity: VisualDensity.compact,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Colors.black,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color.fromRGBO(50, 49, 47, 1),
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -48,7 +48,7 @@ ThemeData appLightTheme({required bool isAmbientModeActive}) {
     visualDensity: VisualDensity.compact,
     brightness: Brightness.light,
     scaffoldBackgroundColor: Colors.white,
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: const Color.fromARGB(255, 207, 207, 207),
       elevation: 0,
       shape: RoundedRectangleBorder(
