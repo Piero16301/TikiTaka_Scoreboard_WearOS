@@ -78,9 +78,13 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add coverage_badge.svg
-          git commit -m "Update coverage badge [skip ci]"
-          git push origin main
+          if git diff --quiet coverage_badge.svg; then
+            echo "No changes to coverage badge, skipping commit"
+          else
+            git add coverage_badge.svg
+            git commit -m "Update coverage badge [skip ci]"
+            git push origin main
+          fi
 
   build:
     name: "🔨 Build Application"
