@@ -15,7 +15,7 @@ on:
 
 jobs:
   check-commit-author:
-    name: "🔍 Check Commit Author"
+    name: "👤 Check Commit Author"
     runs-on: ubuntu-latest
     outputs:
       is_bot: ${{ steps.check_author.outputs.is_bot }}
