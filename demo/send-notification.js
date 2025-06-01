@@ -20,7 +20,7 @@ async function sendNotification() {
         
         const goalHomePayload = {
             message: {
-                token: "cU5OvektRC-TiECBt4dot5:APA91bFOsT2FopnpsHOBiLWD1EmA8AQ51zvwuHkN5YnyrvumXgqO5_y6pCkelok1G1wTr_RegH1K7Tnm_12j5XnLqPh8YA-NN_p4yJUOyujVeO9xBGjEu4I",
+                topic: "all-devices",
                 data: {
                     type: "GOAL_HOME",
                     deepLink: "matchId:498957",
