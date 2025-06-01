@@ -11,10 +11,14 @@ NotificationPayload _$NotificationPayloadFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String? ?? '',
       deepLink: json['deepLink'] as String? ?? '',
       homeTeam: NotificationTeam.fromJson(
-        json['homeTeam'] as Map<String, dynamic>? ?? {},
+        jsonDecode(json['homeTeam'] as String? ?? '')
+                as Map<String, dynamic>? ??
+            {},
       ),
       awayTeam: NotificationTeam.fromJson(
-        json['awayTeam'] as Map<String, dynamic>? ?? {},
+        jsonDecode(json['awayTeam'] as String? ?? '')
+                as Map<String, dynamic>? ??
+            {},
       ),
       status: json['status'] as String? ?? '',
     );

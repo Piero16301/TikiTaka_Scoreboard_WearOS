@@ -20,18 +20,20 @@ async function sendNotification() {
         
         const goalHomePayload = {
             message: {
-                topic: "team-81",
+                token: "cU5OvektRC-TiECBt4dot5:APA91bFOsT2FopnpsHOBiLWD1EmA8AQ51zvwuHkN5YnyrvumXgqO5_y6pCkelok1G1wTr_RegH1K7Tnm_12j5XnLqPh8YA-NN_p4yJUOyujVeO9xBGjEu4I",
                 data: {
                     type: "GOAL_HOME",
                     deepLink: "matchId:498957",
                     homeTeam: JSON.stringify({
                         colors: "Red / Navy Blue / Orange",
-                        name: "Barça",
+                        name: "FC Barcelona",
+                        shortName: "Barça",
                         score: "4",
                     }),
                     awayTeam: JSON.stringify({
                         colors: "White / Purple",
-                        name: "Real Madrid",
+                        name: "Real Madrid CF",
+                        shortName: "Real Madrid",
                         score: "2",
                     }),
                     status: "IN_PLAY",
