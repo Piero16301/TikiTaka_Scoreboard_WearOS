@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiki_taka/app/app.dart';
@@ -16,9 +17,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize Notification Service
-  await NotificationService.instance.initialize();
-
   // Get SharedPreferences instance
   final preferences = await SharedPreferences.getInstance();
 
@@ -27,6 +25,9 @@ Future<void> main() async {
 
   // Initialize User Repository
   final userRepository = UserRepository(userApi: userApi);
+
+  // Initialize Notification Service
+  await NotificationService.instance.initialize();
 
   await bootstrap(
     () => AppPage(

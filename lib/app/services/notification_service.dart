@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -98,8 +100,7 @@ class NotificationService {
     const channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
-      description: 'This channel is used for important notifications.',
-      importance: Importance.high,
+      importance: Importance.max,
     );
 
     await _localNotifications
@@ -116,8 +117,12 @@ class NotificationService {
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) =>
-          _handleBackgroundMessage(details.payload ?? ''),
+      onDidReceiveNotificationResponse: (details) {
+        final payload = NotificationPayload.fromJson(
+          jsonDecode(details.payload ?? '{}') as Map<String, dynamic>,
+        );
+        _handleBackgroundMessage(payload);
+      },
     );
 
     _isFlutterLocalNotificationsInitialized = true;
@@ -126,15 +131,14 @@ class NotificationService {
   Future<void> showNotification(RemoteMessage message) async {
     final notification = message.notification;
     final android = message.notification?.android;
-    if (notification != null && android != null) {
-      final notificationPayload = NotificationPayload.fromJson(message.data);
-
+    if ((notification != null && android != null) || message.data.isNotEmpty) {
+      final payload = NotificationPayload.fromJson(message.data);
       final l10n = await LocalizationService.getLocalizations();
 
       await _localNotifications.show(
         notification.hashCode,
-        buildNotificationTitle(l10n: l10n, payload: notificationPayload),
-        buildNotificationBody(l10n: l10n, payload: notificationPayload),
+        buildNotificationTitle(l10n: l10n, payload: payload),
+        buildNotificationBody(l10n: l10n, payload: payload),
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel',
@@ -144,7 +148,7 @@ class NotificationService {
             playSound: false,
           ),
         ),
-        payload: notificationPayload.deepLink,
+        payload: jsonEncode(payload.toJson()),
       );
     }
   }
@@ -155,21 +159,23 @@ class NotificationService {
 
     // Background message handler
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _handleBackgroundMessage(message.data['type'] as String? ?? '');
+      final payload = NotificationPayload.fromJson(message.data);
+      _handleBackgroundMessage(payload);
     });
 
     // Opened app
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleBackgroundMessage(initialMessage.data['type'] as String? ?? '');
+      final payload = NotificationPayload.fromJson(initialMessage.data);
+      _handleBackgroundMessage(payload);
     }
   }
 
-  void _handleBackgroundMessage(String message) {
-    debugPrint('Handling a background message: $message');
-    if (message.contains('matchId')) {
+  void _handleBackgroundMessage(NotificationPayload payload) {
+    debugPrint('Handling a background message: ${payload.type}');
+    if (payload.deepLink.contains('matchId')) {
       final matchId = int.parse(
-        message.split('matchId:')[1],
+        payload.deepLink.split('matchId:')[1],
       );
       navigatorKey.currentState
           ?.pushNamed(
