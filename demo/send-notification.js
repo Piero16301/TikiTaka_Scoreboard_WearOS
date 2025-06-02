@@ -21,26 +21,33 @@ async function sendNotification() {
         const goalHomePayload = {
             message: {
                 topic: "all-devices",
-                data: {
-                    type: "GOAL_HOME",
-                    deepLink: "matchId:498957",
-                    homeTeam: JSON.stringify({
-                        colors: "Red / Navy Blue / Orange",
-                        name: "FC Barcelona",
-                        shortName: "Barça",
-                        score: "4",
-                    }),
-                    awayTeam: JSON.stringify({
-                        colors: "White / Purple",
-                        name: "Real Madrid CF",
-                        shortName: "Real Madrid",
-                        score: "2",
-                    }),
-                    status: "IN_PLAY",
-                },
                 android: {
-                    priority: "high",
+                    data: {
+                        type: "GOAL_HOME",
+                        deepLink: "matchId:498957",
+                        homeTeam: JSON.stringify({
+                            colors: "Red / Navy Blue / Orange",
+                            name: "FC Barcelona",
+                            shortName: "Barça",
+                            score: "4",
+                        }),
+                        awayTeam: JSON.stringify({
+                            colors: "White / Purple",
+                            name: "Real Madrid CF",
+                            shortName: "Real Madrid",
+                            score: "2",
+                        }),
+                        status: "IN_PLAY",
+                    },
+                    priority: "HIGH",
                     notification: {
+                        title: "¡Gol de FC Barcelona! ⚽",
+                        body: "🔴🔵 Barça 4️⃣ - 3️⃣ Real Madrid ⚪⚪",
+                        color: "#A50044",
+                        title_loc_key: "goal_home_title",
+                        title_loc_args: JSON.stringify(["FC Barcelona"]),
+                        body_loc_key: "goal_home_body",
+                        body_loc_args: JSON.stringify(["FC Barcelona", "4", "Real Madrid", "3"]),
                         channel_id: "high_importance_channel"
                     }
                 },
