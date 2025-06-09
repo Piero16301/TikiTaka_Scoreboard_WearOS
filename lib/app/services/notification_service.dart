@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/match/match.dart';
 
 @pragma('vm:entry-point')
@@ -50,6 +47,9 @@ class NotificationService {
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = await deviceInfo.androidInfo;
 
+    // Get device locale
+    final localLanguage = await LocalizationService.getLocalLanguage();
+
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
         .collection(notDevicesCollection)
@@ -57,9 +57,10 @@ class NotificationService {
         .set(
       {
         'token': token,
-        'openedAt': FieldValue.serverTimestamp(),
-        'osVersion': androidInfo.version.release,
-        'device': androidInfo.model,
+        'lastOpenAt': FieldValue.serverTimestamp(),
+        'androidInfo': androidInfo.toJson(),
+        'language': localLanguage,
+        'enabledTeams': FieldValue.arrayUnion(<String>[]),
       },
       SetOptions(merge: true),
     );
@@ -75,9 +76,7 @@ class NotificationService {
     }
   }
 
-  String getToken() {
-    return _token;
-  }
+  String get token => _token;
 
   Future<void> _requestPermission() async {
     final settings = await _messaging.requestPermission();
@@ -100,7 +99,8 @@ class NotificationService {
     const channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
-      importance: Importance.max,
+      description: 'This channel is used for important notifications.',
+      importance: Importance.high,
     );
 
     await _localNotifications
@@ -117,12 +117,8 @@ class NotificationService {
 
     await _localNotifications.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) {
-        final payload = NotificationPayload.fromJson(
-          jsonDecode(details.payload ?? '{}') as Map<String, dynamic>,
-        );
-        _handleBackgroundMessage(payload);
-      },
+      onDidReceiveNotificationResponse: (details) =>
+          _handleBackgroundMessage(details.payload ?? ''),
     );
 
     _isFlutterLocalNotificationsInitialized = true;
@@ -131,24 +127,24 @@ class NotificationService {
   Future<void> showNotification(RemoteMessage message) async {
     final notification = message.notification;
     final android = message.notification?.android;
-    if ((notification != null && android != null) || message.data.isNotEmpty) {
-      final payload = NotificationPayload.fromJson(message.data);
-      final l10n = await LocalizationService.getLocalizations();
-
+    if (notification != null && android != null) {
       await _localNotifications.show(
         notification.hashCode,
-        buildNotificationTitle(l10n: l10n, payload: payload),
-        buildNotificationBody(l10n: l10n, payload: payload),
+        notification.title,
+        notification.body,
         const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel',
             'High Importance Notifications',
-            importance: Importance.max,
+            channelDescription:
+                'This channel is used for important notifications.',
+            importance: Importance.high,
             priority: Priority.high,
             playSound: false,
+            icon: '@mipmap/ic_logo',
           ),
         ),
-        payload: jsonEncode(payload.toJson()),
+        payload: message.data['match'].toString(),
       );
     }
   }
@@ -159,23 +155,21 @@ class NotificationService {
 
     // Background message handler
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      final payload = NotificationPayload.fromJson(message.data);
-      _handleBackgroundMessage(payload);
+      _handleBackgroundMessage(message.data['match'] as String? ?? '');
     });
 
     // Opened app
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      final payload = NotificationPayload.fromJson(initialMessage.data);
-      _handleBackgroundMessage(payload);
+      _handleBackgroundMessage(initialMessage.data['match'] as String? ?? '');
     }
   }
 
-  void _handleBackgroundMessage(NotificationPayload payload) {
-    debugPrint('Handling a background message: ${payload.type}');
-    if (payload.deepLink.contains('matchId')) {
+  void _handleBackgroundMessage(String message) {
+    debugPrint('Handling a background message: $message');
+    if (message.contains('matchId')) {
       final matchId = int.parse(
-        payload.deepLink.split('matchId:')[1],
+        message.split('matchId:')[1],
       );
       navigatorKey.currentState
           ?.pushNamed(
@@ -195,51 +189,48 @@ class NotificationService {
     await _messaging.unsubscribeFromTopic(topic);
     debugPrint('Unsubscribed from topic: $topic');
   }
+}
 
-  String buildNotificationTitle({
-    required AppLocalizations l10n,
-    required NotificationPayload payload,
-  }) {
-    switch (payload.type) {
-      case notificationTypeGoalHome:
-        return l10n.notificationTitle(payload.homeTeam.name);
-      case notificationTypeGoalAway:
-        return l10n.notificationTitle(payload.awayTeam.name);
-      case notificationTypeMatchStatus:
-        return l10n.notificationStatus(notMatchState(payload.status, l10n));
-      default:
-        return payload.type;
-    }
+extension AndroidVersion on AndroidBuildVersion {
+  Map<String, dynamic> toJson() {
+    return {
+      'codename': codename,
+      'incremental': incremental,
+      'previewSdkInt': previewSdkInt ?? 0,
+      'release': release,
+      'sdkInt': sdkInt,
+      'securityPatch': securityPatch ?? '',
+    };
   }
+}
 
-  String buildNotificationBody({
-    required AppLocalizations l10n,
-    required NotificationPayload payload,
-  }) {
-    switch (payload.type) {
-      case notificationTypeGoalHome:
-        return '${getTeamColors(payload.homeTeam.colors)} '
-            '${payload.homeTeam.shortName} '
-            '${getTeamScore(payload.homeTeam.score)} - '
-            '${getTeamScore(payload.awayTeam.score)} '
-            '${payload.awayTeam.shortName} '
-            '${getTeamColors(payload.awayTeam.colors)}';
-      case notificationTypeGoalAway:
-        return '${getTeamColors(payload.awayTeam.colors)} '
-            '${payload.awayTeam.shortName} '
-            '${getTeamScore(payload.awayTeam.score)} - '
-            '${getTeamScore(payload.homeTeam.score)} '
-            '${payload.homeTeam.shortName} '
-            '${getTeamColors(payload.homeTeam.colors)}';
-      case notificationTypeMatchStatus:
-        return '${getTeamColors(payload.homeTeam.colors)} '
-            '${payload.homeTeam.shortName} '
-            '${getTeamScore(payload.homeTeam.score)} - '
-            '${getTeamScore(payload.awayTeam.score)} '
-            '${payload.awayTeam.shortName} '
-            '${getTeamColors(payload.awayTeam.colors)}';
-      default:
-        return payload.type;
-    }
+extension AndroidInfo on AndroidDeviceInfo {
+  Map<String, dynamic> toJson() {
+    return {
+      'version': version.toJson(),
+      'board': board,
+      'bootloader': bootloader,
+      'brand': brand,
+      'device': device,
+      'display': display,
+      'fingerprint': fingerprint,
+      'hardware': hardware,
+      'host': host,
+      'id': id,
+      'manufacturer': manufacturer,
+      'model': model,
+      'product': product,
+      'supported32BitAbis': supported32BitAbis,
+      'supported64BitAbis': supported64BitAbis,
+      'supportedAbis': supportedAbis,
+      'tags': tags,
+      'type': type,
+      'isPhysicalDevice': isPhysicalDevice,
+      'systemFeatures': systemFeatures,
+      'serialNumber': serialNumber,
+      'isLowRamDevice': isLowRamDevice,
+      'physicalRamSize': physicalRamSize,
+      'availableRamSize': availableRamSize,
+    };
   }
 }

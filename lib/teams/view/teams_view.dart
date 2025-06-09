@@ -147,16 +147,17 @@ class _TeamsViewState extends State<TeamsView> {
                             return const SizedBox.shrink();
                           }
 
-                          final enabledTeams =
-                              snapshot.data!.docs.first.data()['enabledTeams']
-                                      as Map<String, dynamic>? ??
-                                  {};
+                          final enabledTeams = snapshot.data!.docs.first
+                                  .data()['enabledTeams'] as List<dynamic>? ??
+                              [];
 
                           return Column(
                             children: teams
                                 .map(
                                   (team) => TeamCardTeams(
-                                    enabledTeams: enabledTeams,
+                                    enabledTeams: enabledTeams
+                                        .map((e) => e.toString())
+                                        .toList(),
                                     team: team,
                                   ),
                                 )
@@ -185,7 +186,7 @@ class TeamCardTeams extends StatelessWidget {
     super.key,
   });
 
-  final Map<String, dynamic> enabledTeams;
+  final List<String> enabledTeams;
   final Team team;
 
   @override
@@ -200,8 +201,7 @@ class TeamCardTeams extends StatelessWidget {
               const SizedBox(width: 10),
               BlocBuilder<TeamsCubit, TeamsState>(
                 builder: (context, state) {
-                  final enabled =
-                      enabledTeams[team.id.toString()] as bool? ?? false;
+                  final enabled = enabledTeams.contains(team.id.toString());
                   return SizedBox(
                     width: 40,
                     child: FittedBox(
@@ -212,7 +212,7 @@ class TeamCardTeams extends StatelessWidget {
                         onChanged: (value) {
                           context.read<TeamsCubit>().toggleTeam(
                                 team: team,
-                                enabled: value,
+                                enabledTeams: enabledTeams,
                               );
                         },
                       ),

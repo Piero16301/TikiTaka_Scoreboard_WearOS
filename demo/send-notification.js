@@ -18,42 +18,6 @@ async function sendNotification() {
         const token = await getAccessToken();
         const url = 'https://fcm.googleapis.com/v1/projects/tiki-taka-scoreboard/messages:send';
         
-        const goalHomePayload = {
-            message: {
-                topic: "all-devices",
-                android: {
-                    data: {
-                        type: "GOAL_HOME",
-                        deepLink: "matchId:498957",
-                        homeTeam: JSON.stringify({
-                            colors: "Red / Navy Blue / Orange",
-                            name: "FC Barcelona",
-                            shortName: "Barça",
-                            score: "4",
-                        }),
-                        awayTeam: JSON.stringify({
-                            colors: "White / Purple",
-                            name: "Real Madrid CF",
-                            shortName: "Real Madrid",
-                            score: "2",
-                        }),
-                        status: "IN_PLAY",
-                    },
-                    priority: "HIGH",
-                    notification: {
-                        title: "¡Gol de FC Barcelona! ⚽",
-                        body: "🔴🔵 Barça 4️⃣ - 3️⃣ Real Madrid ⚪⚪",
-                        color: "#A50044",
-                        title_loc_key: "goal_home_title",
-                        title_loc_args: JSON.stringify(["FC Barcelona"]),
-                        body_loc_key: "goal_home_body",
-                        body_loc_args: JSON.stringify(["FC Barcelona", "4", "Real Madrid", "3"]),
-                        channel_id: "high_importance_channel"
-                    }
-                },
-            }
-        };
-        
         const messagePayload = {
             message: {
                 topic: "all-devices",
@@ -62,13 +26,7 @@ async function sendNotification() {
                     body: "🔴🔵 Barça 4️⃣ - 3️⃣ Real Madrid ⚪⚪",
                 },
                 data: {
-                    type: "matchId:498957"
-                },
-                android: {
-                    priority: "high",
-                    notification: {
-                        channel_id: "high_importance_channel"
-                    }
+                    match: "matchId:498957"
                 },
             }
         };
@@ -78,7 +36,7 @@ async function sendNotification() {
             'Content-Type': 'application/json'
         };
         
-        const response = await axios.post(url, goalHomePayload, { headers });
+        const response = await axios.post(url, messagePayload, { headers });
         console.log('Notification sent successfully:', response.data);
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
