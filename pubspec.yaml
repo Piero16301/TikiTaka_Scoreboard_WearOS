@@ -36,7 +36,7 @@ dependencies:
     path: packages/user_api_remote
   user_repository:
     path: packages/user_repository
-  vector_graphics: ^1.1.18
+  vector_graphics: ^1.1.19
   vector_graphics_compiler: ^1.1.17
   wearable_rotary: ^2.0.2
 
