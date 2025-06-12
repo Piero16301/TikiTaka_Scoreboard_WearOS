@@ -63,7 +63,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: 3.32.1
+          flutter-version: 3.32.3
       - name: 📦 Install Dependencies
         run: |
           flutter pub global activate very_good_cli
@@ -90,7 +90,7 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
     env:
-      FLUTTER_VERSION: 3.32.1
+      FLUTTER_VERSION: 3.32.3
       APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
       AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
       KEYSTORE_PATH: android/keystore.jks

@@ -48,7 +48,11 @@ class NotificationService {
     final androidInfo = await deviceInfo.androidInfo;
 
     // Get device locale
-    final localLanguage = await LocalizationService.getLocalLanguage();
+    final localLanguage =
+        await LocalSettingsService.instance.getLocalLanguage();
+
+    // Get device dark mode
+    final darkMode = await LocalSettingsService.instance.getDarkMode();
 
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
@@ -60,6 +64,7 @@ class NotificationService {
         'lastOpenAt': FieldValue.serverTimestamp(),
         'androidInfo': androidInfo.toJson(),
         'language': localLanguage,
+        'darkMode': darkMode,
         'enabledTeams': FieldValue.arrayUnion(<String>[]),
       },
       SetOptions(merge: true),

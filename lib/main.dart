@@ -25,6 +25,9 @@ Future<void> main() async {
   // Initialize User Repository
   final userRepository = UserRepository(userApi: userApi);
 
+  // Initialize Local Settings Service
+  await LocalSettingsService.instance.initialize();
+
   // Initialize Notification Service
   await NotificationService.instance.initialize();
 

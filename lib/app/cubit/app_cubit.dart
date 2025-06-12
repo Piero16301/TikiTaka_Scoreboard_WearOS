@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tiki_taka/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'app_state.dart';
@@ -31,11 +32,13 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> changeTheme({bool darkMode = true}) async {
     await userRepository.saveDarkMode(darkMode: darkMode);
+    LocalSettingsService.instance.saveDarkModeOnFirestore(darkMode: darkMode);
     emit(state.copyWith(darkMode: darkMode));
   }
 
   Future<void> changeLanguage(String language) async {
     await userRepository.saveLanguage(language: language);
+    LocalSettingsService.instance.saveLanguageOnFirestore(language: language);
     emit(state.copyWith(language: language));
   }
 }
