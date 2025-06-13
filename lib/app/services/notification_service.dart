@@ -36,7 +36,13 @@ class NotificationService {
     await setupFlutterNotifications();
 
     // Get FCM token
-    final token = await _messaging.getToken();
+    String? token;
+    try {
+      token = await _messaging.getToken();
+      debugPrint('FCM Token: $token');
+    } catch (e) {
+      debugPrint('Error getting FCM token: $e');
+    }
     if (token != null) {
       _token = token;
     } else {
@@ -44,8 +50,7 @@ class NotificationService {
     }
 
     // Get device information
-    final deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
+    final androidInfo = LocalSettingsService.instance.androidInfo;
 
     // Get device locale
     final localLanguage =

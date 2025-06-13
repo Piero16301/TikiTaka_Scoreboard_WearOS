@@ -41,12 +41,33 @@ class _TeamsViewState extends State<TeamsView> {
       stream: context.read<TeamsCubit>().getTeams(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(
+          return Scaffold(
             body: SizedBox.expand(
-              child: Center(
-                child: SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleTeams.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ...List.generate(
+                        numberOfShimmers,
+                        (index) => const ShimmerCardTeams(),
+                      ),
+                      const BackButtonTeams(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -165,7 +186,7 @@ class _TeamsViewState extends State<TeamsView> {
                           );
                         },
                       ),
-                      const BackButtonCompetitions(),
+                      const BackButtonTeams(),
                       const SizedBox(height: 50),
                     ],
                   ),
@@ -175,6 +196,43 @@ class _TeamsViewState extends State<TeamsView> {
           ),
         );
       },
+    );
+  }
+}
+
+class ShimmerCardTeams extends StatelessWidget {
+  const ShimmerCardTeams({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              SizedBox(
+                width: 40,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Switch(
+                    padding: EdgeInsets.zero,
+                    value: false,
+                    onChanged: null,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              AppSchimmer(height: 40, width: 40),
+              SizedBox(width: 10),
+              Expanded(child: AppSchimmer()),
+              SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -233,8 +291,8 @@ class TeamCardTeams extends StatelessWidget {
   }
 }
 
-class BackButtonCompetitions extends StatelessWidget {
-  const BackButtonCompetitions({super.key});
+class BackButtonTeams extends StatelessWidget {
+  const BackButtonTeams({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -248,12 +306,12 @@ class BackButtonCompetitions extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
                 l10n.backText.toUpperCase(),
                 style: const TextStyle(
-                  fontSize: 12,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),

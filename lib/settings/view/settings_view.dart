@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:intl/intl.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
@@ -85,7 +86,8 @@ class _SettingsViewState extends State<SettingsView> {
                     route: ThemesPage.routeName,
                   ),
                   const BackButtonSettings(),
-                  const SizedBox(height: 50),
+                  const AppInfoSettings(),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
@@ -150,12 +152,12 @@ class BackButtonSettings extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
                 l10n.backText.toUpperCase(),
                 style: const TextStyle(
-                  fontSize: 12,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -163,5 +165,61 @@ class BackButtonSettings extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class AppInfoSettings extends StatelessWidget {
+  const AppInfoSettings({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final packageInfo = LocalSettingsService.instance.packageInfo;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Column(
+        children: [
+          Text(
+            packageInfo.appName,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          Text(
+            'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
+            style: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
+          Text(
+            '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
+            style: const TextStyle(
+              fontSize: 12,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String getDateOn(AppLocalizations l10n, DateTime? date) {
+    if (date == null) {
+      return l10n.todayText;
+    }
+
+    final now = DateTime.now().toLocal();
+
+    // Check if the date is today
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
+      return DateFormat('HH:mm:ss').format(date);
+    }
+    // Otherwise return date as dd-MM-yyyy
+    else {
+      return DateFormat('dd-MM-yyyy').format(date);
+    }
   }
 }

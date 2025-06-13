@@ -12,6 +12,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get titleMatches => 'Partidos';
 
   @override
+  String get updatingMatches => 'Actualizando partidos...';
+
+  @override
   String updatedMatches(num seconds) {
     String _temp0 = intl.Intl.pluralLogic(
       seconds,
@@ -162,12 +165,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get backText => 'Volver';
 
   @override
-  String notificationTitle(String team) {
-    return '¡Gol para $team! ⚽';
-  }
+  String get updatedOn => 'Actualizado';
 
   @override
-  String notificationStatus(String status) {
-    return '¡El partido ha $status! 🥅';
-  }
+  String get todayText => 'Hoy';
 }

@@ -25,7 +25,7 @@ ThemeData appDarkTheme({required bool isAmbientModeActive}) {
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
       ),
@@ -65,7 +65,7 @@ ThemeData appLightTheme({required bool isAmbientModeActive}) {
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
       ),

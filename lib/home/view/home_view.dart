@@ -48,12 +48,34 @@ class _HomeViewState extends State<HomeView> {
           stream: context.read<HomeCubit>().getMatches(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Scaffold(
+              return Scaffold(
                 body: SizedBox.expand(
-                  child: Center(
-                    child: SizedBox.square(
-                      dimension: 20,
-                      child: CircularProgressIndicator(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
+                            child: ScrollText(
+                              text: l10n.titleMatches.toUpperCase(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: titleSize,
+                              ),
+                            ),
+                          ),
+                          const LastUpdateHome(isLoading: true),
+                          const SizedBox(height: 10),
+                          ...List.generate(
+                            numberOfShimmers,
+                            (index) => const ShimmerMatchCardHome(),
+                          ),
+                          const SettingsHome(),
+                          const SizedBox(height: 50),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -169,7 +191,12 @@ class _HomeViewState extends State<HomeView> {
 }
 
 class LastUpdateHome extends StatefulWidget {
-  const LastUpdateHome({super.key});
+  const LastUpdateHome({
+    this.isLoading = false,
+    super.key,
+  });
+
+  final bool isLoading;
 
   @override
   State<LastUpdateHome> createState() => _LastUpdateHomeState();
@@ -198,6 +225,16 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    if (widget.isLoading) {
+      return Text(
+        l10n.updatingMatches,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+      );
+    }
+
     return StreamBuilder(
       stream: context.read<HomeCubit>().getMatchConfigs(),
       builder: (context, snapshot) {
@@ -222,6 +259,53 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
           ),
         );
       },
+    );
+  }
+}
+
+class ShimmerMatchCardHome extends StatelessWidget {
+  const ShimmerMatchCardHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            children: [
+              AppSchimmer(width: 100),
+              SizedBox(height: 5),
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppSchimmer(height: 40, width: 40),
+                        SizedBox(height: 5),
+                        AppSchimmer(width: 40),
+                      ],
+                    ),
+                  ),
+                  Expanded(child: AppSchimmer(height: 30)),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppSchimmer(height: 40, width: 40),
+                        SizedBox(height: 5),
+                        AppSchimmer(width: 40),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -392,8 +476,14 @@ class SettingsHome extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: ScrollText(text: l10n.titleSettings.toUpperCase()),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              child: ScrollText(
+                text: l10n.titleSettings.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              ),
             ),
           ],
         ),

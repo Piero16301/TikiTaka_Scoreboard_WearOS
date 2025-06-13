@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Matches'**
   String get titleMatches;
 
+  /// No description provided for @updatingMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating matches...'**
+  String get updatingMatches;
+
   /// No description provided for @updatedMatches.
   ///
   /// In en, this message translates to:
@@ -388,17 +394,17 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get backText;
 
-  /// No description provided for @notificationTitle.
+  /// No description provided for @updatedOn.
   ///
   /// In en, this message translates to:
-  /// **'Goal for {team}! ⚽'**
-  String notificationTitle(String team);
+  /// **'Updated'**
+  String get updatedOn;
 
-  /// No description provided for @notificationStatus.
+  /// No description provided for @todayText.
   ///
   /// In en, this message translates to:
-  /// **'Match has {status}! 🥅'**
-  String notificationStatus(String status);
+  /// **'Today'**
+  String get todayText;
 }
 
 class _AppLocalizationsDelegate

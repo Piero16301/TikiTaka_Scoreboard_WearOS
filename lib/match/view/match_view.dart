@@ -42,12 +42,34 @@ class _MatchViewState extends State<MatchView> {
       stream: context.read<MatchCubit>().getMatch(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(
+          return Scaffold(
             body: SizedBox.expand(
-              child: Center(
-                child: SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleMatch.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
+                        ),
+                      ),
+                      const LastUpdateMatch(isLoading: true),
+                      const SizedBox(height: 10),
+                      const ShimmerTeamsCardMatch(),
+                      const ShimmerRefereeCardMatch(),
+                      const ShimmerCompetitionCardMatch(),
+                      const ShimmerStandingsMatch(),
+                      const BackButtonMatch(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -155,7 +177,12 @@ class _MatchViewState extends State<MatchView> {
 }
 
 class LastUpdateMatch extends StatefulWidget {
-  const LastUpdateMatch({super.key});
+  const LastUpdateMatch({
+    this.isLoading = false,
+    super.key,
+  });
+
+  final bool isLoading;
 
   @override
   State<LastUpdateMatch> createState() => _LastUpdateMatchState();
@@ -184,6 +211,16 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
+    if (widget.isLoading) {
+      return Text(
+        l10n.updatingMatches,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 10,
+        ),
+      );
+    }
+
     return StreamBuilder(
       stream: context.read<MatchCubit>().getMatchConfigs(),
       builder: (context, snapshot) {
@@ -208,6 +245,100 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
           ),
         );
       },
+    );
+  }
+}
+
+class ShimmerTeamsCardMatch extends StatelessWidget {
+  const ShimmerTeamsCardMatch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Expanded(child: SizedBox.shrink()),
+                  SizedBox(
+                    width: 20,
+                    child: Center(
+                      child: Text(
+                        l10n.halfTimeAbbr,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: 20,
+                    child: Center(
+                      child: Text(
+                        l10n.fullTimeAbbr,
+                        style: const TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+              const Row(
+                children: [
+                  SizedBox(width: 5),
+                  AppSchimmer(height: 35, width: 35),
+                  SizedBox(width: 5),
+                  Expanded(child: AppSchimmer()),
+                  SizedBox(width: 5),
+                  SizedBox(
+                    width: 20,
+                    child: AppSchimmer(width: 20),
+                  ),
+                  SizedBox(width: 5),
+                  SizedBox(
+                    width: 20,
+                    child: AppSchimmer(width: 20),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+              const SizedBox(height: 5),
+              const Row(
+                children: [
+                  SizedBox(width: 5),
+                  AppSchimmer(height: 35, width: 35),
+                  SizedBox(width: 5),
+                  Expanded(child: AppSchimmer()),
+                  SizedBox(width: 5),
+                  SizedBox(
+                    width: 20,
+                    child: AppSchimmer(width: 20),
+                  ),
+                  SizedBox(width: 5),
+                  SizedBox(
+                    width: 20,
+                    child: AppSchimmer(width: 20),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+              const SizedBox(height: 5),
+              const AppSchimmer(width: 100),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -357,6 +488,56 @@ class TeamsCardMatch extends StatelessWidget {
   }
 }
 
+class ShimmerRefereeCardMatch extends StatelessWidget {
+  const ShimmerRefereeCardMatch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Column(
+            children: [
+              Text(
+                l10n.refereeMatch.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedWhistle,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AppSchimmer(),
+                        SizedBox(height: 5),
+                        AppSchimmer(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class RefereeCardMatch extends StatelessWidget {
   const RefereeCardMatch({
     required this.referees,
@@ -417,6 +598,55 @@ class RefereeCardMatch extends StatelessWidget {
                   ],
                 );
               }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerCompetitionCardMatch extends StatelessWidget {
+  const ShimmerCompetitionCardMatch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Column(
+            children: [
+              Text(
+                l10n.competitionMatch.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  AppSchimmer(height: 30, width: 30),
+                  SizedBox(width: 10),
+                  Expanded(child: AppSchimmer()),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Row(
+                children: [
+                  AppSchimmer(height: 30, width: 30),
+                  SizedBox(width: 10),
+                  Expanded(child: AppSchimmer()),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const AppSchimmer(width: 100),
+              const SizedBox(height: 5),
+              const AppSchimmer(width: 50),
             ],
           ),
         ),
@@ -491,6 +721,126 @@ class CompetitionCardMatch extends StatelessWidget {
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ShimmerStandingsMatch extends StatelessWidget {
+  const ShimmerStandingsMatch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          child: Column(
+            children: [
+              Text(
+                l10n.standingsMatch.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Column(
+                spacing: 5,
+                children: [
+                  Row(
+                    children: [
+                      const Expanded(child: SizedBox.shrink()),
+                      SizedBox(
+                        width: 21,
+                        child: Center(
+                          child: Text(
+                            l10n.playedGamesAbbr,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        width: 21,
+                        child: Center(
+                          child: Text(
+                            l10n.goalDifferenceAbbr,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        width: 21,
+                        child: Center(
+                          child: Text(
+                            l10n.pointsAbbr,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ...List.generate(
+                    numberOfShimmers * 4,
+                    (index) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2.5,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        spacing: 5,
+                        children: [
+                          SizedBox(
+                            width: 20,
+                            child: Center(
+                              child: Text(
+                                (index + 1).toString(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const AppSchimmer(height: 25, width: 25),
+                          const Expanded(child: AppSchimmer()),
+                          const SizedBox(
+                            width: 21,
+                            child: AppSchimmer(width: 21),
+                          ),
+                          const SizedBox(
+                            width: 21,
+                            child: AppSchimmer(width: 21),
+                          ),
+                          const SizedBox(
+                            width: 21,
+                            child: AppSchimmer(width: 21),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -862,12 +1212,12 @@ class BackButtonMatch extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
                 l10n.backText.toUpperCase(),
                 style: const TextStyle(
-                  fontSize: 12,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),

@@ -42,12 +42,33 @@ class _NotificationsViewState extends State<NotificationsView> {
       stream: context.read<NotificationsCubit>().getLeagues(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(
+          return Scaffold(
             body: SizedBox.expand(
-              child: Center(
-                child: SizedBox.square(
-                  dimension: 20,
-                  child: CircularProgressIndicator(),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleNotifications.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      ...List.generate(
+                        numberOfShimmers,
+                        (index) => const ShimmerCardNotifications(),
+                      ),
+                      const BackButtonNotifications(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -150,6 +171,39 @@ class _NotificationsViewState extends State<NotificationsView> {
   }
 }
 
+class ShimmerCardNotifications extends StatelessWidget {
+  const ShimmerCardNotifications({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            children: [
+              SizedBox(width: 10),
+              AppSchimmer(height: 40, width: 40),
+              SizedBox(width: 10),
+              Expanded(child: AppSchimmer()),
+              SizedBox(width: 10),
+              SizedBox.square(
+                dimension: 40,
+                child: IconButton(
+                  onPressed: null,
+                  icon: Icon(Icons.arrow_forward_ios),
+                  padding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class LeagueCardNotifications extends StatelessWidget {
   const LeagueCardNotifications({
     required this.league,
@@ -206,12 +260,12 @@ class BackButtonNotifications extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 14),
               child: Text(
                 l10n.backText.toUpperCase(),
                 style: const TextStyle(
-                  fontSize: 12,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
             ),

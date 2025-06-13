@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+const int numberOfShimmers = 5;
 const double scrollMagnitude = 10;
 const Duration scrollDuration = Duration(milliseconds: 600);
 const double scrollWidth = 5;

@@ -3,6 +3,8 @@
 
     "titleMatches": "Partite",
     "@titleMatches": {},
+    "updatingMatches": "Aggiornamento partite...",
+    "@updatingMatches": {},
     "updatedMatches": "{seconds, plural, =0 {Aggiornato adesso} one {Aggiornato {seconds} secondo fa} other {Aggiornato {seconds} secondi fa}}",
     "@updatedMatches": {
         "placeholders": {
@@ -112,20 +114,8 @@
     "backText": "Indietro",
     "@backText": {},
 
-    "notificationTitle": "Goal per {team}! ⚽",
-    "@notificationTitle": {
-        "placeholders": {
-            "team": {
-                "type": "String"
-            }
-        }
-    },
-    "notificationStatus": "La partita è {status}! 🥅",
-    "@notificationStatus": {
-        "placeholders": {
-            "status": {
-                "type": "String"
-            }
-        }
-    }
+    "updatedOn": "Aggiornato",
+    "@updatedOn": {},
+    "todayText": "Oggi",
+    "@todayText": {}
 }

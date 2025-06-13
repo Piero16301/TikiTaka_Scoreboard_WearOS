@@ -26,9 +26,11 @@ dependencies:
   http: ^1.4.0
   hugeicons: ^0.0.11
   intl: ^0.20.2
+  package_info_plus: ^8.3.0
   plugin_platform_interface: ^2.1.8
   rotary_scrollbar: ^1.1.0
   shared_preferences: ^2.5.3
+  shimmer_animation: ^2.2.2
   text_scroll: ^0.2.0
   user_api:
     path: packages/user_api

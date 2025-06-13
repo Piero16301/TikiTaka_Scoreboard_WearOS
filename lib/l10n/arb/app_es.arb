@@ -3,6 +3,8 @@
 
     "titleMatches": "Partidos",
     "@titleMatches": {},
+    "updatingMatches": "Actualizando partidos...",
+    "@updatingMatches": {},
     "updatedMatches": "{seconds, plural, =0 {Actualizado ahora} one {Actualizado hace {seconds} segundo} other {Actualizado hace {seconds} segundos}}",
     "@updatedMatches": {
         "placeholders": {
@@ -112,20 +114,8 @@
     "backText": "Volver",
     "@backText": {},
 
-    "notificationTitle": "¡Gol para {team}! ⚽",
-    "@notificationTitle": {
-        "placeholders": {
-            "team": {
-                "type": "String"
-            }
-        }
-    },
-    "notificationStatus": "¡El partido ha {status}! 🥅",
-    "@notificationStatus": {
-        "placeholders": {
-            "status": {
-                "type": "String"
-            }
-        }
-    }
+    "updatedOn": "Actualizado",
+    "@updatedOn": {},
+    "todayText": "Hoy",
+    "@todayText": {}
 }

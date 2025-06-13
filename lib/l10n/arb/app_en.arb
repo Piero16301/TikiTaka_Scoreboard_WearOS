@@ -3,6 +3,8 @@
 
     "titleMatches": "Matches",
     "@titleMatches": {},
+    "updatingMatches": "Updating matches...",
+    "@updatingMatches": {},
     "updatedMatches": "{seconds, plural, =0 {Updated now} one {Updated {seconds} second ago} other {Updated {seconds} seconds ago}}",
     "@updatedMatches": {
         "placeholders": {
@@ -112,20 +114,8 @@
     "backText": "Back",
     "@backText": {},
 
-    "notificationTitle": "Goal for {team}! ⚽",
-    "@notificationTitle": {
-        "placeholders": {
-            "team": {
-                "type": "String"
-            }
-        }
-    },
-    "notificationStatus": "Match has {status}! 🥅",
-    "@notificationStatus": {
-        "placeholders": {
-            "status": {
-                "type": "String"
-            }
-        }
-    }
+    "updatedOn": "Updated",
+    "@updatedOn": {},
+    "todayText": "Today",
+    "@todayText": {}
 }
