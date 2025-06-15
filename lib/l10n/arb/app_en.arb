@@ -5,8 +5,8 @@
     "@titleMatches": {},
     "updatingMatches": "Updating matches...",
     "@updatingMatches": {},
-    "updatedMatches": "{seconds, plural, =0 {Updated now} one {Updated {seconds} second ago} other {Updated {seconds} seconds ago}}",
-    "@updatedMatches": {
+    "updatedSecondsAgo": "{seconds, plural, =0 {Updated now} one {Updated {seconds} second ago} other {Updated {seconds} seconds ago}}",
+    "@updatedSecondsAgo": {
         "placeholders": {
             "seconds": {
                 "type": "num"
@@ -38,6 +38,10 @@
 
     "titleMatch": "Match",
     "@titleMatch": {},
+    "errorMatch": "Error loading match",
+    "@errorMatch": {},
+    "notFoundMatch": "Match not found",
+    "@notFoundMatch": {},
     "updatedAtMatch": "Updated at",
     "@updatedAtMatch": {},
     "halfTimeAbbr": "HT",
@@ -62,6 +66,35 @@
     "@goalDifferenceAbbr": {},
     "pointsAbbr": "PT",
     "@pointsAbbr": {},
+
+    "titleTeam": "Team",
+    "@titleTeam": {},
+    "errorTeam": "Error loading team",
+    "@errorTeam": {},
+    "notFoundTeam": "Team not found",
+    "@notFoundTeam": {},
+    "updatedDaysAgo": "{days, plural, =0 {Updated today} one {Updated {days} day ago} other {Updated {days} days ago}}",
+    "@updatedDaysAgo": {
+        "placeholders": {
+            "days": {
+                "type": "num"
+            }
+        }
+    },
+    "areaTeam": "Area",
+    "@areaTeam": {},
+    "coachTeam": "Coach",
+    "@coachTeam": {},
+    "coachAgeTeam": "{age} years",
+    "@coachAgeTeam": {
+        "placeholders": {
+            "age": {
+                "type": "num"
+            }
+        }
+    },
+    "untilTeam": "Until",
+    "@untilTeam": {},
 
     "titleSettings": "Settings",
     "@titleSettings": {},

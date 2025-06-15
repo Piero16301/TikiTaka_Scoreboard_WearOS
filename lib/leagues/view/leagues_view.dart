@@ -175,33 +175,25 @@ class ShimmerCardLeagues extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Switch(
-                    padding: EdgeInsets.zero,
-                    value: false,
-                    onChanged: null,
-                  ),
-                ),
+    return const AppCardData(
+      child: Row(
+        children: [
+          SizedBox(
+            width: 40,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Switch(
+                padding: EdgeInsets.zero,
+                value: false,
+                onChanged: null,
               ),
-              SizedBox(width: 10),
-              AppSchimmer(height: 40, width: 40),
-              SizedBox(width: 10),
-              Expanded(child: AppSchimmer()),
-              SizedBox(width: 10),
-            ],
+            ),
           ),
-        ),
+          SizedBox(width: 5),
+          AppSchimmer(height: 40, width: 40),
+          SizedBox(width: 5),
+          Expanded(child: AppSchimmer()),
+        ],
       ),
     );
   }
@@ -217,43 +209,35 @@ class LeagueCardCompetitions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              BlocBuilder<LeaguesCubit, LeaguesState>(
-                builder: (context, state) {
-                  final enabled = state.enabledLeagues[league.code] ?? false;
-                  return SizedBox(
-                    width: 40,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Switch(
-                        padding: EdgeInsets.zero,
-                        value: enabled,
-                        onChanged: (value) {
-                          context.read<LeaguesCubit>().toggleLeague(
-                                league: league.code,
-                                enabled: value,
-                              );
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(width: 10),
-              CrestImage(crest: league.emblem),
-              const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: league.name)),
-              const SizedBox(width: 10),
-            ],
+    return AppCardData(
+      child: Row(
+        children: [
+          BlocBuilder<LeaguesCubit, LeaguesState>(
+            builder: (context, state) {
+              final enabled = state.enabledLeagues[league.code] ?? false;
+              return SizedBox(
+                width: 40,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Switch(
+                    padding: EdgeInsets.zero,
+                    value: enabled,
+                    onChanged: (value) {
+                      context.read<LeaguesCubit>().toggleLeague(
+                            league: league.code,
+                            enabled: value,
+                          );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
-        ),
+          const SizedBox(width: 5),
+          CrestImage(crest: league.emblem),
+          const SizedBox(width: 5),
+          Expanded(child: ScrollText(text: league.name)),
+        ],
       ),
     );
   }

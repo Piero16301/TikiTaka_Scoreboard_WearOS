@@ -40,7 +40,7 @@ class Team extends Equatable {
     address: '',
     website: '',
     founded: 0,
-    clubColors: <String>[],
+    clubColors: '',
     venue: '',
     runningCompetitions: <Competition>[],
     coach: Staff.empty,
@@ -76,7 +76,7 @@ class Team extends Equatable {
   final int founded;
 
   /// Colores del club
-  final List<String> clubColors;
+  final String clubColors;
 
   /// Estadio del equipo
   final String venue;

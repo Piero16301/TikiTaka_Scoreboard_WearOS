@@ -101,27 +101,24 @@ class CardThemes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Row(
-          children: [
-            BlocBuilder<AppCubit, AppState>(
-              builder: (context, state) => Radio<bool>(
-                value: isDark,
-                groupValue: state.darkMode,
-                onChanged: (v) =>
-                    context.read<AppCubit>().changeTheme(darkMode: v ?? true),
-              ),
+    return AppCardData(
+      child: Row(
+        children: [
+          BlocBuilder<AppCubit, AppState>(
+            builder: (context, state) => Radio<bool>(
+              value: isDark,
+              groupValue: state.darkMode,
+              onChanged: (v) =>
+                  context.read<AppCubit>().changeTheme(darkMode: v ?? true),
             ),
-            HugeIcon(
-              icon: icon,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: ScrollText(text: text)),
-          ],
-        ),
+          ),
+          HugeIcon(
+            icon: icon,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 10),
+          Expanded(child: ScrollText(text: text)),
+        ],
       ),
     );
   }

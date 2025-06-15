@@ -19,7 +19,7 @@ Team _$TeamFromJson(Map<String, dynamic> json) {
     address: json['address'] as String? ?? '',
     website: json['website'] as String? ?? '',
     founded: json['founded'] as int? ?? 0,
-    clubColors: (json['clubColors'] as String? ?? '').split(' / '),
+    clubColors: json['clubColors'] as String? ?? '',
     venue: json['venue'] as String? ?? '',
     runningCompetitions: (json['runningCompetitions'] as List<dynamic>?)
             ?.map((e) => Competition.fromJson(e as Map<String, dynamic>))

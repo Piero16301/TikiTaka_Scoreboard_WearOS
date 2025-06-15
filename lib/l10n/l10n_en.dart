@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updatingMatches => 'Updating matches...';
 
   @override
-  String updatedMatches(num seconds) {
+  String updatedSecondsAgo(num seconds) {
     String _temp0 = intl.Intl.pluralLogic(
       seconds,
       locale: localeName,
@@ -63,6 +63,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get titleMatch => 'Match';
 
   @override
+  String get errorMatch => 'Error loading match';
+
+  @override
+  String get notFoundMatch => 'Match not found';
+
+  @override
   String get updatedAtMatch => 'Updated at';
 
   @override
@@ -97,6 +103,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pointsAbbr => 'PT';
+
+  @override
+  String get titleTeam => 'Team';
+
+  @override
+  String get errorTeam => 'Error loading team';
+
+  @override
+  String get notFoundTeam => 'Team not found';
+
+  @override
+  String updatedDaysAgo(num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Updated $days days ago',
+      one: 'Updated $days day ago',
+      zero: 'Updated today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get areaTeam => 'Area';
+
+  @override
+  String get coachTeam => 'Coach';
+
+  @override
+  String coachAgeTeam(num age) {
+    return '$age years';
+  }
+
+  @override
+  String get untilTeam => 'Until';
 
   @override
   String get titleSettings => 'Settings';

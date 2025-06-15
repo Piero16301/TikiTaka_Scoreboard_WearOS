@@ -8,6 +8,7 @@ import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/match/match.dart';
+import 'package:tiki_taka/team/team.dart';
 import 'package:user_api/user_api.dart';
 import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
@@ -86,7 +87,7 @@ class _MatchViewState extends State<MatchView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.errorMatches,
+                        l10n.errorMatch,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -110,7 +111,7 @@ class _MatchViewState extends State<MatchView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        l10n.emptyMatches,
+                        l10n.notFoundMatch,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
@@ -238,7 +239,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
         final delta = DateTime.now().difference(configs.first.lastUpdate);
 
         return Text(
-          l10n.updatedMatches(delta.inSeconds),
+          l10n.updatedSecondsAgo(delta.inSeconds),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 10,
@@ -256,88 +257,80 @@ class ShimmerTeamsCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  const Expanded(child: SizedBox.shrink()),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        l10n.halfTimeAbbr,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              const Expanded(child: SizedBox.shrink()),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    l10n.halfTimeAbbr,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        l10n.fullTimeAbbr,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    l10n.fullTimeAbbr,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                ],
+                ),
               ),
-              const Row(
-                children: [
-                  SizedBox(width: 5),
-                  AppSchimmer(height: 35, width: 35),
-                  SizedBox(width: 5),
-                  Expanded(child: AppSchimmer()),
-                  SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: AppSchimmer(width: 20),
-                  ),
-                  SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: AppSchimmer(width: 20),
-                  ),
-                  SizedBox(width: 10),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const Row(
-                children: [
-                  SizedBox(width: 5),
-                  AppSchimmer(height: 35, width: 35),
-                  SizedBox(width: 5),
-                  Expanded(child: AppSchimmer()),
-                  SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: AppSchimmer(width: 20),
-                  ),
-                  SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: AppSchimmer(width: 20),
-                  ),
-                  SizedBox(width: 10),
-                ],
-              ),
-              const SizedBox(height: 5),
-              const AppSchimmer(width: 100),
+              const SizedBox(width: 10),
             ],
           ),
-        ),
+          const Row(
+            children: [
+              AppSchimmer(height: 35, width: 35),
+              SizedBox(width: 5),
+              Expanded(child: AppSchimmer()),
+              SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: AppSchimmer(width: 20),
+              ),
+              SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: AppSchimmer(width: 20),
+              ),
+              SizedBox(width: 10),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const Row(
+            children: [
+              AppSchimmer(height: 35, width: 35),
+              SizedBox(width: 5),
+              Expanded(child: AppSchimmer()),
+              SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: AppSchimmer(width: 20),
+              ),
+              SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: AppSchimmer(width: 20),
+              ),
+              SizedBox(width: 10),
+            ],
+          ),
+          const SizedBox(height: 5),
+          const AppSchimmer(width: 100),
+        ],
       ),
     );
   }
@@ -355,134 +348,135 @@ class TeamsCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  const Expanded(child: SizedBox.shrink()),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        l10n.halfTimeAbbr,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              const Expanded(child: SizedBox.shrink()),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    l10n.halfTimeAbbr,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        l10n.fullTimeAbbr,
-                        style: const TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
+                ),
               ),
-              Row(
-                children: [
-                  const SizedBox(width: 5),
-                  CrestImage(
-                    crest: match.homeTeam.crest,
-                    fit: BoxFit.cover,
-                    dimension: 35,
-                  ),
-                  const SizedBox(width: 5),
-                  Expanded(child: ScrollText(text: match.homeTeam.name)),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        match.score.halfTime.home.toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    l10n.fullTimeAbbr,
+                    style: const TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        match.score.fullTime.home.toString(),
-                        style: const TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  const SizedBox(width: 5),
-                  CrestImage(
-                    crest: match.awayTeam.crest,
-                    fit: BoxFit.cover,
-                    dimension: 35,
-                  ),
-                  const SizedBox(width: 5),
-                  Expanded(child: ScrollText(text: match.awayTeam.name)),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        match.score.halfTime.away.toString(),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: 20,
-                    child: Center(
-                      child: Text(
-                        match.score.fullTime.away.toString(),
-                        style: const TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Text(
-                getMatchState(match.status, match.utcDate!, l10n),
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-        ),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed(
+              TeamPage.routeName,
+              arguments: match.homeTeam.id,
+            ),
+            child: Row(
+              children: [
+                CrestImage(
+                  crest: match.homeTeam.crest,
+                  fit: BoxFit.cover,
+                  dimension: 35,
+                ),
+                const SizedBox(width: 5),
+                Expanded(child: ScrollText(text: match.homeTeam.name)),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: 20,
+                  child: Center(
+                    child: Text(
+                      match.score.halfTime.home.toString(),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: 20,
+                  child: Center(
+                    child: Text(
+                      match.score.fullTime.home.toString(),
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pushNamed(
+              TeamPage.routeName,
+              arguments: match.awayTeam.id,
+            ),
+            child: Row(
+              children: [
+                CrestImage(
+                  crest: match.awayTeam.crest,
+                  fit: BoxFit.cover,
+                  dimension: 35,
+                ),
+                const SizedBox(width: 5),
+                Expanded(child: ScrollText(text: match.awayTeam.name)),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: 20,
+                  child: Center(
+                    child: Text(
+                      match.score.halfTime.away.toString(),
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: 20,
+                  child: Center(
+                    child: Text(
+                      match.score.fullTime.away.toString(),
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            getMatchState(match.status, match.utcDate!, l10n),
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -495,44 +489,38 @@ class ShimmerRefereeCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Text(
+            l10n.refereeMatch.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Row(
             children: [
-              Text(
-                l10n.refereeMatch.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
+              HugeIcon(
+                icon: HugeIcons.strokeRoundedWhistle,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
               ),
-              const SizedBox(height: 5),
-              Row(
-                children: [
-                  HugeIcon(
-                    icon: HugeIcons.strokeRoundedWhistle,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AppSchimmer(),
-                        SizedBox(height: 5),
-                        AppSchimmer(),
-                      ],
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AppSchimmer(),
+                    SizedBox(height: 5),
+                    AppSchimmer(),
+                  ],
+                ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
@@ -550,57 +538,51 @@ class RefereeCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          child: Column(
-            children: [
-              Text(
-                l10n.refereeMatch.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 5),
-              ...referees.map((referee) {
-                return Row(
-                  children: [
-                    HugeIcon(
-                      icon: HugeIcons.strokeRoundedWhistle,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ScrollText(
-                            text: referee.name,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            referee.nationality,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              }),
-            ],
+    return AppCardData(
+      child: Column(
+        children: [
+          Text(
+            l10n.refereeMatch.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
           ),
-        ),
+          const SizedBox(height: 5),
+          ...referees.map((referee) {
+            return Row(
+              children: [
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedWhistle,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ScrollText(
+                        text: referee.name,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        referee.nationality,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          }),
+        ],
       ),
     );
   }
@@ -613,43 +595,37 @@ class ShimmerCompetitionCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Text(
+            l10n.competitionMatch.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Row(
             children: [
-              Text(
-                l10n.competitionMatch.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  AppSchimmer(height: 30, width: 30),
-                  SizedBox(width: 10),
-                  Expanded(child: AppSchimmer()),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const Row(
-                children: [
-                  AppSchimmer(height: 30, width: 30),
-                  SizedBox(width: 10),
-                  Expanded(child: AppSchimmer()),
-                ],
-              ),
-              const SizedBox(height: 10),
-              const AppSchimmer(width: 100),
-              const SizedBox(height: 5),
-              const AppSchimmer(width: 50),
+              AppSchimmer(height: 30, width: 30),
+              SizedBox(width: 10),
+              Expanded(child: AppSchimmer()),
             ],
           ),
-        ),
+          const SizedBox(height: 10),
+          const Row(
+            children: [
+              AppSchimmer(height: 30, width: 30),
+              SizedBox(width: 10),
+              Expanded(child: AppSchimmer()),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const AppSchimmer(width: 100),
+          const SizedBox(height: 5),
+          const AppSchimmer(width: 50),
+        ],
       ),
     );
   }
@@ -667,64 +643,58 @@ class CompetitionCardMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Text(
+            l10n.competitionMatch.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
             children: [
-              Text(
-                l10n.competitionMatch.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
+              CrestImage(
+                crest: match.area.flag,
+                fit: BoxFit.cover,
+                dimension: 30,
               ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  CrestImage(
-                    crest: match.area.flag,
-                    fit: BoxFit.cover,
-                    dimension: 30,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(child: ScrollText(text: match.area.name)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  CrestImage(
-                    crest: match.competition.emblem,
-                    fit: BoxFit.cover,
-                    dimension: 30,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(child: ScrollText(text: match.competition.name)),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '${l10n.seasonMatch} ${match.season.startDate!.year}'
-                '-${match.season.endDate!.year}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                '${l10n.matchdayMatch} ${match.matchday}',
-                style: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              const SizedBox(width: 10),
+              Expanded(child: ScrollText(text: match.area.name)),
             ],
           ),
-        ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              CrestImage(
+                crest: match.competition.emblem,
+                fit: BoxFit.cover,
+                dimension: 30,
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: ScrollText(text: match.competition.name)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            '${l10n.seasonMatch} ${match.season.startDate!.year}'
+            '-${match.season.endDate!.year}',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            '${l10n.matchdayMatch} ${match.matchday}',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -737,114 +707,108 @@ class ShimmerStandingsMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-          child: Column(
+    return AppCardData(
+      child: Column(
+        children: [
+          Text(
+            l10n.standingsMatch.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Column(
+            spacing: 5,
             children: [
-              Text(
-                l10n.standingsMatch.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 5),
-              Column(
-                spacing: 5,
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      const Expanded(child: SizedBox.shrink()),
-                      SizedBox(
-                        width: 21,
-                        child: Center(
-                          child: Text(
-                            l10n.playedGamesAbbr,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                  const Expanded(child: SizedBox.shrink()),
+                  SizedBox(
+                    width: 21,
+                    child: Center(
+                      child: Text(
+                        l10n.playedGamesAbbr,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        width: 21,
-                        child: Center(
-                          child: Text(
-                            l10n.goalDifferenceAbbr,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        width: 21,
-                        child: Center(
-                          child: Text(
-                            l10n.pointsAbbr,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  ...List.generate(
-                    numberOfShimmers * 4,
-                    (index) => Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 2.5,
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: 21,
+                    child: Center(
+                      child: Text(
+                        l10n.goalDifferenceAbbr,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Row(
-                        spacing: 5,
-                        children: [
-                          SizedBox(
-                            width: 20,
-                            child: Center(
-                              child: Text(
-                                (index + 1).toString(),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const AppSchimmer(height: 25, width: 25),
-                          const Expanded(child: AppSchimmer()),
-                          const SizedBox(
-                            width: 21,
-                            child: AppSchimmer(width: 21),
-                          ),
-                          const SizedBox(
-                            width: 21,
-                            child: AppSchimmer(width: 21),
-                          ),
-                          const SizedBox(
-                            width: 21,
-                            child: AppSchimmer(width: 21),
-                          ),
-                        ],
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: 21,
+                    child: Center(
+                      child: Text(
+                        l10n.pointsAbbr,
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
+              ...List.generate(
+                numberOfShimmers * 4,
+                (index) => Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2.5,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    spacing: 5,
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        child: Center(
+                          child: Text(
+                            (index + 1).toString(),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const AppSchimmer(height: 25, width: 25),
+                      const Expanded(child: AppSchimmer()),
+                      const SizedBox(
+                        width: 21,
+                        child: AppSchimmer(width: 21),
+                      ),
+                      const SizedBox(
+                        width: 21,
+                        child: AppSchimmer(width: 21),
+                      ),
+                      const SizedBox(
+                        width: 21,
+                        child: AppSchimmer(width: 21),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
@@ -868,17 +832,11 @@ class StandingsMatch extends StatelessWidget {
           .getStandings(leagueId: match.competition.id.toString()),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: Center(
-                  child: SizedBox.square(
-                    dimension: 20,
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+          return const AppCardData(
+            child: Center(
+              child: SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator(),
               ),
             ),
           );
@@ -911,247 +869,232 @@ class StandingsMatch extends StatelessWidget {
             .toList();
 
         if (standings.length == 1) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                child: Column(
+          return AppCardData(
+            child: Column(
+              children: [
+                Text(
+                  l10n.standingsMatch.toUpperCase(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Column(
+                  spacing: 5,
                   children: [
-                    Text(
-                      l10n.standingsMatch.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Column(
-                      spacing: 5,
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            const Expanded(child: SizedBox.shrink()),
-                            SizedBox(
-                              width: 21,
-                              child: Center(
-                                child: Text(
-                                  l10n.playedGamesAbbr,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                        const Expanded(child: SizedBox.shrink()),
+                        SizedBox(
+                          width: 21,
+                          child: Center(
+                            child: Text(
+                              l10n.playedGamesAbbr,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 5),
-                            SizedBox(
-                              width: 21,
-                              child: Center(
-                                child: Text(
-                                  l10n.goalDifferenceAbbr,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            SizedBox(
-                              width: 21,
-                              child: Center(
-                                child: Text(
-                                  l10n.pointsAbbr,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                        ...standings.first.table.map(
-                          (row) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 2.5,
+                        const SizedBox(width: 5),
+                        SizedBox(
+                          width: 21,
+                          child: Center(
+                            child: Text(
+                              l10n.goalDifferenceAbbr,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: getRowStandingColor(row, match),
-                            ),
-                            child: Row(
-                              spacing: 5,
-                              children: [
-                                SizedBox(
-                                  width: 20,
-                                  child: Center(
-                                    child: Text(
-                                      row.position.toString(),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                CrestImage(
-                                  crest: row.team.crest,
-                                  dimension: 25,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    row.team.tla,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                PointTextMatch(
-                                  value: row.playedGames,
-                                ),
-                                PointTextMatch(
-                                  value: row.goalDifference,
-                                ),
-                                PointTextMatch(
-                                  value: row.points,
-                                ),
-                              ],
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        SizedBox(
+                          width: 21,
+                          child: Center(
+                            child: Text(
+                              l10n.pointsAbbr,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
+                    ...standings.first.table.map(
+                      (row) => Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 2.5,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: getRowStandingColor(row, match),
+                        ),
+                        child: Row(
+                          spacing: 5,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              child: Center(
+                                child: Text(
+                                  row.position.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            CrestImage(
+                              crest: row.team.crest,
+                              dimension: 25,
+                            ),
+                            Expanded(
+                              child: Text(
+                                row.team.tla,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            PointTextMatch(
+                              value: row.playedGames,
+                            ),
+                            PointTextMatch(
+                              value: row.goalDifference,
+                            ),
+                            PointTextMatch(
+                              value: row.points,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-              ),
+              ],
             ),
           );
         } else {
           return Column(
             children: standings
                 .map(
-                  (standing) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5,
-                          horizontal: 5,
+                  (standing) => AppCardData(
+                    child: Column(
+                      children: [
+                        Text(
+                          standing.group.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                         ),
-                        child: Column(
+                        const SizedBox(height: 5),
+                        Column(
+                          spacing: 5,
                           children: [
-                            Text(
-                              standing.group.toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Column(
-                              spacing: 5,
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    const Expanded(child: SizedBox.shrink()),
-                                    SizedBox(
-                                      width: 21,
-                                      child: Center(
-                                        child: Text(
-                                          l10n.playedGamesAbbr,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
+                                const Expanded(child: SizedBox.shrink()),
+                                SizedBox(
+                                  width: 21,
+                                  child: Center(
+                                    child: Text(
+                                      l10n.playedGamesAbbr,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(width: 5),
-                                    SizedBox(
-                                      width: 21,
-                                      child: Center(
-                                        child: Text(
-                                          l10n.goalDifferenceAbbr,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    SizedBox(
-                                      width: 21,
-                                      child: Center(
-                                        child: Text(
-                                          l10n.pointsAbbr,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                                ...standing.table.map(
-                                  (row) => Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 2.5,
+                                const SizedBox(width: 5),
+                                SizedBox(
+                                  width: 21,
+                                  child: Center(
+                                    child: Text(
+                                      l10n.goalDifferenceAbbr,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: getRowStandingColor(row, match),
-                                    ),
-                                    child: Row(
-                                      spacing: 5,
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                          child: Center(
-                                            child: Text(
-                                              row.position.toString(),
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        CrestImage(
-                                          crest: row.team.crest,
-                                          dimension: 25,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            row.team.tla,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        PointTextMatch(
-                                          value: row.playedGames,
-                                        ),
-                                        PointTextMatch(
-                                          value: row.goalDifference,
-                                        ),
-                                        PointTextMatch(
-                                          value: row.points,
-                                        ),
-                                      ],
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                                SizedBox(
+                                  width: 21,
+                                  child: Center(
+                                    child: Text(
+                                      l10n.pointsAbbr,
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
+                            ...standing.table.map(
+                              (row) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 2.5,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: getRowStandingColor(row, match),
+                                ),
+                                child: Row(
+                                  spacing: 5,
+                                  children: [
+                                    SizedBox(
+                                      width: 20,
+                                      child: Center(
+                                        child: Text(
+                                          row.position.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    CrestImage(
+                                      crest: row.team.crest,
+                                      dimension: 25,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        row.team.tla,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    PointTextMatch(
+                                      value: row.playedGames,
+                                    ),
+                                    PointTextMatch(
+                                      value: row.goalDifference,
+                                    ),
+                                    PointTextMatch(
+                                      value: row.points,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 )

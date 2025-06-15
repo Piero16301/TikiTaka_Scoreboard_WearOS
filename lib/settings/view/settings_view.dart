@@ -112,26 +112,24 @@ class ConfigurationSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Row(
-          spacing: 10,
-          children: [
-            const SizedBox(width: 0),
-            HugeIcon(
-              icon: icon,
-              size: 30,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            Expanded(child: ScrollText(text: title)),
-            IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(route),
-              icon: const Icon(Icons.arrow_forward_ios),
-              padding: EdgeInsets.zero,
-            ),
-          ],
-        ),
+    return AppCardData(
+      child: Row(
+        children: [
+          const SizedBox(width: 10),
+          HugeIcon(
+            icon: icon,
+            size: 30,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: 5),
+          Expanded(child: ScrollText(text: title)),
+          const SizedBox(width: 5),
+          IconButton(
+            onPressed: () => Navigator.of(context).pushNamed(route),
+            icon: const Icon(Icons.arrow_forward_ios),
+            padding: EdgeInsets.zero,
+          ),
+        ],
       ),
     );
   }
@@ -184,19 +182,19 @@ class AppInfoSettings extends StatelessWidget {
             packageInfo.appName,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 16,
             ),
           ),
           Text(
             'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 10,
             ),
           ),
           Text(
             '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 10,
             ),
           ),
         ],

@@ -176,29 +176,23 @@ class ShimmerCardNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              SizedBox(width: 10),
-              AppSchimmer(height: 40, width: 40),
-              SizedBox(width: 10),
-              Expanded(child: AppSchimmer()),
-              SizedBox(width: 10),
-              SizedBox.square(
-                dimension: 40,
-                child: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.arrow_forward_ios),
-                  padding: EdgeInsets.zero,
-                ),
-              ),
-            ],
+    return const AppCardData(
+      child: Row(
+        children: [
+          SizedBox(width: 10),
+          AppSchimmer(height: 40, width: 40),
+          SizedBox(width: 10),
+          Expanded(child: AppSchimmer()),
+          SizedBox(width: 10),
+          SizedBox.square(
+            dimension: 40,
+            child: IconButton(
+              onPressed: null,
+              icon: Icon(Icons.arrow_forward_ios),
+              padding: EdgeInsets.zero,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -214,32 +208,25 @@ class LeagueCardNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              CrestImage(crest: league.emblem),
-              const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: league.name)),
-              const SizedBox(width: 10),
-              SizedBox.square(
-                dimension: 40,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pushNamed(
-                    TeamsPage.routeName,
-                    arguments: league.id,
-                  ),
-                  icon: const Icon(Icons.arrow_forward_ios),
-                  padding: EdgeInsets.zero,
-                ),
+    return AppCardData(
+      child: Row(
+        children: [
+          CrestImage(crest: league.emblem),
+          const SizedBox(width: 5),
+          Expanded(child: ScrollText(text: league.name)),
+          const SizedBox(width: 5),
+          SizedBox.square(
+            dimension: 40,
+            child: IconButton(
+              onPressed: () => Navigator.of(context).pushNamed(
+                TeamsPage.routeName,
+                arguments: league.id,
               ),
-            ],
+              icon: const Icon(Icons.arrow_forward_ios),
+              padding: EdgeInsets.zero,
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

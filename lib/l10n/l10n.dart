@@ -112,11 +112,11 @@ abstract class AppLocalizations {
   /// **'Updating matches...'**
   String get updatingMatches;
 
-  /// No description provided for @updatedMatches.
+  /// No description provided for @updatedSecondsAgo.
   ///
   /// In en, this message translates to:
   /// **'{seconds, plural, =0 {Updated now} one {Updated {seconds} second ago} other {Updated {seconds} seconds ago}}'**
-  String updatedMatches(num seconds);
+  String updatedSecondsAgo(num seconds);
 
   /// No description provided for @emptyMatches.
   ///
@@ -190,6 +190,18 @@ abstract class AppLocalizations {
   /// **'Match'**
   String get titleMatch;
 
+  /// No description provided for @errorMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading match'**
+  String get errorMatch;
+
+  /// No description provided for @notFoundMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Match not found'**
+  String get notFoundMatch;
+
   /// No description provided for @updatedAtMatch.
   ///
   /// In en, this message translates to:
@@ -261,6 +273,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'PT'**
   String get pointsAbbr;
+
+  /// No description provided for @titleTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team'**
+  String get titleTeam;
+
+  /// No description provided for @errorTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading team'**
+  String get errorTeam;
+
+  /// No description provided for @notFoundTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Team not found'**
+  String get notFoundTeam;
+
+  /// No description provided for @updatedDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =0 {Updated today} one {Updated {days} day ago} other {Updated {days} days ago}}'**
+  String updatedDaysAgo(num days);
+
+  /// No description provided for @areaTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Area'**
+  String get areaTeam;
+
+  /// No description provided for @coachTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get coachTeam;
+
+  /// No description provided for @coachAgeTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'{age} years'**
+  String coachAgeTeam(num age);
+
+  /// No description provided for @untilTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Until'**
+  String get untilTeam;
 
   /// No description provided for @titleSettings.
   ///

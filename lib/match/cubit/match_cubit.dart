@@ -57,7 +57,6 @@ class MatchCubit extends Cubit<MatchState> {
     final snapshots = state.configsCollection
         ?.where('id', isEqualTo: matchesCollection)
         .snapshots();
-
     return snapshots;
   }
 }

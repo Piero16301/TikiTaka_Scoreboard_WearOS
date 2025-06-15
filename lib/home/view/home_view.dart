@@ -252,7 +252,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
         final delta = DateTime.now().difference(configs.first.lastUpdate);
 
         return Text(
-          l10n.updatedMatches(delta.inSeconds),
+          l10n.updatedSecondsAgo(delta.inSeconds),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 10,
@@ -268,43 +268,37 @@ class ShimmerMatchCardHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Column(
+    return const AppCardData(
+      child: Column(
+        children: [
+          AppSchimmer(width: 100),
+          SizedBox(height: 5),
+          Row(
             children: [
-              AppSchimmer(width: 100),
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppSchimmer(height: 40, width: 40),
-                        SizedBox(height: 5),
-                        AppSchimmer(width: 40),
-                      ],
-                    ),
-                  ),
-                  Expanded(child: AppSchimmer(height: 30)),
-                  Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AppSchimmer(height: 40, width: 40),
-                        SizedBox(height: 5),
-                        AppSchimmer(width: 40),
-                      ],
-                    ),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppSchimmer(height: 40, width: 40),
+                    SizedBox(height: 5),
+                    AppSchimmer(width: 40),
+                  ],
+                ),
+              ),
+              Expanded(child: AppSchimmer(height: 30)),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppSchimmer(height: 40, width: 40),
+                    SizedBox(height: 5),
+                    AppSchimmer(width: 40),
+                  ],
+                ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
@@ -323,60 +317,54 @@ class MatchCardHome extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final state = getMatchState(match.status, match.utcDate!, l10n);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+    return AppCardData(
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           MatchPage.routeName,
           arguments: match.id,
         ),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5),
-            child: Column(
+        child: Column(
+          children: [
+            Text(
+              match.competition.name,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Row(
               children: [
-                Text(
-                  match.competition.name,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CrestImage(crest: match.homeTeam.crest),
+                      const SizedBox(height: 5),
+                      Text(
+                        match.homeTeam.tla,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CrestImage(crest: match.homeTeam.crest),
-                          const SizedBox(height: 5),
-                          Text(
-                            match.homeTeam.tla,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                getMatchStatus(match.status, state, match),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CrestImage(crest: match.awayTeam.crest),
+                      const SizedBox(height: 5),
+                      Text(
+                        match.awayTeam.tla,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    getMatchStatus(match.status, state, match),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CrestImage(crest: match.awayTeam.crest),
-                          const SizedBox(height: 5),
-                          Text(
-                            match.awayTeam.tla,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -409,10 +397,10 @@ class MatchCardHome extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              state,
+            ScrollText(
+              text: state,
               style: const TextStyle(
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -439,8 +427,8 @@ class MatchCardHome extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              state,
+            ScrollText(
+              text: state,
               style: const TextStyle(
                 fontSize: 9,
                 fontWeight: FontWeight.bold,

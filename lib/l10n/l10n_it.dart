@@ -15,7 +15,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get updatingMatches => 'Aggiornamento partite...';
 
   @override
-  String updatedMatches(num seconds) {
+  String updatedSecondsAgo(num seconds) {
     String _temp0 = intl.Intl.pluralLogic(
       seconds,
       locale: localeName,
@@ -63,6 +63,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get titleMatch => 'Partita';
 
   @override
+  String get errorMatch => 'Errore nel caricamento della partita';
+
+  @override
+  String get notFoundMatch => 'Partita non trovata';
+
+  @override
   String get updatedAtMatch => 'Aggiornato alle';
 
   @override
@@ -97,6 +103,41 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pointsAbbr => 'PT';
+
+  @override
+  String get titleTeam => 'Squadra';
+
+  @override
+  String get errorTeam => 'Errore nel caricamento della squadra';
+
+  @override
+  String get notFoundTeam => 'Squadra non trovata';
+
+  @override
+  String updatedDaysAgo(num days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Aggiornata $days giorni fa',
+      one: 'Aggiornata $days giorno fa',
+      zero: 'Aggiornata oggi',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get areaTeam => 'Area';
+
+  @override
+  String get coachTeam => 'Allenatore';
+
+  @override
+  String coachAgeTeam(num age) {
+    return '$age anni';
+  }
+
+  @override
+  String get untilTeam => 'Fino a';
 
   @override
   String get titleSettings => 'Impostazioni';

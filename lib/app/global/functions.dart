@@ -7,7 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:tiki_taka/app/global/global.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:vector_graphics/vector_graphics.dart';
-import 'package:vector_graphics_compiler/vector_graphics_compiler.dart';
+import 'package:vector_graphics_compiler/vector_graphics_compiler.dart'
+    hide Color;
 
 String getMatchState(String status, DateTime date, AppLocalizations l10n) {
   switch (status) {
@@ -55,28 +56,26 @@ String notMatchState(String status, AppLocalizations l10n) {
   }
 }
 
-String getTeamColors(String colors) {
+List<Color> getTeamColors(String colors) {
   final list = colors.split(' / ');
-  final colorIcons = <String>[];
+  final colorIcons = <Color>[];
   for (final color in list) {
-    colorIcons.add(colorMap[color] ?? defaultColorIcon);
+    colorIcons.add(colorMap[color] ?? defaultColor);
   }
 
   if (colorIcons.isEmpty) {
     colorIcons
-      ..add(defaultColorIcon)
-      ..add(defaultColorIcon);
+      ..add(defaultColor)
+      ..add(defaultColor);
   } else if (colorIcons.length == 1) {
     colorIcons.add(colorIcons.first);
   } else if (colorIcons.length > 2) {
     colorIcons.removeRange(2, colorIcons.length);
   }
 
-  return colorIcons.join();
-}
-
-String getTeamScore(int score) {
-  return scoreMap[score] ?? defaultScoreIcon;
+  return colorIcons.map((color) {
+    return color.withValues(alpha: 0.4);
+  }).toList();
 }
 
 class NetworkSvgLoader extends BytesLoader {

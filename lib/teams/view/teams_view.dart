@@ -205,33 +205,25 @@ class ShimmerCardTeams extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              SizedBox(width: 10),
-              SizedBox(
-                width: 40,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Switch(
-                    padding: EdgeInsets.zero,
-                    value: false,
-                    onChanged: null,
-                  ),
-                ),
+    return const AppCardData(
+      child: Row(
+        children: [
+          SizedBox(
+            width: 40,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: Switch(
+                padding: EdgeInsets.zero,
+                value: false,
+                onChanged: null,
               ),
-              SizedBox(width: 10),
-              AppSchimmer(height: 40, width: 40),
-              SizedBox(width: 10),
-              Expanded(child: AppSchimmer()),
-              SizedBox(width: 10),
-            ],
+            ),
           ),
-        ),
+          SizedBox(width: 5),
+          AppSchimmer(height: 40, width: 40),
+          SizedBox(width: 5),
+          Expanded(child: AppSchimmer()),
+        ],
       ),
     );
   }
@@ -249,43 +241,35 @@ class TeamCardTeams extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              BlocBuilder<TeamsCubit, TeamsState>(
-                builder: (context, state) {
-                  final enabled = enabledTeams.contains(team.id.toString());
-                  return SizedBox(
-                    width: 40,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Switch(
-                        padding: EdgeInsets.zero,
-                        value: enabled,
-                        onChanged: (value) {
-                          context.read<TeamsCubit>().toggleTeam(
-                                team: team,
-                                enabledTeams: enabledTeams,
-                              );
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(width: 10),
-              CrestImage(crest: team.crest),
-              const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: team.name)),
-              const SizedBox(width: 10),
-            ],
+    return AppCardData(
+      child: Row(
+        children: [
+          BlocBuilder<TeamsCubit, TeamsState>(
+            builder: (context, state) {
+              final enabled = enabledTeams.contains(team.id.toString());
+              return SizedBox(
+                width: 40,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Switch(
+                    padding: EdgeInsets.zero,
+                    value: enabled,
+                    onChanged: (value) {
+                      context.read<TeamsCubit>().toggleTeam(
+                            team: team,
+                            enabledTeams: enabledTeams,
+                          );
+                    },
+                  ),
+                ),
+              );
+            },
           ),
-        ),
+          const SizedBox(width: 5),
+          CrestImage(crest: team.crest),
+          const SizedBox(width: 5),
+          Expanded(child: ScrollText(text: team.name)),
+        ],
       ),
     );
   }

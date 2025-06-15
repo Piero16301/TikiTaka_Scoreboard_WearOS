@@ -7,40 +7,27 @@ const double scrollMagnitude = 10;
 const Duration scrollDuration = Duration(milliseconds: 600);
 const double scrollWidth = 5;
 const double titleSize = 18;
-const String defaultColorIcon = '⚫';
-const colorMap = <String, String>{
-  'Black': '⚫',
-  'Blue': '🔵',
-  'Brown': '🟤',
-  'Claret': '🔴',
-  'Cyan': '🔵',
-  'Dark Blue': '🔵',
-  'Gold': '🟡',
-  'Green': '🟢',
-  'Light Blue': '🔵',
-  'Maroon': '🟤',
-  'Navy Blue': '🔵',
-  'Orange': '🟠',
-  'Purple': '🟣',
-  'Red': '🔴',
-  'Royal Blue': '🔵',
-  'Sky Blue': '🔵',
-  'Violet': '🟣',
-  'White': '⚪',
-  'Yellow': '🟡',
-};
-const String defaultScoreIcon = '0️⃣';
-const scoreMap = <int, String>{
-  0: '0️⃣',
-  1: '1️⃣',
-  2: '2️⃣',
-  3: '3️⃣',
-  4: '4️⃣',
-  5: '5️⃣',
-  6: '6️⃣',
-  7: '7️⃣',
-  8: '8️⃣',
-  9: '9️⃣',
+const Color defaultColor = Colors.transparent;
+const colorMap = <String, Color>{
+  'Black': Colors.black,
+  'Blue': Colors.blue,
+  'Brown': Colors.brown,
+  'Claret': Color(0xFF7F1734),
+  'Cyan': Colors.cyan,
+  'Dark Blue': Colors.indigo,
+  'Gold': Color(0xFFFFD700),
+  'Green': Colors.green,
+  'Light Blue': Colors.lightBlue,
+  'Maroon': Color(0xFF800000),
+  'Navy Blue': Color(0xFF000080),
+  'Orange': Colors.orange,
+  'Purple': Colors.purple,
+  'Red': Colors.red,
+  'Royal Blue': Color(0xFF4169E1),
+  'Sky Blue': Colors.lightBlueAccent,
+  'Violet': Colors.deepPurple,
+  'White': Colors.white,
+  'Yellow': Colors.yellow,
 };
 
 // Firestore collections
