@@ -95,6 +95,8 @@
     },
     "untilTeam": "Until",
     "@untilTeam": {},
+    "competitionsTeam": "Competitions",
+    "@competitionsTeam": {},
 
     "titleSettings": "Settings",
     "@titleSettings": {},
@@ -150,5 +152,16 @@
     "updatedOn": "Updated",
     "@updatedOn": {},
     "todayText": "Today",
-    "@todayText": {}
+    "@todayText": {},
+
+    "leagueCompetition": "League",
+    "@leagueCompetition": {},
+    "cupCompetition": "Cup",
+    "@cupCompetition": {},
+    "superCupCompetition": "Super Cup",
+    "@superCupCompetition": {},
+    "friendlyCompetition": "Friendly",
+    "@friendlyCompetition": {},
+    "otherCompetition": "Other",
+    "@otherCompetition": {}
 }

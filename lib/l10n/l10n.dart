@@ -322,6 +322,12 @@ abstract class AppLocalizations {
   /// **'Until'**
   String get untilTeam;
 
+  /// No description provided for @competitionsTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitions'**
+  String get competitionsTeam;
+
   /// No description provided for @titleSettings.
   ///
   /// In en, this message translates to:
@@ -465,6 +471,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get todayText;
+
+  /// No description provided for @leagueCompetition.
+  ///
+  /// In en, this message translates to:
+  /// **'League'**
+  String get leagueCompetition;
+
+  /// No description provided for @cupCompetition.
+  ///
+  /// In en, this message translates to:
+  /// **'Cup'**
+  String get cupCompetition;
+
+  /// No description provided for @superCupCompetition.
+  ///
+  /// In en, this message translates to:
+  /// **'Super Cup'**
+  String get superCupCompetition;
+
+  /// No description provided for @friendlyCompetition.
+  ///
+  /// In en, this message translates to:
+  /// **'Friendly'**
+  String get friendlyCompetition;
+
+  /// No description provided for @otherCompetition.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get otherCompetition;
 }
 
 class _AppLocalizationsDelegate

@@ -78,6 +78,21 @@ List<Color> getTeamColors(String colors) {
   }).toList();
 }
 
+String getCompetitionType(String type, AppLocalizations l10n) {
+  switch (type) {
+    case 'LEAGUE':
+      return l10n.leagueCompetition.toUpperCase();
+    case 'CUP':
+      return l10n.cupCompetition.toUpperCase();
+    case 'SUPER_CUP':
+      return l10n.superCupCompetition.toUpperCase();
+    case 'FRIENDLY':
+      return l10n.friendlyCompetition.toUpperCase();
+    default:
+      return l10n.otherCompetition.toUpperCase();
+  }
+}
+
 class NetworkSvgLoader extends BytesLoader {
   const NetworkSvgLoader(this.url);
 

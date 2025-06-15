@@ -152,7 +152,11 @@ class _TeamViewState extends State<TeamView> {
                         const SizedBox(height: 10),
                         MainInfoTeam(team: team),
                         CoachCardTeam(coach: team.coach),
-                        const SizedBox(height: 10),
+                        CompetitionsCardTeam(
+                          competitions: team.runningCompetitions,
+                        ),
+                        const BackButtonTeam(),
+                        const SizedBox(height: 50),
                       ],
                     ),
                   ),
@@ -314,6 +318,72 @@ class CoachCardTeam extends StatelessWidget {
   String getUntilContract(String until) {
     final dateParts = until.split('-');
     return dateParts.first;
+  }
+}
+
+class CompetitionsCardTeam extends StatelessWidget {
+  const CompetitionsCardTeam({
+    required this.competitions,
+    super.key,
+  });
+
+  final List<Competition> competitions;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return AppCardData(
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          minTileHeight: 20,
+          title: Text(
+            l10n.competitionsTeam.toUpperCase(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
+            ),
+          ),
+          childrenPadding: const EdgeInsets.only(top: 5),
+          children: competitions
+              .map(
+                (competition) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: [
+                      CrestImage(
+                        crest: competition.emblem,
+                        fit: BoxFit.cover,
+                        dimension: 30,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ScrollText(text: competition.name),
+                            Text(
+                              getCompetitionType(competition.type, l10n),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
   }
 }
 

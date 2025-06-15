@@ -95,6 +95,8 @@
     },
     "untilTeam": "Fino a",
     "@untilTeam": {},
+    "competitionsTeam": "Competizioni",
+    "@competitionsTeam": {},
 
     "titleSettings": "Impostazioni",
     "@titleSettings": {},
@@ -150,5 +152,16 @@
     "updatedOn": "Aggiornato",
     "@updatedOn": {},
     "todayText": "Oggi",
-    "@todayText": {}
+    "@todayText": {},
+
+    "leagueCompetition": "Lega",
+    "@leagueCompetition": {},
+    "cupCompetition": "Coppa",
+    "@cupCompetition": {},
+    "superCupCompetition": "Supercoppa",
+    "@superCupCompetition": {},
+    "friendlyCompetition": "Amichevole",
+    "@friendlyCompetition": {},
+    "otherCompetition": "Altra",
+    "@otherCompetition": {}
 }

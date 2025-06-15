@@ -140,6 +140,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get untilTeam => 'Until';
 
   @override
+  String get competitionsTeam => 'Competitions';
+
+  @override
   String get titleSettings => 'Settings';
 
   @override
@@ -210,4 +213,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayText => 'Today';
+
+  @override
+  String get leagueCompetition => 'League';
+
+  @override
+  String get cupCompetition => 'Cup';
+
+  @override
+  String get superCupCompetition => 'Super Cup';
+
+  @override
+  String get friendlyCompetition => 'Friendly';
+
+  @override
+  String get otherCompetition => 'Other';
 }

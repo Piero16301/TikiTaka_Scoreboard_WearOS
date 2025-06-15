@@ -140,6 +140,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get untilTeam => 'Fino a';
 
   @override
+  String get competitionsTeam => 'Competizioni';
+
+  @override
   String get titleSettings => 'Impostazioni';
 
   @override
@@ -210,4 +213,19 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get todayText => 'Oggi';
+
+  @override
+  String get leagueCompetition => 'Lega';
+
+  @override
+  String get cupCompetition => 'Coppa';
+
+  @override
+  String get superCupCompetition => 'Supercoppa';
+
+  @override
+  String get friendlyCompetition => 'Amichevole';
+
+  @override
+  String get otherCompetition => 'Altra';
 }
