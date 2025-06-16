@@ -129,14 +129,8 @@ class _TeamViewState extends State<TeamView> {
 
         return Scaffold(
           body: SizedBox.expand(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: getTeamColors(team.clubColors),
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
+            child: RippleBackground(
+              colors: getTeamColors(team.clubColors),
               child: RotaryScrollbar(
                 controller: _scrollController,
                 scrollAnimationCurve: Curves.easeInOut,
@@ -144,7 +138,7 @@ class _TeamViewState extends State<TeamView> {
                 scrollMagnitude: scrollMagnitude,
                 width: scrollWidth,
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: Column(
@@ -160,18 +154,20 @@ class _TeamViewState extends State<TeamView> {
                           SquadCardTeam(
                             squad: team.squad
                               ..sort(
-                                (a, b) => getStaffPositionOrder(a.position)
-                                    .compareTo(
-                                        getStaffPositionOrder(b.position)),
+                                (a, b) =>
+                                    getStaffPositionOrder(a.position).compareTo(
+                                  getStaffPositionOrder(b.position),
+                                ),
                               ),
                           ),
                         if (team.staff.isNotEmpty)
                           StaffCardTeam(
                             staff: team.staff
                               ..sort(
-                                (a, b) => getStaffPositionOrder(a.position)
-                                    .compareTo(
-                                        getStaffPositionOrder(b.position)),
+                                (a, b) =>
+                                    getStaffPositionOrder(a.position).compareTo(
+                                  getStaffPositionOrder(b.position),
+                                ),
                               ),
                           ),
                         AdditionalInfoTeam(team: team),
@@ -325,6 +321,8 @@ class CoachCardTeam extends StatelessWidget {
   }
 
   int getAge(String dateOfBirth) {
+    if (dateOfBirth.isEmpty) return 0;
+
     final birthDate = DateTime.parse(dateOfBirth);
     final today = DateTime.now();
     var age = today.year - birthDate.year;
@@ -497,6 +495,8 @@ class SquadCardTeam extends StatelessWidget {
   }
 
   int getAge(String dateOfBirth) {
+    if (dateOfBirth.isEmpty) return 0;
+
     final birthDate = DateTime.parse(dateOfBirth);
     final today = DateTime.now();
     var age = today.year - birthDate.year;
@@ -602,6 +602,8 @@ class StaffCardTeam extends StatelessWidget {
   }
 
   int getAge(String dateOfBirth) {
+    if (dateOfBirth.isEmpty) return 0;
+
     final birthDate = DateTime.parse(dateOfBirth);
     final today = DateTime.now();
     var age = today.year - birthDate.year;

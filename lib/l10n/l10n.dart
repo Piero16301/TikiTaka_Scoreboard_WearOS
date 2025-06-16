@@ -313,7 +313,7 @@ abstract class AppLocalizations {
   /// No description provided for @ageTeam.
   ///
   /// In en, this message translates to:
-  /// **'{age} years'**
+  /// **'{age, plural, =0 {Not available} one {{age} year} other {{age} years}}'**
   String ageTeam(num age);
 
   /// No description provided for @untilTeam.
