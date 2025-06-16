@@ -4,13 +4,13 @@ name: tiki_taka_scoreboard_wearos
 # executes tests, builds the application, and deploys it to the Play Store.
 
 concurrency:
-  group: main-$-$
+  group: dev-$-$
   cancel-in-progress: true
 
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   check-commit-author:
@@ -81,7 +81,7 @@ jobs:
           else
             git add coverage_badge.svg
             git commit -m "Update coverage badge [skip ci]"
-            git push origin main
+            git push origin dev
           fi
 
   build:
@@ -153,4 +153,4 @@ jobs:
           serviceAccountJson: ${{ env.SERVICE_ACCOUNT_PATH }}
           packageName: ${{ env.APP_PACKAGE_NAME }}
           releaseFiles: ${{ env.AAB_PATH }}
-          track: wear:production
+          track: wear:beta

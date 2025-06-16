@@ -132,12 +132,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachTeam => 'Coach';
 
   @override
-  String coachAgeTeam(num age) {
+  String ageTeam(num age) {
     return '$age years';
   }
 
   @override
   String get untilTeam => 'Until';
+
+  @override
+  String get competitionsTeam => 'Competitions';
+
+  @override
+  String get squadTeam => 'Squad';
+
+  @override
+  String get staffTeam => 'Staff';
+
+  @override
+  String get infoTeam => 'Info';
+
+  @override
+  String get stadiumTeam => 'Stadium';
+
+  @override
+  String get foundedTeam => 'Founded';
+
+  @override
+  String get addressTeam => 'Address';
+
+  @override
+  String get websiteTeam => 'Website';
 
   @override
   String get titleSettings => 'Settings';
@@ -210,4 +234,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayText => 'Today';
+
+  @override
+  String get leagueCompetition => 'League';
+
+  @override
+  String get cupCompetition => 'Cup';
+
+  @override
+  String get superCupCompetition => 'Super Cup';
+
+  @override
+  String get friendlyCompetition => 'Friendly';
+
+  @override
+  String get otherCompetition => 'Other';
+
+  @override
+  String get goalkeeperPosition => 'GK';
+
+  @override
+  String get defencePosition => 'DF';
+
+  @override
+  String get midfieldPosition => 'MF';
+
+  @override
+  String get offencePosition => 'OF';
+
+  @override
+  String get leftBackPosition => 'LB';
+
+  @override
+  String get centralMidfieldPosition => 'CM';
+
+  @override
+  String get attackingMidfieldPosition => 'AM';
+
+  @override
+  String get centreForwardPosition => 'CF';
+
+  @override
+  String get leftWingerPosition => 'LW';
+
+  @override
+  String get centreBackPosition => 'CB';
+
+  @override
+  String get rightWingerPosition => 'RW';
+
+  @override
+  String get rightBackPosition => 'RB';
+
+  @override
+  String get defensiveMidfieldPosition => 'DM';
+
+  @override
+  String get unknownPosition => 'UK';
+
+  @override
+  String get leftMidfieldPosition => 'LM';
+
+  @override
+  String get rightMidfieldPosition => 'RM';
+
+  @override
+  String get secondaryForwardPosition => 'SF';
+
+  @override
+  String get coachPosition => 'CO';
+
+  @override
+  String get assistantCoachPosition => 'AC';
+
+  @override
+  String get goalkeepingCoachPosition => 'GC';
+
+  @override
+  String get forwardCoachPosition => 'FC';
+
+  @override
+  String get caretakerManagerPosition => 'CM';
 }

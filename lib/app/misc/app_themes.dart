@@ -30,6 +30,7 @@ ThemeData appDarkTheme({required bool isAmbientModeActive}) {
         ),
       ),
     ),
+    dividerColor: Colors.transparent,
     colorScheme: isAmbientModeActive
         ? const ColorScheme.dark(
             primary: Colors.white24,
@@ -70,6 +71,7 @@ ThemeData appLightTheme({required bool isAmbientModeActive}) {
         ),
       ),
     ),
+    dividerColor: Colors.transparent,
     colorScheme: isAmbientModeActive
         ? const ColorScheme.light(
             primary: Colors.black12,
