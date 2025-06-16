@@ -310,11 +310,11 @@ abstract class AppLocalizations {
   /// **'Coach'**
   String get coachTeam;
 
-  /// No description provided for @coachAgeTeam.
+  /// No description provided for @ageTeam.
   ///
   /// In en, this message translates to:
   /// **'{age} years'**
-  String coachAgeTeam(num age);
+  String ageTeam(num age);
 
   /// No description provided for @untilTeam.
   ///
@@ -327,6 +327,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Competitions'**
   String get competitionsTeam;
+
+  /// No description provided for @squadTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Squad'**
+  String get squadTeam;
+
+  /// No description provided for @staffTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff'**
+  String get staffTeam;
+
+  /// No description provided for @infoTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get infoTeam;
+
+  /// No description provided for @stadiumTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Stadium'**
+  String get stadiumTeam;
+
+  /// No description provided for @foundedTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Founded'**
+  String get foundedTeam;
+
+  /// No description provided for @addressTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressTeam;
+
+  /// No description provided for @websiteTeam.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get websiteTeam;
 
   /// No description provided for @titleSettings.
   ///
@@ -501,6 +543,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other'**
   String get otherCompetition;
+
+  /// No description provided for @goalkeeperPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'GK'**
+  String get goalkeeperPosition;
+
+  /// No description provided for @defencePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'DF'**
+  String get defencePosition;
+
+  /// No description provided for @midfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'MF'**
+  String get midfieldPosition;
+
+  /// No description provided for @offencePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'OF'**
+  String get offencePosition;
+
+  /// No description provided for @leftBackPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'LB'**
+  String get leftBackPosition;
+
+  /// No description provided for @centralMidfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'CM'**
+  String get centralMidfieldPosition;
+
+  /// No description provided for @attackingMidfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'AM'**
+  String get attackingMidfieldPosition;
+
+  /// No description provided for @centreForwardPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'CF'**
+  String get centreForwardPosition;
+
+  /// No description provided for @leftWingerPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'LW'**
+  String get leftWingerPosition;
+
+  /// No description provided for @centreBackPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'CB'**
+  String get centreBackPosition;
+
+  /// No description provided for @rightWingerPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'RW'**
+  String get rightWingerPosition;
+
+  /// No description provided for @rightBackPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'RB'**
+  String get rightBackPosition;
+
+  /// No description provided for @defensiveMidfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'DM'**
+  String get defensiveMidfieldPosition;
+
+  /// No description provided for @unknownPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'UK'**
+  String get unknownPosition;
+
+  /// No description provided for @leftMidfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'LM'**
+  String get leftMidfieldPosition;
+
+  /// No description provided for @rightMidfieldPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'RM'**
+  String get rightMidfieldPosition;
+
+  /// No description provided for @secondaryForwardPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'SF'**
+  String get secondaryForwardPosition;
+
+  /// No description provided for @coachPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'CO'**
+  String get coachPosition;
+
+  /// No description provided for @assistantCoachPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'AC'**
+  String get assistantCoachPosition;
+
+  /// No description provided for @goalkeepingCoachPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'GC'**
+  String get goalkeepingCoachPosition;
+
+  /// No description provided for @forwardCoachPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'FC'**
+  String get forwardCoachPosition;
+
+  /// No description provided for @caretakerManagerPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'CM'**
+  String get caretakerManagerPosition;
 }
 
 class _AppLocalizationsDelegate

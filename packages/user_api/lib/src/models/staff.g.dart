@@ -17,5 +17,6 @@ Staff _$StaffFromJson(Map<String, dynamic> json) {
     contract: Contract.fromJson(
       json['contract'] as Map<String, dynamic>? ?? <String, dynamic>{},
     ),
+    position: json['position'] as String? ?? '',
   );
 }

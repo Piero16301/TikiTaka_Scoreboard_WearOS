@@ -16,6 +16,7 @@ class Staff extends Equatable {
     required this.dateOfBirth,
     required this.nationality,
     required this.contract,
+    required this.position,
   });
 
   /// Crea una instancia de [Staff] a partir de un [Map] json
@@ -30,6 +31,7 @@ class Staff extends Equatable {
     dateOfBirth: '',
     nationality: '',
     contract: Contract.empty,
+    position: '',
   );
 
   /// Id del staff
@@ -53,6 +55,9 @@ class Staff extends Equatable {
   /// Contrato del staff
   final Contract contract;
 
+  /// Posición del staff
+  final String position;
+
   @override
   List<Object> get props => [
         id,
@@ -62,5 +67,6 @@ class Staff extends Equatable {
         dateOfBirth,
         nationality,
         contract,
+        position,
       ];
 }
