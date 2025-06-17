@@ -1,4 +1,4 @@
-name: tiki_taka_scoreboard_wearos
+name: tiki_taka_scoreboard_wearos_main
 # CI workflow for Tiki Taka Scoreboard WearOS application.
 # This workflow checks the commit author, runs semantic checks, spell checks,
 # executes tests, builds the application, and deploys it to the Play Store
@@ -115,6 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
+      SERVICE_ACCOUNT_PATH: service-account.json
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
