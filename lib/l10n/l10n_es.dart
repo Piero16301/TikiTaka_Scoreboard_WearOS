@@ -133,7 +133,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String ageTeam(num age) {
-    return '$age años';
+    String _temp0 = intl.Intl.pluralLogic(
+      age,
+      locale: localeName,
+      other: '$age años',
+      one: '$age año',
+      zero: 'No disponible',
+    );
+    return '$_temp0';
   }
 
   @override

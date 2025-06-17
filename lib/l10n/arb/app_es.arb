@@ -85,7 +85,7 @@
     "@areaTeam": {},
     "coachTeam": "Entrenador",
     "@coachTeam": {},
-    "ageTeam": "{age} años",
+    "ageTeam": "{age, plural, =0 {No disponible} one {{age} año} other {{age} años}}",
     "@ageTeam": {
         "placeholders": {
             "age": {
