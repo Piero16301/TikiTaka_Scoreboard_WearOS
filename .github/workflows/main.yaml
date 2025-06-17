@@ -115,6 +115,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
+      SERVICE_ACCOUNT_PATH: service-account.json
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v4
