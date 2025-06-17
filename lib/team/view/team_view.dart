@@ -45,24 +45,18 @@ class _TeamViewState extends State<TeamView> {
           return Scaffold(
             body: SizedBox.expand(
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleTeam.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
-                      ),
-                      const LastUpdateTeam(isLoading: true),
                       const SizedBox(height: 10),
-                      // Add shimmers
+                      const ShimmerMainInfoTeam(),
+                      const SizedBox(height: 5),
+                      const ShimmerCoachCardTeam(),
+                      ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
+                      ShimmerExpandableCardTeam(title: l10n.squadTeam),
+                      ShimmerExpandableCardTeam(title: l10n.staffTeam),
+                      ShimmerExpandableCardTeam(title: l10n.infoTeam),
                       const BackButtonTeam(),
                       const SizedBox(height: 50),
                     ],
@@ -186,6 +180,35 @@ class _TeamViewState extends State<TeamView> {
   }
 }
 
+class ShimmerMainInfoTeam extends StatelessWidget {
+  const ShimmerMainInfoTeam({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.6),
+                blurRadius: 12,
+                spreadRadius: 3,
+              ),
+            ],
+          ),
+          child: const AppSchimmer(height: 60, width: 60),
+        ),
+        const SizedBox(height: 7.5),
+        const AppSchimmer(height: 20, width: 100),
+        const SizedBox(height: 7.5),
+        const AppSchimmer(width: 50),
+      ],
+    );
+  }
+}
+
 class MainInfoTeam extends StatelessWidget {
   const MainInfoTeam({
     required this.team,
@@ -231,6 +254,51 @@ class MainInfoTeam extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ShimmerCoachCardTeam extends StatelessWidget {
+  const ShimmerCoachCardTeam({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCardData(
+      child: Column(
+        children: [
+          const AppSchimmer(width: 100),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              HugeIcon(
+                icon: HugeIcons.strokeRoundedMentoring,
+                color: Theme.of(context).colorScheme.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 5,
+                  children: [
+                    AppSchimmer(width: 80),
+                    AppSchimmer(width: 70),
+                    AppSchimmer(width: 60),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Column(
+                spacing: 5,
+                children: [
+                  AppSchimmer(width: 30),
+                  AppSchimmer(width: 30),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -336,6 +404,33 @@ class CoachCardTeam extends StatelessWidget {
   String getUntilContract(String until) {
     final dateParts = until.split('-');
     return dateParts.first;
+  }
+}
+
+class ShimmerExpandableCardTeam extends StatelessWidget {
+  const ShimmerExpandableCardTeam({
+    required this.title,
+    super.key,
+  });
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppCardData(
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        minTileHeight: 20,
+        title: Text(
+          title.toUpperCase(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+        childrenPadding: const EdgeInsets.only(top: 5),
+      ),
+    );
   }
 }
 
