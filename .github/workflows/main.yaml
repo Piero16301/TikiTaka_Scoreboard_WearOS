@@ -121,7 +121,7 @@ jobs:
       - name: 🔑 Decode Service Account
         run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}
       - name: 🚀 Promote to Production
-        uses: kevin-david/promote-play-release@v1
+        uses: kevin-david/promote-play-release@v1.2.0
         with:
           service-account-json-file: ${{ env.SERVICE_ACCOUNT_PATH }}
           package-name: ${{ env.APP_PACKAGE_NAME }}
