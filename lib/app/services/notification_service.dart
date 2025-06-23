@@ -61,7 +61,7 @@ class NotificationService {
 
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
-        .collection(notDevicesCollection)
+        .collection(devicesCollection)
         .doc(token)
         .set(
       {
