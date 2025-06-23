@@ -14,13 +14,12 @@ class TeamsCubit extends Cubit<TeamsState> {
 
   void initCollections(int leagueId) {
     final teams = FirebaseFirestore.instance.collection(teamsCollection);
-    final notDevices =
-        FirebaseFirestore.instance.collection(notDevicesCollection);
+    final devices = FirebaseFirestore.instance.collection(devicesCollection);
     emit(
       state.copyWith(
         leagueId: leagueId,
         teamsCollection: teams,
-        notDevicesCollection: notDevices,
+        devicesCollection: devices,
       ),
     );
   }
@@ -33,8 +32,8 @@ class TeamsCubit extends Cubit<TeamsState> {
     return snapshots;
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>? getNotDevices() {
-    final snapshots = state.notDevicesCollection
+  Stream<QuerySnapshot<Map<String, dynamic>>>? getDevices() {
+    final snapshots = state.devicesCollection
         ?.where('token', isEqualTo: NotificationService.instance.token)
         .snapshots();
     return snapshots;
@@ -49,11 +48,11 @@ class TeamsCubit extends Cubit<TeamsState> {
 
     // Update the enabled teams
     if (enabledTeams.contains(team.id.toString())) {
-      state.notDevicesCollection?.doc(token).update({
+      state.devicesCollection?.doc(token).update({
         'enabledTeams': FieldValue.arrayRemove([team.id.toString()]),
       });
     } else {
-      state.notDevicesCollection?.doc(token).update({
+      state.devicesCollection?.doc(token).update({
         'enabledTeams': FieldValue.arrayUnion([team.id.toString()]),
       });
     }
