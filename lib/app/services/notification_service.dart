@@ -67,7 +67,12 @@ class NotificationService {
       {
         'token': token,
         'lastOpenAt': FieldValue.serverTimestamp(),
-        'androidInfo': androidInfo.toJson(),
+        'wearOSInfo': androidInfo.toJson(),
+        'macOsInfo': null,
+        'windowsInfo': null,
+        'androidInfo': null,
+        'iosInfo': null,
+        'webInfo': null,
         'language': localLanguage,
         'darkMode': darkMode,
         'enabledTeams': FieldValue.arrayUnion(<String>[]),
