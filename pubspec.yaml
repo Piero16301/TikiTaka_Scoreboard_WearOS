@@ -19,7 +19,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_local_notifications: ^19.3.0
+  flutter_local_notifications: ^19.4.2
   flutter_localizations:
     sdk: flutter
   google_fonts: ^6.2.1
