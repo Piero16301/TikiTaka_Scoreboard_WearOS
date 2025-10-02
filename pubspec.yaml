@@ -31,7 +31,7 @@ dependencies:
   rotary_scrollbar: ^1.1.0
   shared_preferences: ^2.5.3
   shimmer_animation: ^2.2.2
-  text_scroll: ^0.2.0
+  text_scroll: ^0.2.1
   user_api:
     path: packages/user_api
   user_api_remote:
