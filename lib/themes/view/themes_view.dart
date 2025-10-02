@@ -6,15 +6,14 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
 class ThemesView extends StatefulWidget {
-  ThemesView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
+  ThemesView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
+    : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
 
@@ -51,33 +50,41 @@ class _ThemesViewState extends State<ThemesView> {
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
               controller: _scrollController,
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: ScrollText(
-                      text: l10n.titleTheme.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: titleSize,
+              child: BlocBuilder<AppCubit, AppState>(
+                builder: (context, state) => RadioGroup<bool>(
+                  groupValue: state.darkMode,
+                  onChanged: (value) => context.read<AppCubit>().changeTheme(
+                    darkMode: value ?? true,
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleTheme.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 10),
+                      CardThemes(
+                        isDark: false,
+                        text: l10n.lightTheme,
+                        icon: HugeIcons.strokeRoundedSun01,
+                      ),
+                      CardThemes(
+                        isDark: true,
+                        text: l10n.darkTheme,
+                        icon: HugeIcons.strokeRoundedMoon02,
+                      ),
+                      const BackButtonLanguages(),
+                      const SizedBox(height: 50),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  CardThemes(
-                    isDark: false,
-                    text: l10n.lightTheme,
-                    icon: HugeIcons.strokeRoundedSun01,
-                  ),
-                  CardThemes(
-                    isDark: true,
-                    text: l10n.darkTheme,
-                    icon: HugeIcons.strokeRoundedMoon02,
-                  ),
-                  const BackButtonLanguages(),
-                  const SizedBox(height: 50),
-                ],
+                ),
               ),
             ),
           ),
@@ -97,25 +104,15 @@ class CardThemes extends StatelessWidget {
 
   final bool isDark;
   final String text;
-  final IconData icon;
+  final List<List<dynamic>> icon;
 
   @override
   Widget build(BuildContext context) {
     return AppCardData(
       child: Row(
         children: [
-          BlocBuilder<AppCubit, AppState>(
-            builder: (context, state) => Radio<bool>(
-              value: isDark,
-              groupValue: state.darkMode,
-              onChanged: (v) =>
-                  context.read<AppCubit>().changeTheme(darkMode: v ?? true),
-            ),
-          ),
-          HugeIcon(
-            icon: icon,
-            color: Theme.of(context).colorScheme.primary,
-          ),
+          Radio<bool>(value: isDark),
+          HugeIcon(icon: icon, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 10),
           Expanded(child: ScrollText(text: text)),
         ],

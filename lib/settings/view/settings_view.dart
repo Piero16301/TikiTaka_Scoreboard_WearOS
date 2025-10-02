@@ -10,7 +10,8 @@ import 'package:tiki_taka/languages/languages.dart';
 import 'package:tiki_taka/leagues/leagues.dart';
 import 'package:tiki_taka/notifications/notifications.dart';
 import 'package:tiki_taka/themes/themes.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -107,7 +108,7 @@ class ConfigurationSetting extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final List<List<dynamic>> icon;
   final String route;
 
   @override
@@ -180,22 +181,15 @@ class AppInfoSettings extends StatelessWidget {
         children: [
           Text(
             packageInfo.appName,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           Text(
             'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
-            style: const TextStyle(
-              fontSize: 10,
-            ),
+            style: const TextStyle(fontSize: 10),
           ),
           Text(
             '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
-            style: const TextStyle(
-              fontSize: 10,
-            ),
+            style: const TextStyle(fontSize: 10),
           ),
         ],
       ),

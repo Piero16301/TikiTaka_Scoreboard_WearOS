@@ -219,7 +219,7 @@ int getStaffPositionOrder(String position) {
   }
 }
 
-IconData getStaffPositionIcon(String position) {
+List<List<dynamic>> getStaffPositionIcon(String position) {
   switch (position) {
     case 'Goalkeeper':
       return HugeIcons.strokeRoundedFootball;
