@@ -6,7 +6,8 @@
     <application
         android:label="Tiki-Taka"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_logo">
+        android:icon="@mipmap/ic_logo"
+        android:extractNativeLibs="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"
