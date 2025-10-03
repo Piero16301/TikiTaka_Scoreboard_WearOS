@@ -53,8 +53,8 @@ class NotificationService {
     final androidInfo = LocalSettingsService.instance.androidInfo;
 
     // Get device locale
-    final localLanguage =
-        await LocalSettingsService.instance.getLocalLanguage();
+    final localLanguage = await LocalSettingsService.instance
+        .getLocalLanguage();
 
     // Get device dark mode
     final darkMode = await LocalSettingsService.instance.getDarkMode();
@@ -63,22 +63,19 @@ class NotificationService {
     await FirebaseFirestore.instance
         .collection(devicesCollection)
         .doc(token)
-        .set(
-      {
-        'token': token,
-        'lastOpenAt': FieldValue.serverTimestamp(),
-        'wearOSInfo': androidInfo.toJson(),
-        'macOsInfo': null,
-        'windowsInfo': null,
-        'androidInfo': null,
-        'iosInfo': null,
-        'webInfo': null,
-        'language': localLanguage,
-        'darkMode': darkMode,
-        'enabledTeams': FieldValue.arrayUnion(<String>[]),
-      },
-      SetOptions(merge: true),
-    );
+        .set({
+          'token': token,
+          'lastOpenAt': FieldValue.serverTimestamp(),
+          'wearOSInfo': androidInfo.toJson(),
+          'macOsInfo': null,
+          'windowsInfo': null,
+          'androidInfo': null,
+          'iosInfo': null,
+          'webInfo': null,
+          'language': localLanguage,
+          'darkMode': darkMode,
+          'enabledTeams': FieldValue.arrayUnion(<String>[]),
+        }, SetOptions(merge: true));
 
     // Subscribe to AllDevices topic
     await subscribeToTopic(allDevicesTopic);
@@ -120,11 +117,13 @@ class NotificationService {
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
-    const initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_logo');
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_logo',
+    );
 
     const initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -183,14 +182,9 @@ class NotificationService {
   void _handleBackgroundMessage(String message) {
     debugPrint('Handling a background message: $message');
     if (message.contains('matchId')) {
-      final matchId = int.parse(
-        message.split('matchId:')[1],
-      );
+      final matchId = int.parse(message.split('matchId:')[1]);
       navigatorKey.currentState
-          ?.pushNamed(
-            MatchPage.routeName,
-            arguments: matchId,
-          )
+          ?.pushNamed(MatchPage.routeName, arguments: matchId)
           .ignore();
     }
   }
@@ -242,7 +236,6 @@ extension AndroidInfo on AndroidDeviceInfo {
       'type': type,
       'isPhysicalDevice': isPhysicalDevice,
       'systemFeatures': systemFeatures,
-      'serialNumber': serialNumber,
       'isLowRamDevice': isLowRamDevice,
       'physicalRamSize': physicalRamSize,
       'availableRamSize': availableRamSize,

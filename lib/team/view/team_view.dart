@@ -9,15 +9,14 @@ import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
 import 'package:tiki_taka/team/team.dart';
 import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
 class TeamView extends StatefulWidget {
-  TeamView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
+  TeamView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
+    : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
 
@@ -148,20 +147,18 @@ class _TeamViewState extends State<TeamView> {
                           SquadCardTeam(
                             squad: team.squad
                               ..sort(
-                                (a, b) =>
-                                    getStaffPositionOrder(a.position).compareTo(
-                                  getStaffPositionOrder(b.position),
-                                ),
+                                (a, b) => getStaffPositionOrder(
+                                  a.position,
+                                ).compareTo(getStaffPositionOrder(b.position)),
                               ),
                           ),
                         if (team.staff.isNotEmpty)
                           StaffCardTeam(
                             staff: team.staff
                               ..sort(
-                                (a, b) =>
-                                    getStaffPositionOrder(a.position).compareTo(
-                                  getStaffPositionOrder(b.position),
-                                ),
+                                (a, b) => getStaffPositionOrder(
+                                  a.position,
+                                ).compareTo(getStaffPositionOrder(b.position)),
                               ),
                           ),
                         AdditionalInfoTeam(team: team),
@@ -210,10 +207,7 @@ class ShimmerMainInfoTeam extends StatelessWidget {
 }
 
 class MainInfoTeam extends StatelessWidget {
-  const MainInfoTeam({
-    required this.team,
-    super.key,
-  });
+  const MainInfoTeam({required this.team, super.key});
 
   final Team team;
 
@@ -241,17 +235,11 @@ class MainInfoTeam extends StatelessWidget {
         const SizedBox(height: 5),
         ScrollText(
           text: team.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         ),
         ScrollText(
           text: '${team.shortName} (${team.tla})',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
         ),
       ],
     );
@@ -290,10 +278,7 @@ class ShimmerCoachCardTeam extends StatelessWidget {
               const SizedBox(width: 10),
               const Column(
                 spacing: 5,
-                children: [
-                  AppSchimmer(width: 30),
-                  AppSchimmer(width: 30),
-                ],
+                children: [AppSchimmer(width: 30), AppSchimmer(width: 30)],
               ),
             ],
           ),
@@ -304,10 +289,7 @@ class ShimmerCoachCardTeam extends StatelessWidget {
 }
 
 class CoachCardTeam extends StatelessWidget {
-  const CoachCardTeam({
-    required this.coach,
-    super.key,
-  });
+  const CoachCardTeam({required this.coach, super.key});
 
   final Staff coach;
 
@@ -320,10 +302,7 @@ class CoachCardTeam extends StatelessWidget {
         children: [
           Text(
             l10n.coachTeam.toUpperCase(),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
           ),
           const SizedBox(height: 5),
           Row(
@@ -408,10 +387,7 @@ class CoachCardTeam extends StatelessWidget {
 }
 
 class ShimmerExpandableCardTeam extends StatelessWidget {
-  const ShimmerExpandableCardTeam({
-    required this.title,
-    super.key,
-  });
+  const ShimmerExpandableCardTeam({required this.title, super.key});
 
   final String title;
 
@@ -423,10 +399,7 @@ class ShimmerExpandableCardTeam extends StatelessWidget {
         minTileHeight: 20,
         title: Text(
           title.toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         childrenPadding: const EdgeInsets.only(top: 5),
       ),
@@ -435,10 +408,7 @@ class ShimmerExpandableCardTeam extends StatelessWidget {
 }
 
 class CompetitionsCardTeam extends StatelessWidget {
-  const CompetitionsCardTeam({
-    required this.competitions,
-    super.key,
-  });
+  const CompetitionsCardTeam({required this.competitions, super.key});
 
   final List<Competition> competitions;
 
@@ -452,10 +422,7 @@ class CompetitionsCardTeam extends StatelessWidget {
         minTileHeight: 20,
         title: Text(
           l10n.competitionsTeam.toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         childrenPadding: const EdgeInsets.only(top: 5),
         children: competitions
@@ -476,8 +443,10 @@ class CompetitionsCardTeam extends StatelessWidget {
                         children: [
                           ScrollText(text: competition.name),
                           Text(
-                            getCompetitionType(competition.type, l10n)
-                                .toUpperCase(),
+                            getCompetitionType(
+                              competition.type,
+                              l10n,
+                            ).toUpperCase(),
                             style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
@@ -497,10 +466,7 @@ class CompetitionsCardTeam extends StatelessWidget {
 }
 
 class SquadCardTeam extends StatelessWidget {
-  const SquadCardTeam({
-    required this.squad,
-    super.key,
-  });
+  const SquadCardTeam({required this.squad, super.key});
 
   final List<Staff> squad;
 
@@ -514,10 +480,7 @@ class SquadCardTeam extends StatelessWidget {
         minTileHeight: 20,
         title: Text(
           l10n.squadTeam.toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         childrenPadding: const EdgeInsets.only(top: 5),
         children: squad
@@ -604,10 +567,7 @@ class SquadCardTeam extends StatelessWidget {
 }
 
 class StaffCardTeam extends StatelessWidget {
-  const StaffCardTeam({
-    required this.staff,
-    super.key,
-  });
+  const StaffCardTeam({required this.staff, super.key});
 
   final List<Staff> staff;
 
@@ -621,10 +581,7 @@ class StaffCardTeam extends StatelessWidget {
         minTileHeight: 20,
         title: Text(
           l10n.staffTeam.toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         childrenPadding: const EdgeInsets.only(top: 5),
         children: staff
@@ -711,10 +668,7 @@ class StaffCardTeam extends StatelessWidget {
 }
 
 class AdditionalInfoTeam extends StatelessWidget {
-  const AdditionalInfoTeam({
-    required this.team,
-    super.key,
-  });
+  const AdditionalInfoTeam({required this.team, super.key});
 
   final Team team;
 
@@ -728,10 +682,7 @@ class AdditionalInfoTeam extends StatelessWidget {
         minTileHeight: 20,
         title: Text(
           l10n.infoTeam.toUpperCase(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
         ),
         childrenPadding: const EdgeInsets.only(top: 5),
         children: [
@@ -765,7 +716,7 @@ class AdditionalInfoTeam extends StatelessWidget {
   }
 
   Widget buildInfoRow({
-    required IconData icon,
+    required List<List<dynamic>> icon,
     required String title,
     required String value,
     required BuildContext context,
@@ -808,10 +759,7 @@ class AdditionalInfoTeam extends StatelessWidget {
 }
 
 class LastUpdateTeam extends StatefulWidget {
-  const LastUpdateTeam({
-    this.isLoading = false,
-    super.key,
-  });
+  const LastUpdateTeam({this.isLoading = false, super.key});
 
   final bool isLoading;
 
@@ -826,8 +774,9 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _nowSubscription = Stream<void>.periodic(const Duration(seconds: 1))
-        .listen((_) => setState(() {}));
+    _nowSubscription = Stream<void>.periodic(
+      const Duration(seconds: 1),
+    ).listen((_) => setState(() {}));
     super.initState();
   }
 
@@ -845,35 +794,28 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
     if (widget.isLoading) {
       return Text(
         l10n.updatingMatches,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 10,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
       );
     }
 
     return StreamBuilder(
       stream: context.read<TeamCubit>().getTeamConfigs(),
       builder: (context, snapshot) {
-        final configs = snapshot.data?.docs
+        final configs =
+            snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
             [Config(id: teamsCollection, lastUpdate: DateTime.now())];
 
         if (configs.isEmpty) {
-          configs.add(
-            Config(id: teamsCollection, lastUpdate: DateTime.now()),
-          );
+          configs.add(Config(id: teamsCollection, lastUpdate: DateTime.now()));
         }
 
         final delta = DateTime.now().difference(configs.first.lastUpdate);
 
         return Text(
           l10n.updatedDaysAgo(delta.inDays),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 10,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
         );
       },
     );

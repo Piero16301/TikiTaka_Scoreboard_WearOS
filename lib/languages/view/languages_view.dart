@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka/app/app.dart';
 import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -51,38 +52,45 @@ class _LanguagesViewState extends State<LanguagesView> {
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
               controller: _scrollController,
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: ScrollText(
-                      text: l10n.titleLanguage.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: titleSize,
+              child: BlocBuilder<AppCubit, AppState>(
+                builder: (context, state) => RadioGroup<String>(
+                  groupValue: state.language,
+                  onChanged: (value) =>
+                      context.read<AppCubit>().changeLanguage(value ?? 'en_US'),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleLanguage.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 10),
+                      CardLanguages(
+                        value: 'en_US',
+                        flag: l10n.englishFlag,
+                        language: l10n.englishLanguage,
+                      ),
+                      CardLanguages(
+                        value: 'es_ES',
+                        flag: l10n.spanishFlag,
+                        language: l10n.spanishLanguage,
+                      ),
+                      CardLanguages(
+                        value: 'it_IT',
+                        flag: l10n.italianFlag,
+                        language: l10n.italianLanguage,
+                      ),
+                      const BackButtonLanguages(),
+                      const SizedBox(height: 50),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  CardLanguages(
-                    value: 'en_US',
-                    flag: l10n.englishFlag,
-                    language: l10n.englishLanguage,
-                  ),
-                  CardLanguages(
-                    value: 'es_ES',
-                    flag: l10n.spanishFlag,
-                    language: l10n.spanishLanguage,
-                  ),
-                  CardLanguages(
-                    value: 'it_IT',
-                    flag: l10n.italianFlag,
-                    language: l10n.italianLanguage,
-                  ),
-                  const BackButtonLanguages(),
-                  const SizedBox(height: 50),
-                ],
+                ),
               ),
             ),
           ),
@@ -123,14 +131,7 @@ class CardLanguages extends StatelessWidget {
               ),
               Row(
                 children: [
-                  BlocBuilder<AppCubit, AppState>(
-                    builder: (context, state) => Radio<String>(
-                      value: value,
-                      groupValue: state.language,
-                      onChanged: (v) =>
-                          context.read<AppCubit>().changeLanguage(v ?? value),
-                    ),
-                  ),
+                  Radio<String>(value: value),
                   Expanded(child: ScrollText(text: language)),
                 ],
               ),

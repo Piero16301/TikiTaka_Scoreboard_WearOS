@@ -120,3 +120,6 @@ android/service-account.json
 android/keyPropsBase64
 android/keystoreBase64
 android/serviceAccountBase64
+
+# Generated l10n files
+lib/l10n/gen/
