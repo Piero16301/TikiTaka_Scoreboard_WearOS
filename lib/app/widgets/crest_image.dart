@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 
 class CrestImage extends StatelessWidget {

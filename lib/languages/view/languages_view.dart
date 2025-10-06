@@ -4,8 +4,8 @@ import 'package:dash_flags/dash_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:wearable_rotary/wearable_rotary.dart'
     as wearable_rotary
     show rotaryEvents;

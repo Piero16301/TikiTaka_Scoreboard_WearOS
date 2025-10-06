@@ -1,1 +1,0 @@
-/Users/piero.morales/Documents/StudioProjects/TikiTaka_Scoreboard_WearOS/build/app/intermediates/cxx/RelWithDebInfo/2o732g5v/obj/arm64-v8a

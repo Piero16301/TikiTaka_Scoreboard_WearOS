@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 class AppPage extends StatelessWidget {

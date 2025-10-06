@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tiki_taka/notifications/notifications.dart';
+import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:user_repository/user_repository.dart';
 
 class NotificationsPage extends StatelessWidget {

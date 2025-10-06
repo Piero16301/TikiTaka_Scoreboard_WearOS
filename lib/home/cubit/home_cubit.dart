@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'home_state.dart';

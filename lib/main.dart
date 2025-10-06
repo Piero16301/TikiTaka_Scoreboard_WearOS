@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/bootstrap.dart';
-import 'package:tiki_taka/firebase_options.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/bootstrap.dart';
+import 'package:tiki_taka_scoreboard_wearos/firebase_options.dart';
 import 'package:user_api_remote/user_api_remote.dart';
 import 'package:user_repository/user_repository.dart';
 

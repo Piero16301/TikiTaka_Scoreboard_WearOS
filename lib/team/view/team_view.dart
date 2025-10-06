@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:tiki_taka/team/team.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
 import 'package:user_api/user_api.dart';
 import 'package:wearable_rotary/wearable_rotary.dart'
     as wearable_rotary
@@ -783,7 +783,7 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _nowSubscription.cancel();
+    unawaited(_nowSubscription.cancel());
     super.dispose();
   }
 

@@ -4,13 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/home/home.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:tiki_taka/match/match.dart';
-import 'package:tiki_taka/settings/settings.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
+import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
 import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -125,25 +126,26 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
-            final matches = snapshot.data!.docs
-                .map((doc) => Match.fromJson(doc.data()))
-                .toList()
-              ..sort((a, b) {
-                final statusOrder = {
-                  'IN_PLAY': 0,
-                  'PAUSED': 1,
-                  'SCHEDULED': 2,
-                  'TIMED': 3,
-                };
-                final aStatus = a.status;
-                final bStatus = b.status;
-                final aOrder = statusOrder[aStatus] ?? 4;
-                final bOrder = statusOrder[bStatus] ?? 4;
-                if (aOrder != bOrder) {
-                  return aOrder - bOrder;
-                }
-                return aStatus.compareTo(bStatus);
-              });
+            final matches =
+                snapshot.data!.docs
+                    .map((doc) => Match.fromJson(doc.data()))
+                    .toList()
+                  ..sort((a, b) {
+                    final statusOrder = {
+                      'IN_PLAY': 0,
+                      'PAUSED': 1,
+                      'SCHEDULED': 2,
+                      'TIMED': 3,
+                    };
+                    final aStatus = a.status;
+                    final bStatus = b.status;
+                    final aOrder = statusOrder[aStatus] ?? 4;
+                    final bOrder = statusOrder[bStatus] ?? 4;
+                    if (aOrder != bOrder) {
+                      return aOrder - bOrder;
+                    }
+                    return aStatus.compareTo(bStatus);
+                  });
 
             return Scaffold(
               body: SizedBox.expand(
@@ -172,8 +174,9 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           const LastUpdateHome(),
                           const SizedBox(height: 10),
-                          ...matches
-                              .map((match) => MatchCardHome(match: match)),
+                          ...matches.map(
+                            (match) => MatchCardHome(match: match),
+                          ),
                           const SettingsHome(),
                           const SizedBox(height: 50),
                         ],
@@ -209,15 +212,16 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _nowSubscription = Stream<void>.periodic(const Duration(seconds: 1))
-        .listen((_) => setState(() {}));
+    _nowSubscription = Stream<void>.periodic(
+      const Duration(seconds: 1),
+    ).listen((_) => setState(() {}));
     super.initState();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _nowSubscription.cancel();
+    unawaited(_nowSubscription.cancel());
     super.dispose();
   }
 
@@ -238,7 +242,8 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     return StreamBuilder(
       stream: context.read<HomeCubit>().getMatchConfigs(),
       builder: (context, snapshot) {
-        final configs = snapshot.data?.docs
+        final configs =
+            snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
             [Config(id: matchesCollection, lastUpdate: DateTime.now())];
@@ -452,11 +457,12 @@ class SettingsHome extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: ElevatedButton(
         onPressed: () async {
-          final reload = (await Navigator.of(context)
-                  .pushNamed(SettingsPage.routeName)) as bool? ??
+          final reload =
+              (await Navigator.of(context).pushNamed(SettingsPage.routeName))
+                  as bool? ??
               true;
           if (reload) {
-            // ignore: use_build_context_synchronously
+            // ignore: use_build_context_synchronously // It's safe here
             context.read<HomeCubit>().reload();
           }
         },

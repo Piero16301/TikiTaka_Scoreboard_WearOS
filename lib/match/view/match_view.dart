@@ -5,12 +5,13 @@ import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:tiki_taka/match/match.dart';
-import 'package:tiki_taka/team/team.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
+import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
 import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -196,15 +197,16 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _nowSubscription = Stream<void>.periodic(const Duration(seconds: 1))
-        .listen((_) => setState(() {}));
+    _nowSubscription = Stream<void>.periodic(
+      const Duration(seconds: 1),
+    ).listen((_) => setState(() {}));
     super.initState();
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _nowSubscription.cancel();
+    unawaited(_nowSubscription.cancel());
     super.dispose();
   }
 
@@ -225,7 +227,8 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
     return StreamBuilder(
       stream: context.read<MatchCubit>().getMatchConfigs(),
       builder: (context, snapshot) {
-        final configs = snapshot.data?.docs
+        final configs =
+            snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
             [Config(id: matchesCollection, lastUpdate: DateTime.now())];
@@ -827,9 +830,9 @@ class StandingsMatch extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context
-          .read<MatchCubit>()
-          .getStandings(leagueId: match.competition.id.toString()),
+      stream: context.read<MatchCubit>().getStandings(
+        leagueId: match.competition.id.toString(),
+      ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const AppCardData(

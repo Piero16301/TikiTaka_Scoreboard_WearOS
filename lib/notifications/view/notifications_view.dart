@@ -4,12 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rotary_scrollbar/rotary_scrollbar.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
-import 'package:tiki_taka/notifications/notifications.dart';
-import 'package:tiki_taka/teams/teams.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
+import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
 import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart'
+    as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 

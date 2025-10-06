@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:tiki_taka/app/widgets/widgets.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/widgets/widgets.dart';
 
 class RippleBackground extends StatefulWidget {
   const RippleBackground({
@@ -25,7 +27,8 @@ class _RippleBackgroundState extends State<RippleBackground>
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 5),
-    )..repeat();
+    );
+    unawaited(_animationController.repeat());
   }
 
   @override
