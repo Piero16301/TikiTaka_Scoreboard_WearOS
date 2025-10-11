@@ -1,9 +1,10 @@
 🎯 Novità in questa versione:
 
-• Miglioramenti delle prestazioni e della stabilità
-• Ottimizzazione per Wear OS 5
-• Correzione di bug minori
-• Interfaccia più fluida e reattiva
-• Miglioramenti nella sincronizzazione del punteggio
+• Sistema di notifiche migliorato con Firebase Cloud Messaging
+• Notifiche locali ottimizzate con gestione migliorata
+• Registrazione automatica dei dispositivi e gestione dei token
+• Sottoscrizione intelligente ai topic per dispositivi Wear OS
+• Ottimizzazione dell'elaborazione dei messaggi in background
+• Migliore gestione dei payload delle notifiche per la navigazione delle partite
 
 Grazie per aver utilizzato TikiTaka Scoreboard!

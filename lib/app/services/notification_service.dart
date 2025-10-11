@@ -65,6 +65,7 @@ class NotificationService {
         .collection(devicesCollection)
         .doc(token)
         .set({
+          'platform': 'WEAROS',
           'token': token,
           'lastOpenAt': FieldValue.serverTimestamp(),
           'wearOSInfo': androidInfo.toJson(),
