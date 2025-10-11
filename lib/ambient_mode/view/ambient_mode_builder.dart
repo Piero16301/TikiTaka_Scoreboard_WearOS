@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
+import 'package:tiki_taka_scoreboard_wearos/ambient_mode/ambient_mode.dart';
 
 class AmbientModeBuilder extends StatelessWidget {
   AmbientModeBuilder({

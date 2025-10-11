@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
+import 'package:tiki_taka_scoreboard_wearos/ambient_mode/ambient_mode.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -10,7 +12,7 @@ void main() {
     test('updates when ambient mode is activated', () {
       final listener = AmbientModeListener.instance..value = false;
 
-      simulatePlatformCall('ambient_mode', 'onEnterAmbient');
+      unawaited(simulatePlatformCall('ambient_mode', 'onEnterAmbient'));
 
       expect(listener.isAmbientModeActive, isTrue);
     });
@@ -18,7 +20,7 @@ void main() {
     test('updates when ambient mode is update', () {
       final listener = AmbientModeListener.instance..value = false;
 
-      simulatePlatformCall('ambient_mode', 'onUpdateAmbient');
+      unawaited(simulatePlatformCall('ambient_mode', 'onUpdateAmbient'));
 
       expect(listener.isAmbientModeActive, isTrue);
     });

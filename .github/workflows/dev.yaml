@@ -155,3 +155,4 @@ jobs:
           packageName: ${{ env.APP_PACKAGE_NAME }}
           releaseFiles: ${{ env.AAB_PATH }}
           track: wear:beta
+          whatsNewDirectory: whatsnew

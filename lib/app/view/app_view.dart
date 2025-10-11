@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/home/home.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/ambient_mode/ambient_mode.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
 class AppView extends StatefulWidget {
   const AppView({super.key});
@@ -15,7 +17,7 @@ class AppView extends StatefulWidget {
 class _AppViewState extends State<AppView> {
   @override
   void initState() {
-    context.read<AppCubit>().initialLoad();
+    unawaited(context.read<AppCubit>().initialLoad());
     super.initState();
   }
 

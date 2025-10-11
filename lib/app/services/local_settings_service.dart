@@ -1,15 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class LocalSettingsService {
   LocalSettingsService._();
 
   static final LocalSettingsService instance = LocalSettingsService._();
 
-  final firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   late SharedPreferences _preferences;
   late AndroidDeviceInfo _androidInfo;
   late PackageInfo _packageInfo;
@@ -33,26 +35,30 @@ class LocalSettingsService {
   }
 
   void saveLanguageOnFirestore({String language = 'en_US'}) {
-    firestore
-        .collection(devicesCollection)
-        .doc(NotificationService.instance.token)
-        .set(
-      {
-        'language': language,
-      },
-      SetOptions(merge: true),
+    unawaited(
+      firestore
+          .collection(devicesCollection)
+          .doc(NotificationService.instance.token)
+          .set(
+            {
+              'language': language,
+            },
+            SetOptions(merge: true),
+          ),
     );
   }
 
   void saveDarkModeOnFirestore({bool darkMode = true}) {
-    firestore
-        .collection(devicesCollection)
-        .doc(NotificationService.instance.token)
-        .set(
-      {
-        'darkMode': darkMode,
-      },
-      SetOptions(merge: true),
+    unawaited(
+      firestore
+          .collection(devicesCollection)
+          .doc(NotificationService.instance.token)
+          .set(
+            {
+              'darkMode': darkMode,
+            },
+            SetOptions(merge: true),
+          ),
     );
   }
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tiki_taka/ambient_mode/ambient_mode.dart';
+import 'package:tiki_taka_scoreboard_wearos/ambient_mode/ambient_mode.dart';
 
 class _TestAmbientModeListener extends ValueNotifier<bool>
     implements AmbientModeListener {
-  // ignore: avoid_positional_boolean_parameters
-  _TestAmbientModeListener(super.value);
+  // ignore: avoid_positional_boolean_parameters // for test purposes
+  _TestAmbientModeListener(super._value);
 
   @override
   bool get isAmbientModeActive => value;

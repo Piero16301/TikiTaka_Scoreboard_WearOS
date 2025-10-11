@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
-import 'package:tiki_taka/app/global/global.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/global/global.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import 'package:vector_graphics_compiler/vector_graphics_compiler.dart'
     hide Color;

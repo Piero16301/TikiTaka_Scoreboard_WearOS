@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tiki_taka/l10n/l10n.dart';
+import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
 extension PumpApp on WidgetTester {
   Future<void> pumpApp(Widget widget) {

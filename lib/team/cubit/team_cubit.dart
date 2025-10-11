@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tiki_taka/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'team_state.dart';
@@ -24,8 +24,9 @@ class TeamCubit extends Cubit<TeamState> {
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getTeam() {
-    final snapshots =
-        state.teamsCollection?.where('id', isEqualTo: state.teamId).snapshots();
+    final snapshots = state.teamsCollection
+        ?.where('id', isEqualTo: state.teamId)
+        .snapshots();
     return snapshots;
   }
 

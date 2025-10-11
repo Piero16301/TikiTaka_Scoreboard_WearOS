@@ -3,8 +3,8 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:tiki_taka/app/app.dart';
-import 'package:tiki_taka/match/match.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -17,11 +17,12 @@ class NotificationService {
 
   static final NotificationService instance = NotificationService._();
 
-  final _messaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   String _token = '';
   final _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
 
+  // ignore: unreachable_from_main // used in main.dart
   Future<void> initialize() async {
     // Background message handler
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -40,7 +41,7 @@ class NotificationService {
     try {
       token = await _messaging.getToken();
       debugPrint('FCM Token: $token');
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('Error getting FCM token: $e');
     }
     if (token != null) {
@@ -64,6 +65,7 @@ class NotificationService {
         .collection(devicesCollection)
         .doc(token)
         .set({
+          'platform': 'WEAROS',
           'token': token,
           'lastOpenAt': FieldValue.serverTimestamp(),
           'wearOSInfo': androidInfo.toJson(),
@@ -88,6 +90,7 @@ class NotificationService {
     }
   }
 
+  // ignore: unreachable_from_main // used in main.dart
   String get token => _token;
 
   Future<void> _requestPermission() async {
@@ -194,6 +197,7 @@ class NotificationService {
     debugPrint('Subscribed to topic: $topic');
   }
 
+  // ignore: unreachable_from_main // used in main.dart
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
     debugPrint('Unsubscribed from topic: $topic');
