@@ -122,7 +122,7 @@ class _TeamViewState extends State<TeamView> {
         return Scaffold(
           body: SizedBox.expand(
             child: RippleBackground(
-              colors: getTeamColors(team.clubColors),
+              colors: AppFunctions.getTeamColors(team.clubColors),
               child: AppRotaryScrollbar(
                 controller: _scrollController,
                 child: Padding(
@@ -142,18 +142,28 @@ class _TeamViewState extends State<TeamView> {
                           SquadCardTeam(
                             squad: team.squad
                               ..sort(
-                                (a, b) => getStaffPositionOrder(
-                                  a.position,
-                                ).compareTo(getStaffPositionOrder(b.position)),
+                                (a, b) =>
+                                    AppFunctions.getStaffPositionOrder(
+                                      a.position,
+                                    ).compareTo(
+                                      AppFunctions.getStaffPositionOrder(
+                                        b.position,
+                                      ),
+                                    ),
                               ),
                           ),
                         if (team.staff.isNotEmpty)
                           StaffCardTeam(
                             staff: team.staff
                               ..sort(
-                                (a, b) => getStaffPositionOrder(
-                                  a.position,
-                                ).compareTo(getStaffPositionOrder(b.position)),
+                                (a, b) =>
+                                    AppFunctions.getStaffPositionOrder(
+                                      a.position,
+                                    ).compareTo(
+                                      AppFunctions.getStaffPositionOrder(
+                                        b.position,
+                                      ),
+                                    ),
                               ),
                           ),
                         AdditionalInfoTeam(team: team),
@@ -438,7 +448,7 @@ class CompetitionsCardTeam extends StatelessWidget {
                         children: [
                           ScrollText(text: competition.name),
                           Text(
-                            getCompetitionType(
+                            AppFunctions.getCompetitionType(
                               competition.type,
                               l10n,
                             ).toUpperCase(),
@@ -485,7 +495,7 @@ class SquadCardTeam extends StatelessWidget {
                 child: Row(
                   children: [
                     HugeIcon(
-                      icon: getStaffPositionIcon(player.position),
+                      icon: AppFunctions.getStaffPositionIcon(player.position),
                       color: Theme.of(context).colorScheme.primary,
                       size: 20,
                     ),
@@ -526,11 +536,13 @@ class SquadCardTeam extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: getStaffPositionColor(player.position),
+                        color: AppFunctions.getStaffPositionColor(
+                          player.position,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        getStaffPosition(player.position, l10n),
+                        AppFunctions.getStaffPosition(player.position, l10n),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -586,7 +598,9 @@ class StaffCardTeam extends StatelessWidget {
                 child: Row(
                   children: [
                     HugeIcon(
-                      icon: getStaffPositionIcon(personal.position),
+                      icon: AppFunctions.getStaffPositionIcon(
+                        personal.position,
+                      ),
                       color: Theme.of(context).colorScheme.primary,
                       size: 20,
                     ),
@@ -627,11 +641,13 @@ class StaffCardTeam extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: getStaffPositionColor(personal.position),
+                        color: AppFunctions.getStaffPositionColor(
+                          personal.position,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        getStaffPosition(personal.position, l10n),
+                        AppFunctions.getStaffPosition(personal.position, l10n),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,

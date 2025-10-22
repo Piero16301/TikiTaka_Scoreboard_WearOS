@@ -31,15 +31,15 @@ class AppCubit extends Cubit<AppState> {
 
   Future<void> changeBaseColor(String baseColor) async {
     await userRepository.saveBaseColor(baseColor: baseColor);
+    emit(state.copyWith(baseColor: baseColor));
     LocalSettingsService.instance.saveBaseColorOnFirestore(
       baseColor: baseColor,
     );
-    emit(state.copyWith(baseColor: baseColor));
   }
 
   Future<void> changeLanguage(String language) async {
     await userRepository.saveLanguage(language: language);
-    LocalSettingsService.instance.saveLanguageOnFirestore(language: language);
     emit(state.copyWith(language: language));
+    LocalSettingsService.instance.saveLanguageOnFirestore(language: language);
   }
 }

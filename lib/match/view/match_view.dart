@@ -468,7 +468,7 @@ class TeamsCardMatch extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            getMatchState(match.status, match.utcDate!, l10n),
+            AppFunctions.getMatchState(match.status, match.utcDate!, l10n),
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,

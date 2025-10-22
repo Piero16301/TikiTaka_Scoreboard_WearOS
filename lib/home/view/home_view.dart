@@ -315,7 +315,11 @@ class MatchCardHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final state = getMatchState(match.status, match.utcDate!, l10n);
+    final state = AppFunctions.getMatchState(
+      match.status,
+      match.utcDate!,
+      l10n,
+    );
 
     return AppCardData(
       child: GestureDetector(

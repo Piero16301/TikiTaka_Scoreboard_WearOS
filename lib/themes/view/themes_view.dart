@@ -150,7 +150,7 @@ class CardColorThemes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colorName = getColorName(text, l10n);
+    final colorName = AppFunctions.getColorName(text, l10n);
 
     return AppCardData(
       child: Row(
