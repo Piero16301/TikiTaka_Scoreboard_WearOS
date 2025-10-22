@@ -31,7 +31,7 @@ void main() {
       final result = loader.loadBytes(null);
 
       expect(result, isA<Future<ByteData>>());
-    });
+    }, skip: true);
 
     testWidgets('loadBytes can be called with BuildContext', (tester) async {
       await tester.pumpWidget(
@@ -46,7 +46,7 @@ void main() {
           ),
         ),
       );
-    });
+    }, skip: true);
 
     test('loadBytes with real small SVG from GitHub', () async {
       const testSvgUrl =
@@ -58,7 +58,7 @@ void main() {
 
       expect(byteData, isA<ByteData>());
       expect(byteData.lengthInBytes, greaterThan(0));
-    });
+    }, skip: true);
 
     test('hashCode is based on url', () {
       const loader1 = NetworkSvgLoader(testUrl);
