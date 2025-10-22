@@ -6,9 +6,8 @@ import 'package:user_api/user_api.dart';
 /// {@endtemplate}
 class UserApiRemote implements IUserApi {
   /// {@macro user_api_remote}
-  UserApiRemote({
-    required SharedPreferences preferences,
-  }) : _preferences = preferences;
+  UserApiRemote({required SharedPreferences preferences})
+    : _preferences = preferences;
 
   /// The key used to store enabled leagues
   static const kUserLeagues = '__user_leagues__';
@@ -16,8 +15,8 @@ class UserApiRemote implements IUserApi {
   /// The key used to store the user's language
   static const kUserLanguage = '__user_language__';
 
-  /// The key used to store the user's dark mode preference
-  static const kUserDarkMode = '__user_dark_mode__';
+  /// The key used to store the user's base color preference
+  static const kUserBaseColor = '__user_base_color__';
 
   final SharedPreferences _preferences;
 
@@ -53,12 +52,12 @@ class UserApiRemote implements IUserApi {
   }
 
   @override
-  Future<void> saveDarkMode({bool darkMode = true}) async {
-    await _preferences.setBool(kUserDarkMode, darkMode);
+  Future<void> saveBaseColor({String baseColor = 'INDIGO'}) async {
+    await _preferences.setString(kUserBaseColor, baseColor);
   }
 
   @override
-  bool? getDarkMode() {
-    return _preferences.getBool(kUserDarkMode);
+  String? getBaseColor() {
+    return _preferences.getString(kUserBaseColor);
   }
 }

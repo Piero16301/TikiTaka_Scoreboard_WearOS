@@ -30,9 +30,11 @@ class _AppViewState extends State<AppView> {
           return MaterialApp(
             title: 'Tiki Taka',
             navigatorKey: navigatorKey,
-            theme: appLightTheme(isAmbientModeActive: isAmbientModeActive),
-            darkTheme: appDarkTheme(isAmbientModeActive: isAmbientModeActive),
-            themeMode: state.darkMode ? ThemeMode.dark : ThemeMode.light,
+            theme: AppThemes.globalTheme(
+              isAmbientModeActive: isAmbientModeActive,
+              baseColor: state.baseColor,
+            ),
+            themeMode: ThemeMode.light,
             themeAnimationCurve: Curves.easeInOut,
             themeAnimationDuration: const Duration(milliseconds: 500),
             locale: Locale(

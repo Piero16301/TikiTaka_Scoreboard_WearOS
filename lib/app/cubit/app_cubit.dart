@@ -11,29 +11,30 @@ class AppCubit extends Cubit<AppState> {
   final UserRepository userRepository;
 
   Future<void> initialLoad() async {
-    final darkMode = userRepository.getDarkMode();
-    if (darkMode == null) {
-      await userRepository.saveDarkMode();
+    final baseColor = userRepository.getBaseColor();
+    if (baseColor == null) {
+      await userRepository.saveBaseColor(baseColor: state.baseColor);
     }
 
     final language = userRepository.getLanguage();
     if (language == null) {
-      const platformLocale = 'en_US';
-      await userRepository.saveLanguage(language: platformLocale);
+      await userRepository.saveLanguage(language: state.language);
     }
 
     emit(
       state.copyWith(
-        darkMode: userRepository.getDarkMode(),
+        baseColor: userRepository.getBaseColor(),
         language: userRepository.getLanguage(),
       ),
     );
   }
 
-  Future<void> changeTheme({bool darkMode = true}) async {
-    await userRepository.saveDarkMode(darkMode: darkMode);
-    LocalSettingsService.instance.saveDarkModeOnFirestore(darkMode: darkMode);
-    emit(state.copyWith(darkMode: darkMode));
+  Future<void> changeBaseColor(String baseColor) async {
+    await userRepository.saveBaseColor(baseColor: baseColor);
+    LocalSettingsService.instance.saveBaseColorOnFirestore(
+      baseColor: baseColor,
+    );
+    emit(state.copyWith(baseColor: baseColor));
   }
 
   Future<void> changeLanguage(String language) async {

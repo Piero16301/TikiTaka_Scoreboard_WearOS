@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
@@ -42,12 +41,8 @@ class _SettingsViewState extends State<SettingsView> {
 
     return Scaffold(
       body: SizedBox.expand(
-        child: RotaryScrollbar(
+        child: AppRotaryScrollbar(
           controller: _scrollController,
-          scrollAnimationCurve: Curves.easeInOut,
-          scrollAnimationDuration: scrollDuration,
-          scrollMagnitude: scrollMagnitude,
-          width: scrollWidth,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(

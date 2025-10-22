@@ -57,8 +57,8 @@ class NotificationService {
     final localLanguage = await LocalSettingsService.instance
         .getLocalLanguage();
 
-    // Get device dark mode
-    final darkMode = await LocalSettingsService.instance.getDarkMode();
+    // Get device base color
+    final baseColor = await LocalSettingsService.instance.getBaseColor();
 
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
@@ -75,7 +75,7 @@ class NotificationService {
           'iosInfo': null,
           'webInfo': null,
           'language': localLanguage,
-          'darkMode': darkMode,
+          'baseColor': baseColor,
           'enabledTeams': FieldValue.arrayUnion(<String>[]),
         }, SetOptions(merge: true));
 

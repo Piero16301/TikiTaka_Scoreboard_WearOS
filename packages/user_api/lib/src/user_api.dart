@@ -20,9 +20,9 @@ abstract class IUserApi {
   /// Get language from local storage
   String? getLanguage();
 
-  /// Save dark mode in local storage
-  Future<void> saveDarkMode({bool darkMode = true});
+  /// Save base color in local storage
+  Future<void> saveBaseColor({String baseColor = 'INDIGO'});
 
-  /// Get dark mode from local storage
-  bool? getDarkMode();
+  /// Get base color from local storage
+  String? getBaseColor();
 }

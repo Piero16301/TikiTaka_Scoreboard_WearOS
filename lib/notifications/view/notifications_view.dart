@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
@@ -131,12 +130,8 @@ class _NotificationsViewState extends State<NotificationsView> {
 
         return Scaffold(
           body: SizedBox.expand(
-            child: RotaryScrollbar(
+            child: AppRotaryScrollbar(
               controller: _scrollController,
-              scrollAnimationCurve: Curves.easeInOut,
-              scrollAnimationDuration: scrollDuration,
-              scrollMagnitude: scrollMagnitude,
-              width: scrollWidth,
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: SingleChildScrollView(

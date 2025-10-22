@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hugeicons/hugeicons.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:wearable_rotary/wearable_rotary.dart'
@@ -23,15 +21,41 @@ class ThemesView extends StatefulWidget {
 
 class _ThemesViewState extends State<ThemesView> {
   final ScrollController _scrollController = ScrollController();
+  final Map<int, GlobalKey> _itemKeys = {};
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  double _calculateScale(int index) {
+    if (!_scrollController.hasClients) return 1;
+
+    final key = _itemKeys[index];
+    if (key?.currentContext == null) return 1;
+
+    final renderBox = key!.currentContext!.findRenderObject() as RenderBox?;
+    if (renderBox == null) return 1;
+
+    final position = renderBox.localToGlobal(Offset.zero);
+    final itemCenter = position.dy + (renderBox.size.height / 2);
+    final screenCenter = MediaQuery.of(context).size.height / 2;
+
+    final distance = (itemCenter - screenCenter).abs();
+    final maxDistance = MediaQuery.of(context).size.height / 2;
+
+    final scale = 1.15 - (distance / maxDistance) * 0.4;
+
+    return scale.clamp(0.75, 1.15);
   }
 
   @override
@@ -40,51 +64,70 @@ class _ThemesViewState extends State<ThemesView> {
 
     return Scaffold(
       body: SizedBox.expand(
-        child: RotaryScrollbar(
+        child: AppRotaryScrollbar(
           controller: _scrollController,
-          scrollAnimationCurve: Curves.easeInOut,
-          scrollAnimationDuration: scrollDuration,
-          scrollMagnitude: scrollMagnitude,
-          width: scrollWidth,
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
               controller: _scrollController,
               child: BlocBuilder<AppCubit, AppState>(
-                builder: (context, state) => RadioGroup<bool>(
-                  groupValue: state.darkMode,
-                  onChanged: (value) => context.read<AppCubit>().changeTheme(
-                    darkMode: value ?? true,
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleTheme.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
+                builder: (context, state) {
+                  final colorEntries = AppHelpers.colorMap.entries.toList();
+                  for (var i = 0; i < colorEntries.length; i++) {
+                    _itemKeys.putIfAbsent(i, GlobalKey.new);
+                  }
+
+                  return RadioGroup<String>(
+                    groupValue: state.baseColor,
+                    onChanged: (value) =>
+                        context.read<AppCubit>().changeBaseColor(
+                          value ?? 'INDIGO',
+                        ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: ScrollText(
+                            text: l10n.titleTheme.toUpperCase(),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: titleSize,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      CardThemes(
-                        isDark: false,
-                        text: l10n.lightTheme,
-                        icon: HugeIcons.strokeRoundedSun01,
-                      ),
-                      CardThemes(
-                        isDark: true,
-                        text: l10n.darkTheme,
-                        icon: HugeIcons.strokeRoundedMoon02,
-                      ),
-                      const BackButtonLanguages(),
-                      const SizedBox(height: 50),
-                    ],
-                  ),
-                ),
+                        const SizedBox(height: 10),
+                        ...colorEntries.asMap().entries.map(
+                          (entry) {
+                            final index = entry.key;
+                            final colorEntry = entry.value;
+                            final scale = _calculateScale(index);
+                            final verticalPadding = ((1.0 - scale) * 10).clamp(
+                              0.0,
+                              double.infinity,
+                            );
+
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: verticalPadding,
+                              ),
+                              child: Transform.scale(
+                                key: _itemKeys[index],
+                                scale: scale,
+                                child: CardColorThemes(
+                                  text: colorEntry.key,
+                                  color: colorEntry.value,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const BackButtonLanguages(),
+                        const SizedBox(height: 50),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -94,27 +137,35 @@ class _ThemesViewState extends State<ThemesView> {
   }
 }
 
-class CardThemes extends StatelessWidget {
-  const CardThemes({
-    required this.isDark,
+class CardColorThemes extends StatelessWidget {
+  const CardColorThemes({
     required this.text,
-    required this.icon,
+    required this.color,
     super.key,
   });
 
-  final bool isDark;
   final String text;
-  final List<List<dynamic>> icon;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final colorName = getColorName(text, l10n);
+
     return AppCardData(
       child: Row(
         children: [
-          Radio<bool>(value: isDark),
-          HugeIcon(icon: icon, color: Theme.of(context).colorScheme.primary),
+          Radio<String>(value: text),
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
           const SizedBox(width: 10),
-          Expanded(child: ScrollText(text: text)),
+          Expanded(child: ScrollText(text: colorName)),
         ],
       ),
     );

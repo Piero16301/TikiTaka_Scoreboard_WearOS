@@ -28,10 +28,10 @@ class LocalSettingsService {
     return localeString;
   }
 
-  Future<bool> getDarkMode() async {
-    final darkMode = _preferences.getBool('__user_dark_mode__') ?? false;
+  Future<String> getBaseColor() async {
+    final baseColor = _preferences.getString('__user_base_color__') ?? 'INDIGO';
 
-    return darkMode;
+    return baseColor;
   }
 
   void saveLanguageOnFirestore({String language = 'en_US'}) {
@@ -48,14 +48,14 @@ class LocalSettingsService {
     );
   }
 
-  void saveDarkModeOnFirestore({bool darkMode = true}) {
+  void saveBaseColorOnFirestore({String baseColor = 'INDIGO'}) {
     unawaited(
       firestore
           .collection(devicesCollection)
           .doc(NotificationService.instance.token)
           .set(
             {
-              'darkMode': darkMode,
+              'baseColor': baseColor,
             },
             SetOptions(merge: true),
           ),

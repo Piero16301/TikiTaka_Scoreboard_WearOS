@@ -143,6 +143,51 @@ String getStaffPosition(String position, AppLocalizations l10n) {
   }
 }
 
+String getColorName(String colorName, AppLocalizations l10n) {
+  switch (colorName) {
+    case 'RED':
+      return l10n.colorRed;
+    case 'PINK':
+      return l10n.colorPink;
+    case 'PURPLE':
+      return l10n.colorPurple;
+    case 'DEEP_PURPLE':
+      return l10n.colorDeepPurple;
+    case 'INDIGO':
+      return l10n.colorIndigo;
+    case 'BLUE':
+      return l10n.colorBlue;
+    case 'LIGHT_BLUE':
+      return l10n.colorLightBlue;
+    case 'CYAN':
+      return l10n.colorCyan;
+    case 'TEAL':
+      return l10n.colorTeal;
+    case 'GREEN':
+      return l10n.colorGreen;
+    case 'LIGHT_GREEN':
+      return l10n.colorLightGreen;
+    case 'LIME':
+      return l10n.colorLime;
+    case 'YELLOW':
+      return l10n.colorYellow;
+    case 'AMBER':
+      return l10n.colorAmber;
+    case 'ORANGE':
+      return l10n.colorOrange;
+    case 'DEEP_ORANGE':
+      return l10n.colorDeepOrange;
+    case 'BROWN':
+      return l10n.colorBrown;
+    case 'GREY':
+      return l10n.colorGrey;
+    case 'BLUE_GREY':
+      return l10n.colorBlueGrey;
+    default:
+      return colorName;
+  }
+}
+
 Color getStaffPositionColor(String position) {
   switch (position) {
     // Goalkeeper positions
