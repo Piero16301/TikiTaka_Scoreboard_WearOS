@@ -125,6 +125,7 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
+            final nowDate = DateTime.now();
             final matches =
                 snapshot.data!.docs
                     .map((doc) => Match.fromJson(doc.data()))
@@ -147,6 +148,7 @@ class _HomeViewState extends State<HomeView> {
                   });
 
             return Scaffold(
+              key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
               body: SizedBox.expand(
                 child: AppRotaryScrollbar(
                   controller: _scrollController,

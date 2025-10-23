@@ -21,7 +21,6 @@ class ThemesView extends StatefulWidget {
 
 class _ThemesViewState extends State<ThemesView> {
   final ScrollController _scrollController = ScrollController();
-  final Map<int, GlobalKey> _itemKeys = {};
 
   @override
   void initState() {
@@ -37,27 +36,6 @@ class _ThemesViewState extends State<ThemesView> {
     super.dispose();
   }
 
-  double _calculateScale(int index) {
-    if (!_scrollController.hasClients) return 1;
-
-    final key = _itemKeys[index];
-    if (key?.currentContext == null) return 1;
-
-    final renderBox = key!.currentContext!.findRenderObject() as RenderBox?;
-    if (renderBox == null) return 1;
-
-    final position = renderBox.localToGlobal(Offset.zero);
-    final itemCenter = position.dy + (renderBox.size.height / 2);
-    final screenCenter = MediaQuery.of(context).size.height / 2;
-
-    final distance = (itemCenter - screenCenter).abs();
-    final maxDistance = MediaQuery.of(context).size.height / 2;
-
-    final scale = 1.15 - (distance / maxDistance) * 0.4;
-
-    return scale.clamp(0.75, 1.15);
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -71,63 +49,39 @@ class _ThemesViewState extends State<ThemesView> {
             child: SingleChildScrollView(
               controller: _scrollController,
               child: BlocBuilder<AppCubit, AppState>(
-                builder: (context, state) {
-                  final colorEntries = AppHelpers.colorMap.entries.toList();
-                  for (var i = 0; i < colorEntries.length; i++) {
-                    _itemKeys.putIfAbsent(i, GlobalKey.new);
-                  }
-
-                  return RadioGroup<String>(
-                    groupValue: state.baseColor,
-                    onChanged: (value) =>
-                        context.read<AppCubit>().changeBaseColor(
-                          value ?? 'INDIGO',
-                        ),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: ScrollText(
-                            text: l10n.titleTheme.toUpperCase(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: titleSize,
-                            ),
+                builder: (context, state) => RadioGroup<String>(
+                  groupValue: state.baseColor,
+                  onChanged: (value) =>
+                      context.read<AppCubit>().changeBaseColor(
+                        value ?? 'INDIGO',
+                      ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: ScrollText(
+                          text: l10n.titleTheme.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: titleSize,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        ...colorEntries.asMap().entries.map(
-                          (entry) {
-                            final index = entry.key;
-                            final colorEntry = entry.value;
-                            final scale = _calculateScale(index);
-                            final verticalPadding = ((1.0 - scale) * 10).clamp(
-                              0.0,
-                              double.infinity,
-                            );
-
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: verticalPadding,
-                              ),
-                              child: Transform.scale(
-                                key: _itemKeys[index],
-                                scale: scale,
-                                child: CardColorThemes(
-                                  text: colorEntry.key,
-                                  color: colorEntry.value,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        const BackButtonLanguages(),
-                        const SizedBox(height: 50),
-                      ],
-                    ),
-                  );
-                },
+                      ),
+                      const SizedBox(height: 10),
+                      ...AppHelpers.colorMap.entries.map(
+                        (entry) {
+                          return CardColorThemes(
+                            text: entry.key,
+                            color: entry.value,
+                          );
+                        },
+                      ),
+                      const BackButtonLanguages(),
+                      const SizedBox(height: 50),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

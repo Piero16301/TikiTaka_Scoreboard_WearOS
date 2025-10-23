@@ -15,9 +15,8 @@ class AppRotaryScrollbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return RotaryScrollbar(
       controller: controller,
-      scrollAnimationCurve: Curves.easeOutCubic,
-      scrollAnimationDuration: const Duration(milliseconds: 50),
-      scrollMagnitude: 3,
+      width: 7,
+      scrollAnimationCurve: Curves.easeInOut,
       padding: 0,
       autoHide: false,
       child: child,
