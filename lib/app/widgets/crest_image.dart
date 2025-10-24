@@ -6,44 +6,97 @@ class CrestImage extends StatelessWidget {
   const CrestImage({
     required this.crest,
     this.dimension = 40,
-    this.fit = BoxFit.contain,
+    this.fit = BoxFit.fill,
+    this.hideCrest = false,
     super.key,
   });
 
   final String crest;
   final double dimension;
   final BoxFit fit;
+  final bool hideCrest;
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.inverseSurface;
+
+    if (crest.isEmpty || hideCrest) {
+      return SizedBox(
+        height: dimension,
+        width: dimension,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(7),
+          child: Stack(
+            children: [
+              Container(
+                color: background.withValues(alpha: 0.3),
+                width: dimension,
+                height: dimension,
+              ),
+              SizedBox(
+                width: dimension,
+                height: dimension,
+                child: Icon(
+                  Icons.image,
+                  size: dimension,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     if (crest.contains('.svg')) {
       return SizedBox(
         height: dimension,
         width: dimension,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: VectorGraphic(
-            loader: NetworkSvgLoader(crest),
-            fit: fit,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.image,
-              size: dimension,
-            ),
+          borderRadius: BorderRadius.circular(7),
+          child: Stack(
+            children: [
+              Container(
+                color: background.withValues(alpha: 0.3),
+                width: dimension,
+                height: dimension,
+              ),
+              SizedBox(
+                width: dimension,
+                height: dimension,
+                child: VectorGraphic(
+                  loader: NetworkSvgLoader(crest),
+                  fit: fit,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.image,
+                    size: dimension,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
     } else {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(5),
-        child: Image.network(
-          crest,
-          width: dimension,
-          height: dimension,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.image,
-            size: dimension,
-          ),
+        borderRadius: BorderRadius.circular(7),
+        child: Stack(
+          children: [
+            Container(
+              color: background.withValues(alpha: 0.3),
+              width: dimension,
+              height: dimension,
+            ),
+            Image.network(
+              crest,
+              width: dimension,
+              height: dimension,
+              fit: fit,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.image,
+                size: dimension,
+              ),
+            ),
+          ],
         ),
       );
     }

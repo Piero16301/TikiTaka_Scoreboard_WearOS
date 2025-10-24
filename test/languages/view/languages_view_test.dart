@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dash_flags/dash_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -72,7 +71,6 @@ void main() {
 
       expect(find.byType(CardLanguages), findsNWidgets(3));
       expect(find.byType(Radio<String>), findsNWidgets(3));
-      expect(find.byType(CountryFlag), findsNWidgets(3));
     });
 
     testWidgets('renders correctly with English language selected', (
@@ -195,46 +193,13 @@ void main() {
       await tester.pumpApp(
         const CardLanguages(
           value: 'en_US',
-          flag: 'US',
           language: 'English',
         ),
       );
 
       expect(find.byType(CardLanguages), findsOneWidget);
-      expect(find.byType(CountryFlag), findsOneWidget);
       expect(find.byType(Radio<String>), findsOneWidget);
       expect(find.byType(ScrollText), findsOneWidget);
-    });
-
-    testWidgets('displays flag with correct country code', (tester) async {
-      await tester.pumpApp(
-        const CardLanguages(
-          value: 'es_ES',
-          flag: 'ES',
-          language: 'Español',
-        ),
-      );
-
-      expect(find.byType(CountryFlag), findsOneWidget);
-    });
-
-    testWidgets('has correct height and padding', (tester) async {
-      await tester.pumpApp(
-        const CardLanguages(
-          value: 'it_IT',
-          flag: 'IT',
-          language: 'Italiano',
-        ),
-      );
-
-      final sizedBox = tester.widget<SizedBox>(
-        find.ancestor(
-          of: find.byType(Card),
-          matching: find.byType(SizedBox),
-        ),
-      );
-
-      expect(sizedBox.height, 50);
     });
 
     testWidgets('radio has correct value', (tester) async {
@@ -244,7 +209,6 @@ void main() {
           onChanged: (_) {},
           child: const CardLanguages(
             value: 'en_US',
-            flag: 'US',
             language: 'English',
           ),
         ),
@@ -308,22 +272,6 @@ void main() {
 
       expect(find.text('Go'), findsOneWidget);
       expect(find.byType(BackButtonLanguages), findsNothing);
-    });
-
-    testWidgets('has correct padding', (tester) async {
-      await tester.pumpApp(const BackButtonLanguages());
-
-      final padding = tester.widget<Padding>(
-        find.ancestor(
-          of: find.byType(ElevatedButton),
-          matching: find.byType(Padding),
-        ),
-      );
-
-      expect(
-        padding.padding,
-        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      );
     });
   });
 }

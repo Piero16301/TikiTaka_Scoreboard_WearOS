@@ -41,83 +41,71 @@ class _TeamsViewState extends State<TeamsView> {
       stream: context.read<TeamsCubit>().getTeams(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleTeams.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
+          return AppScaffold(
+            controller: _scrollController,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppVariables.horizontalPaddingTitle,
+                    ),
+                    child: ScrollText(
+                      text: l10n.titleTeams.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppVariables.titleSize,
                       ),
-                      const SizedBox(height: 10),
-                      ...List.generate(
-                        numberOfShimmers,
-                        (index) => const ShimmerCardTeams(),
-                      ),
-                      const BackButtonTeams(),
-                      const SizedBox(height: 50),
-                    ],
+                    ),
                   ),
-                ),
+                  ...List.generate(
+                    AppVariables.numberOfShimmers,
+                    (index) => const ShimmerCardTeams(),
+                  ),
+                  const BackButtonTeams(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.hasError) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.errorTeams,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorTeams,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.data!.docs.isEmpty) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.emptyTeams,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.emptyTeams,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
@@ -127,68 +115,66 @@ class _TeamsViewState extends State<TeamsView> {
             .map((doc) => Team.fromJson(doc.data()))
             .toList();
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: AppRotaryScrollbar(
-              controller: _scrollController,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleTeams.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: context.read<TeamsCubit>().getDevices(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const SizedBox.shrink();
-                          }
-
-                          if (snapshot.hasError) {
-                            return const SizedBox.shrink();
-                          }
-
-                          if (snapshot.data!.docs.isEmpty) {
-                            return const SizedBox.shrink();
-                          }
-
-                          final enabledTeams =
-                              snapshot.data!.docs.first.data()['enabledTeams']
-                                  as List<dynamic>? ??
-                              [];
-
-                          return Column(
-                            children: teams
-                                .map(
-                                  (team) => TeamCardTeams(
-                                    enabledTeams: enabledTeams
-                                        .map((e) => e.toString())
-                                        .toList(),
-                                    team: team,
-                                  ),
-                                )
-                                .toList(),
-                          );
-                        },
-                      ),
-                      const BackButtonTeams(),
-                      const SizedBox(height: 50),
-                    ],
+        return AppScaffold(
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleTeams.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
+                    ),
                   ),
                 ),
-              ),
+                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                  stream: context.read<TeamsCubit>().getDevices(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox.shrink();
+                    }
+
+                    if (snapshot.hasError) {
+                      return const SizedBox.shrink();
+                    }
+
+                    if (snapshot.data!.docs.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final enabledTeams =
+                        snapshot.data!.docs.first.data()['enabledTeams']
+                            as List<dynamic>? ??
+                        [];
+                    final noShowCrestTeams = [779, 828];
+
+                    return Column(
+                      spacing: AppVariables.scaffoldSpacing,
+                      children: teams
+                          .map(
+                            (team) => TeamCardTeams(
+                              enabledTeams: enabledTeams
+                                  .map((e) => e.toString())
+                                  .toList(),
+                              team: team,
+                              hideCrest: noShowCrestTeams.contains(team.id),
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
+                ),
+                const BackButtonTeams(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           ),
         );
@@ -230,11 +216,13 @@ class TeamCardTeams extends StatelessWidget {
   const TeamCardTeams({
     required this.enabledTeams,
     required this.team,
+    required this.hideCrest,
     super.key,
   });
 
   final List<String> enabledTeams;
   final Team team;
+  final bool hideCrest;
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +251,7 @@ class TeamCardTeams extends StatelessWidget {
             },
           ),
           const SizedBox(width: 5),
-          CrestImage(crest: team.crest),
+          CrestImage(crest: team.crest, hideCrest: hideCrest),
           const SizedBox(width: 5),
           Expanded(child: ScrollText(text: team.name)),
         ],
@@ -279,25 +267,24 @@ class BackButtonTeams extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

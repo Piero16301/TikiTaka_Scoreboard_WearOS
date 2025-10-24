@@ -23,14 +23,6 @@ class _ThemesViewState extends State<ThemesView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
@@ -40,49 +32,41 @@ class _ThemesViewState extends State<ThemesView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      body: SizedBox.expand(
-        child: AppRotaryScrollbar(
-          controller: _scrollController,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: BlocBuilder<AppCubit, AppState>(
-                builder: (context, state) => RadioGroup<String>(
-                  groupValue: state.baseColor,
-                  onChanged: (value) =>
-                      context.read<AppCubit>().changeBaseColor(
-                        value ?? 'INDIGO',
-                      ),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleTheme.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ...AppHelpers.colorMap.entries.map(
-                        (entry) {
-                          return CardColorThemes(
-                            text: entry.key,
-                            color: entry.value,
-                          );
-                        },
-                      ),
-                      const BackButtonLanguages(),
-                      const SizedBox(height: 50),
-                    ],
+    return AppScaffold(
+      controller: _scrollController,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: BlocBuilder<AppCubit, AppState>(
+          builder: (context, state) => RadioGroup<String>(
+            groupValue: state.baseColor,
+            onChanged: (value) => context.read<AppCubit>().changeBaseColor(
+              value ?? 'INDIGO',
+            ),
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleTheme.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
+                    ),
                   ),
                 ),
-              ),
+                ...AppHelpers.colorMap.entries.map(
+                  (entry) => CardColorThemes(
+                    text: entry.key,
+                    color: entry.value,
+                  ),
+                ),
+                const BackButtonLanguages(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           ),
         ),
@@ -133,25 +117,24 @@ class BackButtonLanguages extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

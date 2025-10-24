@@ -62,7 +62,7 @@ class NotificationService {
 
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
-        .collection(devicesCollection)
+        .collection(AppVariables.devicesCollection)
         .doc(token)
         .set({
           'platform': 'WEAROS',
@@ -80,11 +80,11 @@ class NotificationService {
         }, SetOptions(merge: true));
 
     // Subscribe to AllDevices topic
-    await subscribeToTopic(allDevicesTopic);
+    await subscribeToTopic(AppVariables.allDevicesTopic);
 
     // Subscribe to WearOS topic if not emulator
     if (androidInfo.isPhysicalDevice) {
-      await subscribeToTopic(wearOSTopic);
+      await subscribeToTopic(AppVariables.wearOSTopic);
     } else {
       debugPrint('Emulator detected, not subscribing to WearOS topic');
     }
@@ -186,7 +186,7 @@ class NotificationService {
     debugPrint('Handling a background message: $message');
     if (message.contains('matchId')) {
       final matchId = int.parse(message.split('matchId:')[1]);
-      navigatorKey.currentState
+      AppVariables.navigatorKey.currentState
           ?.pushNamed(MatchPage.routeName, arguments: matchId)
           .ignore();
     }

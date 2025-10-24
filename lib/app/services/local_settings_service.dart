@@ -37,7 +37,7 @@ class LocalSettingsService {
   void saveLanguageOnFirestore({String language = 'en_US'}) {
     unawaited(
       firestore
-          .collection(devicesCollection)
+          .collection(AppVariables.devicesCollection)
           .doc(NotificationService.instance.token)
           .set(
             {
@@ -51,7 +51,7 @@ class LocalSettingsService {
   void saveBaseColorOnFirestore({String baseColor = 'INDIGO'}) {
     unawaited(
       firestore
-          .collection(devicesCollection)
+          .collection(AppVariables.devicesCollection)
           .doc(NotificationService.instance.token)
           .set(
             {

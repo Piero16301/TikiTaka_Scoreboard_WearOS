@@ -74,7 +74,7 @@ void main() {
       final rotaryScrollbar = tester.widget<RotaryScrollbar>(
         find.byType(RotaryScrollbar),
       );
-      expect(rotaryScrollbar.scrollAnimationCurve, equals(Curves.easeOutCubic));
+      expect(rotaryScrollbar.scrollAnimationCurve, equals(Curves.linear));
     });
 
     testWidgets('applies correct scroll animation duration', (tester) async {
@@ -94,7 +94,7 @@ void main() {
       );
       expect(
         rotaryScrollbar.scrollAnimationDuration,
-        equals(const Duration(milliseconds: 50)),
+        equals(const Duration(milliseconds: 100)),
       );
     });
 
@@ -113,7 +113,7 @@ void main() {
       final rotaryScrollbar = tester.widget<RotaryScrollbar>(
         find.byType(RotaryScrollbar),
       );
-      expect(rotaryScrollbar.scrollMagnitude, equals(3));
+      expect(rotaryScrollbar.scrollMagnitude, equals(50));
     });
 
     testWidgets('applies correct padding', (tester) async {

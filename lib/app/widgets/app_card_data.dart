@@ -12,13 +12,11 @@ class AppCardData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-        child: Padding(
-          padding: innerPadding,
-          child: child,
-        ),
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: innerPadding,
+        child: child,
       ),
     );
   }

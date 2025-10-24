@@ -86,7 +86,7 @@ void main() {
       );
 
       final image = tester.widget<Image>(find.byType(Image));
-      expect(image.fit, equals(BoxFit.contain));
+      expect(image.fit, equals(BoxFit.fill));
     });
 
     testWidgets('uses custom BoxFit when specified', (tester) async {
@@ -124,7 +124,7 @@ void main() {
       );
       expect(
         clipRRect.borderRadius,
-        equals(BorderRadius.circular(10)),
+        equals(BorderRadius.circular(7)),
       );
     });
 
@@ -147,7 +147,7 @@ void main() {
       );
       expect(
         clipRRect.borderRadius,
-        equals(BorderRadius.circular(5)),
+        equals(BorderRadius.circular(7)),
       );
     });
 
@@ -307,6 +307,132 @@ void main() {
       final icon = tester.widget<Icon>(find.byType(Icon));
       expect(icon.size, equals(customDimension));
       expect(icon.icon, equals(Icons.image));
+    });
+
+    testWidgets('renders placeholder icon when crest is empty', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(crest: ''),
+          ),
+        ),
+      );
+
+      expect(find.byType(Icon), findsOneWidget);
+      expect(find.byType(Image), findsNothing);
+      expect(find.byType(VectorGraphic), findsNothing);
+
+      final icon = tester.widget<Icon>(find.byType(Icon));
+      expect(icon.icon, equals(Icons.image));
+      expect(icon.size, equals(defaultDimension));
+    });
+
+    testWidgets('renders placeholder icon when hideCrest is true', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(
+              crest: pngCrest,
+              hideCrest: true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(Icon), findsOneWidget);
+      expect(find.byType(Image), findsNothing);
+      expect(find.byType(VectorGraphic), findsNothing);
+
+      final icon = tester.widget<Icon>(find.byType(Icon));
+      expect(icon.icon, equals(Icons.image));
+    });
+
+    testWidgets(
+      'placeholder uses custom dimension when crest is empty',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: CrestImage(
+                crest: '',
+                dimension: customDimension,
+              ),
+            ),
+          ),
+        );
+
+        final sizedBoxes = tester.widgetList<SizedBox>(find.byType(SizedBox));
+        expect(sizedBoxes.any((sb) => sb.width == customDimension), isTrue);
+        expect(sizedBoxes.any((sb) => sb.height == customDimension), isTrue);
+
+        final icon = tester.widget<Icon>(find.byType(Icon));
+        expect(icon.size, equals(customDimension));
+      },
+    );
+
+    testWidgets('placeholder has background container with correct color', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(crest: ''),
+          ),
+        ),
+      );
+
+      final containers = tester.widgetList<Container>(find.byType(Container));
+      expect(containers.length, greaterThan(0));
+
+      final containersWithColor = containers.where((c) => c.color != null);
+      expect(containersWithColor.length, greaterThan(0));
+    });
+
+    testWidgets('placeholder has ClipRRect with correct border radius', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(crest: ''),
+          ),
+        ),
+      );
+
+      final clipRRect = tester.widget<ClipRRect>(
+        find.ancestor(
+          of: find.byType(Stack),
+          matching: find.byType(ClipRRect),
+        ),
+      );
+      expect(
+        clipRRect.borderRadius,
+        equals(BorderRadius.circular(7)),
+      );
+    });
+
+    testWidgets('placeholder has Stack with Container and Icon', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(crest: ''),
+          ),
+        ),
+      );
+
+      final stacks = tester.widgetList<Stack>(find.byType(Stack));
+      expect(stacks.length, greaterThan(0));
+
+      final stackWithTwoChildren = stacks.firstWhere(
+        (stack) => stack.children.length == 2,
+      );
+      expect(stackWithTwoChildren, isNotNull);
     });
   });
 }

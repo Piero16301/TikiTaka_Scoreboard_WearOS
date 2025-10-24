@@ -39,18 +39,23 @@ void main() {
     final fakeFirestore = FakeFirebaseFirestore();
 
     when(mockHomeCubit.getMatches()).thenAnswer(
-      (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+      (_) =>
+          fakeFirestore.collection(AppVariables.matchesCollection).snapshots(),
     );
     when(mockHomeCubit.getMatchConfigs()).thenAnswer(
       (_) async* {
         yield await fakeFirestore
-            .collection(configsCollection)
-            .doc(matchesCollection)
+            .collection(AppVariables.configsCollection)
+            .doc(AppVariables.matchesCollection)
             .set({
-              'id': matchesCollection,
+              'id': AppVariables.matchesCollection,
               'lastUpdate': Timestamp.fromDate(DateTime.now()),
             })
-            .then((_) => fakeFirestore.collection(configsCollection).get());
+            .then(
+              (_) => fakeFirestore
+                  .collection(AppVariables.configsCollection)
+                  .get(),
+            );
       },
     );
   });
@@ -59,7 +64,9 @@ void main() {
     testWidgets('renders correctly with empty matches', (tester) async {
       final fakeFirestore = FakeFirebaseFirestore();
       when(mockHomeCubit.getMatches()).thenAnswer(
-        (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(
@@ -82,7 +89,9 @@ void main() {
     testWidgets('renders loading state', (tester) async {
       final fakeFirestore = FakeFirebaseFirestore();
       when(mockHomeCubit.getMatches()).thenAnswer(
-        (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(
@@ -135,12 +144,14 @@ void main() {
       final fakeFirestore = FakeFirebaseFirestore();
       for (final match in mockMatches) {
         await fakeFirestore
-            .collection(matchesCollection)
+            .collection(AppVariables.matchesCollection)
             .add(_matchToMap(match));
       }
 
       when(mockHomeCubit.getMatches()).thenAnswer(
-        (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(
@@ -170,12 +181,14 @@ void main() {
       final fakeFirestore = FakeFirebaseFirestore();
       for (final match in mockMatches) {
         await fakeFirestore
-            .collection(matchesCollection)
+            .collection(AppVariables.matchesCollection)
             .add(_matchToMap(match));
       }
 
       when(mockHomeCubit.getMatches()).thenAnswer(
-        (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(
@@ -201,7 +214,9 @@ void main() {
         final fakeFirestore = FakeFirebaseFirestore();
 
         when(mockHomeCubit.getMatches()).thenAnswer(
-          (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+          (_) => fakeFirestore
+              .collection(AppVariables.matchesCollection)
+              .snapshots(),
         );
 
         await tester.pumpWidget(
@@ -227,7 +242,9 @@ void main() {
 
       when(mockHomeCubit.state).thenReturn(const HomeState(reload: true));
       when(mockHomeCubit.getMatches()).thenAnswer(
-        (_) => fakeFirestore.collection(matchesCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(
@@ -292,7 +309,9 @@ void main() {
       final fakeFirestore = FakeFirebaseFirestore();
 
       when(mockHomeCubit.getMatchConfigs()).thenAnswer(
-        (_) => fakeFirestore.collection(configsCollection).snapshots(),
+        (_) => fakeFirestore
+            .collection(AppVariables.configsCollection)
+            .snapshots(),
       );
 
       await tester.pumpWidget(

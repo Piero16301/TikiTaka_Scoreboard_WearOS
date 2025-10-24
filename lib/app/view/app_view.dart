@@ -28,8 +28,8 @@ class _AppViewState extends State<AppView> {
         child: const HomePage(),
         builder: (context, isAmbientModeActive, child) {
           return MaterialApp(
-            title: 'Tiki Taka',
-            navigatorKey: navigatorKey,
+            title: AppVariables.appName,
+            navigatorKey: AppVariables.navigatorKey,
             theme: AppThemes.globalTheme(
               isAmbientModeActive: isAmbientModeActive,
               baseColor: state.baseColor,

@@ -43,7 +43,7 @@ android {
         minSdk = 34
         targetSdk = 36
         versionCode = 43
-        versionName = "2.1.1"
+        versionName = "2.2.0"
 
         // Configuración para tamaño de página de 16KB
         ndk {

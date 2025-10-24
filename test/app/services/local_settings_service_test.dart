@@ -170,7 +170,7 @@ void main() {
 
     group('Firestore collection constant', () {
       test('devices collection name is correct', () {
-        const collection = devicesCollection;
+        const collection = AppVariables.devicesCollection;
         expect(collection, 'devices');
       });
     });

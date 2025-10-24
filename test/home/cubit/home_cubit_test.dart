@@ -85,19 +85,27 @@ void main() {
       test(
         'returns stream with correct query when configsCollection exists',
         () async {
-          await fakeFirestore.collection(configsCollection).doc('config1').set({
-            'id': matchesCollection,
-            'lastUpdate': '2025-10-22T10:00:00Z',
-          });
+          await fakeFirestore
+              .collection(AppVariables.configsCollection)
+              .doc('config1')
+              .set({
+                'id': AppVariables.matchesCollection,
+                'lastUpdate': '2025-10-22T10:00:00Z',
+              });
 
-          await fakeFirestore.collection(configsCollection).doc('config2').set({
-            'id': 'otherCollection',
-            'lastUpdate': '2025-10-22T11:00:00Z',
-          });
+          await fakeFirestore
+              .collection(AppVariables.configsCollection)
+              .doc('config2')
+              .set({
+                'id': 'otherCollection',
+                'lastUpdate': '2025-10-22T11:00:00Z',
+              });
 
           final cubit = HomeCubit(userRepository);
           final state = cubit.state.copyWith(
-            configsCollection: fakeFirestore.collection(configsCollection),
+            configsCollection: fakeFirestore.collection(
+              AppVariables.configsCollection,
+            ),
           );
           cubit.emit(state);
 
@@ -108,19 +116,27 @@ void main() {
           final snapshot = await stream!.first;
 
           expect(snapshot.docs.length, 1);
-          expect(snapshot.docs.first.data()['id'], matchesCollection);
+          expect(
+            snapshot.docs.first.data()['id'],
+            AppVariables.matchesCollection,
+          );
         },
       );
 
       test('returns empty stream when no matching configs exist', () async {
-        await fakeFirestore.collection(configsCollection).doc('config1').set({
-          'id': 'otherCollection',
-          'lastUpdate': '2025-10-22T10:00:00Z',
-        });
+        await fakeFirestore
+            .collection(AppVariables.configsCollection)
+            .doc('config1')
+            .set({
+              'id': 'otherCollection',
+              'lastUpdate': '2025-10-22T10:00:00Z',
+            });
 
         final cubit = HomeCubit(userRepository);
         final state = cubit.state.copyWith(
-          configsCollection: fakeFirestore.collection(configsCollection),
+          configsCollection: fakeFirestore.collection(
+            AppVariables.configsCollection,
+          ),
         );
         cubit.emit(state);
 
@@ -136,14 +152,19 @@ void main() {
       test('stream emits updates when new matching config is added', () async {
         final cubit = HomeCubit(userRepository);
         final state = cubit.state.copyWith(
-          configsCollection: fakeFirestore.collection(configsCollection),
+          configsCollection: fakeFirestore.collection(
+            AppVariables.configsCollection,
+          ),
         );
         cubit.emit(state);
 
-        await fakeFirestore.collection(configsCollection).doc('config1').set({
-          'id': matchesCollection,
-          'lastUpdate': '2025-10-22T10:00:00Z',
-        });
+        await fakeFirestore
+            .collection(AppVariables.configsCollection)
+            .doc('config1')
+            .set({
+              'id': AppVariables.matchesCollection,
+              'lastUpdate': '2025-10-22T10:00:00Z',
+            });
 
         final stream = cubit.getMatchConfigs();
         expect(stream, isNotNull);
@@ -151,7 +172,10 @@ void main() {
         final snapshot = await stream!.first;
 
         expect(snapshot.docs.length, 1);
-        expect(snapshot.docs.first.data()['id'], matchesCollection);
+        expect(
+          snapshot.docs.first.data()['id'],
+          AppVariables.matchesCollection,
+        );
       });
     });
 
@@ -170,7 +194,9 @@ void main() {
 
         final cubit = HomeCubit(userRepository);
         final state = cubit.state.copyWith(
-          matchesCollection: fakeFirestore.collection(matchesCollection),
+          matchesCollection: fakeFirestore.collection(
+            AppVariables.matchesCollection,
+          ),
         );
         cubit.emit(state);
 
@@ -184,19 +210,24 @@ void main() {
         when(userRepository.getEnabledLeagues()).thenReturn(['PL', 'PD']);
 
         final now = DateTime.now();
-        await fakeFirestore.collection(matchesCollection).doc('match1').set({
-          'competition': {'code': 'PL'},
-          'utcDate': DateTime(
-            now.year,
-            now.month,
-            now.day,
-            15,
-          ).toIso8601String(),
-        });
+        await fakeFirestore
+            .collection(AppVariables.matchesCollection)
+            .doc('match1')
+            .set({
+              'competition': {'code': 'PL'},
+              'utcDate': DateTime(
+                now.year,
+                now.month,
+                now.day,
+                15,
+              ).toIso8601String(),
+            });
 
         final cubit = HomeCubit(userRepository);
         final state = cubit.state.copyWith(
-          matchesCollection: fakeFirestore.collection(matchesCollection),
+          matchesCollection: fakeFirestore.collection(
+            AppVariables.matchesCollection,
+          ),
         );
         cubit.emit(state);
 

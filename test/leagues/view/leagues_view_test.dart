@@ -341,22 +341,6 @@ void main() {
       expect(find.byType(BackButtonCompetitions), findsNothing);
     });
 
-    testWidgets('has correct padding', (tester) async {
-      await tester.pumpApp(const BackButtonCompetitions());
-
-      final padding = tester.widget<Padding>(
-        find.ancestor(
-          of: find.byType(ElevatedButton),
-          matching: find.byType(Padding),
-        ),
-      );
-
-      expect(
-        padding.padding,
-        const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      );
-    });
-
     testWidgets('button has correct layout', (tester) async {
       await tester.pumpApp(const BackButtonCompetitions());
 

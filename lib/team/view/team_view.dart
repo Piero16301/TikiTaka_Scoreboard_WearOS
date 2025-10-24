@@ -40,75 +40,62 @@ class _TeamViewState extends State<TeamView> {
       stream: context.read<TeamCubit>().getTeam(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
-                      const ShimmerMainInfoTeam(),
-                      const SizedBox(height: 5),
-                      const ShimmerCoachCardTeam(),
-                      ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
-                      ShimmerExpandableCardTeam(title: l10n.squadTeam),
-                      ShimmerExpandableCardTeam(title: l10n.staffTeam),
-                      ShimmerExpandableCardTeam(title: l10n.infoTeam),
-                      const BackButtonTeam(),
-                      const SizedBox(height: 50),
-                    ],
-                  ),
-                ),
+          return AppScaffold(
+            controller: _scrollController,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  const ShimmerMainInfoTeam(),
+                  const ShimmerCoachCardTeam(),
+                  ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
+                  ShimmerExpandableCardTeam(title: l10n.squadTeam),
+                  ShimmerExpandableCardTeam(title: l10n.staffTeam),
+                  ShimmerExpandableCardTeam(title: l10n.infoTeam),
+                  const BackButtonTeam(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.hasError) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.errorTeam,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorTeam,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.data!.docs.isEmpty) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.notFoundTeam,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const BackButtonTeam(),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.notFoundTeam,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                  const BackButtonTeam(),
+                ],
               ),
             ),
           );
@@ -119,59 +106,57 @@ class _TeamViewState extends State<TeamView> {
             .toList()
             .first;
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: RippleBackground(
-              colors: AppFunctions.getTeamColors(team.clubColors),
-              child: AppRotaryScrollbar(
+        return AppScaffold(
+          controller: _scrollController,
+          disablePadding: true,
+          child: RippleBackground(
+            colors: AppFunctions.getTeamColors(team.clubColors),
+            child: Padding(
+              padding: AppVariables.scaffoldPadding,
+              child: SingleChildScrollView(
                 controller: _scrollController,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 10),
-                        MainInfoTeam(team: team),
-                        CoachCardTeam(coach: team.coach),
-                        if (team.runningCompetitions.isNotEmpty)
-                          CompetitionsCardTeam(
-                            competitions: team.runningCompetitions,
+                child: Column(
+                  spacing: AppVariables.scaffoldSpacing,
+                  children: [
+                    const SizedBox(height: AppVariables.topScaffoldSpacing),
+                    MainInfoTeam(team: team),
+                    CoachCardTeam(coach: team.coach),
+                    if (team.runningCompetitions.isNotEmpty)
+                      CompetitionsCardTeam(
+                        competitions: team.runningCompetitions,
+                      ),
+                    if (team.squad.isNotEmpty)
+                      SquadCardTeam(
+                        squad: team.squad
+                          ..sort(
+                            (a, b) =>
+                                AppFunctions.getStaffPositionOrder(
+                                  a.position,
+                                ).compareTo(
+                                  AppFunctions.getStaffPositionOrder(
+                                    b.position,
+                                  ),
+                                ),
                           ),
-                        if (team.squad.isNotEmpty)
-                          SquadCardTeam(
-                            squad: team.squad
-                              ..sort(
-                                (a, b) =>
-                                    AppFunctions.getStaffPositionOrder(
-                                      a.position,
-                                    ).compareTo(
-                                      AppFunctions.getStaffPositionOrder(
-                                        b.position,
-                                      ),
-                                    ),
-                              ),
+                      ),
+                    if (team.staff.isNotEmpty)
+                      StaffCardTeam(
+                        staff: team.staff
+                          ..sort(
+                            (a, b) =>
+                                AppFunctions.getStaffPositionOrder(
+                                  a.position,
+                                ).compareTo(
+                                  AppFunctions.getStaffPositionOrder(
+                                    b.position,
+                                  ),
+                                ),
                           ),
-                        if (team.staff.isNotEmpty)
-                          StaffCardTeam(
-                            staff: team.staff
-                              ..sort(
-                                (a, b) =>
-                                    AppFunctions.getStaffPositionOrder(
-                                      a.position,
-                                    ).compareTo(
-                                      AppFunctions.getStaffPositionOrder(
-                                        b.position,
-                                      ),
-                                    ),
-                              ),
-                          ),
-                        AdditionalInfoTeam(team: team),
-                        const BackButtonTeam(),
-                        const SizedBox(height: 50),
-                      ],
-                    ),
-                  ),
+                      ),
+                    AdditionalInfoTeam(team: team),
+                    const BackButtonTeam(),
+                    const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                  ],
                 ),
               ),
             ),
@@ -816,10 +801,20 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
             snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
-            [Config(id: teamsCollection, lastUpdate: DateTime.now())];
+            [
+              Config(
+                id: AppVariables.teamsCollection,
+                lastUpdate: DateTime.now(),
+              ),
+            ];
 
         if (configs.isEmpty) {
-          configs.add(Config(id: teamsCollection, lastUpdate: DateTime.now()));
+          configs.add(
+            Config(
+              id: AppVariables.teamsCollection,
+              lastUpdate: DateTime.now(),
+            ),
+          );
         }
 
         final delta = DateTime.now().difference(configs.first.lastUpdate);
@@ -840,25 +835,24 @@ class BackButtonTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

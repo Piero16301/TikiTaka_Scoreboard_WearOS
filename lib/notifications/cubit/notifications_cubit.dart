@@ -12,7 +12,9 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   final UserRepository userRepository;
 
   void initCollections() {
-    final leagues = FirebaseFirestore.instance.collection(leaguesCollection);
+    final leagues = FirebaseFirestore.instance.collection(
+      AppVariables.leaguesCollection,
+    );
     emit(state.copyWith(leaguesCollection: leagues));
   }
 

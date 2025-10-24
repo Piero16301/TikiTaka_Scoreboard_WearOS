@@ -48,78 +48,72 @@ class _HomeViewState extends State<HomeView> {
           stream: context.read<HomeCubit>().getMatches(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Scaffold(
-                body: SizedBox.expand(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: ScrollText(
-                              text: l10n.titleMatches.toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: titleSize,
-                              ),
-                            ),
+              return AppScaffold(
+                controller: _scrollController,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    spacing: AppVariables.scaffoldSpacing,
+                    children: [
+                      const SizedBox(height: AppVariables.topScaffoldSpacing),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppVariables.horizontalPaddingTitle,
+                        ),
+                        child: ScrollText(
+                          text: l10n.titleMatches.toUpperCase(),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: AppVariables.titleSize,
+                            height: AppVariables.titleTextHeight,
                           ),
-                          const LastUpdateHome(isLoading: true),
-                          const SizedBox(height: 10),
-                          ...List.generate(
-                            numberOfShimmers,
-                            (index) => const ShimmerMatchCardHome(),
-                          ),
-                          const SettingsHome(),
-                          const SizedBox(height: 50),
-                        ],
+                        ),
                       ),
-                    ),
+                      const LastUpdateHome(isLoading: true),
+                      ...List.generate(
+                        AppVariables.numberOfShimmers,
+                        (index) => const ShimmerMatchCardHome(),
+                      ),
+                      const SettingsHome(),
+                      const SizedBox(
+                        height: AppVariables.bottomScaffoldSpacing,
+                      ),
+                    ],
                   ),
                 ),
               );
             }
 
             if (snapshot.hasError) {
-              return Scaffold(
-                body: SizedBox.expand(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ScrollText(text: l10n.errorMatches),
-                          ),
-                        ],
+              return AppScaffold(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: AppVariables.scaffoldSpacing,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: ScrollText(text: l10n.errorMatches),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               );
             }
 
             if (snapshot.data!.docs.isEmpty) {
-              return Scaffold(
-                body: SizedBox.expand(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            child: ScrollText(text: l10n.emptyMatches),
-                          ),
-                          const SettingsHome(),
-                        ],
+              return AppScaffold(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: AppVariables.scaffoldSpacing,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: ScrollText(text: l10n.emptyMatches),
                       ),
-                    ),
+                      const SettingsHome(),
+                    ],
                   ),
                 ),
               );
@@ -147,39 +141,35 @@ class _HomeViewState extends State<HomeView> {
                     return aStatus.compareTo(bStatus);
                   });
 
-            return Scaffold(
+            return AppScaffold(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
-              body: SizedBox.expand(
-                child: AppRotaryScrollbar(
-                  controller: _scrollController,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: ScrollText(
-                              text: l10n.titleMatches.toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: titleSize,
-                              ),
-                            ),
-                          ),
-                          const LastUpdateHome(),
-                          const SizedBox(height: 10),
-                          ...matches.map(
-                            (match) => MatchCardHome(match: match),
-                          ),
-                          const SettingsHome(),
-                          const SizedBox(height: 50),
-                        ],
+              controller: _scrollController,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  spacing: AppVariables.scaffoldSpacing,
+                  children: [
+                    const SizedBox(height: AppVariables.topScaffoldSpacing),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppVariables.horizontalPaddingTitle,
+                      ),
+                      child: ScrollText(
+                        text: l10n.titleMatches.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppVariables.titleSize,
+                          height: AppVariables.titleTextHeight,
+                        ),
                       ),
                     ),
-                  ),
+                    const LastUpdateHome(),
+                    ...matches.map(
+                      (match) => MatchCardHome(match: match),
+                    ),
+                    const SettingsHome(),
+                    const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                  ],
                 ),
               ),
             );
@@ -243,11 +233,19 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
             snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
-            [Config(id: matchesCollection, lastUpdate: DateTime.now())];
+            [
+              Config(
+                id: AppVariables.matchesCollection,
+                lastUpdate: DateTime.now(),
+              ),
+            ];
 
         if (configs.isEmpty) {
           configs.add(
-            Config(id: matchesCollection, lastUpdate: DateTime.now()),
+            Config(
+              id: AppVariables.matchesCollection,
+              lastUpdate: DateTime.now(),
+            ),
           );
         }
 
@@ -454,34 +452,33 @@ class SettingsHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () async {
-          final reload =
-              (await Navigator.of(context).pushNamed(SettingsPage.routeName))
-                  as bool? ??
-              true;
-          if (reload) {
-            // ignore: use_build_context_synchronously // It's safe here
-            context.read<HomeCubit>().reload();
-          }
-        },
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: ScrollText(
-                text: l10n.titleSettings.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () async {
+        final reload =
+            (await Navigator.of(context).pushNamed(SettingsPage.routeName))
+                as bool? ??
+            true;
+        if (reload) {
+          // ignore: use_build_context_synchronously // It's safe here
+          context.read<HomeCubit>().reload();
+        }
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: ScrollText(
+              text: l10n.titleSettings.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

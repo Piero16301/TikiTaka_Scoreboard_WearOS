@@ -15,8 +15,12 @@ class TeamsCubit extends Cubit<TeamsState> {
   final UserRepository userRepository;
 
   void initCollections(int leagueId) {
-    final teams = FirebaseFirestore.instance.collection(teamsCollection);
-    final devices = FirebaseFirestore.instance.collection(devicesCollection);
+    final teams = FirebaseFirestore.instance.collection(
+      AppVariables.teamsCollection,
+    );
+    final devices = FirebaseFirestore.instance.collection(
+      AppVariables.devicesCollection,
+    );
     emit(
       state.copyWith(
         leagueId: leagueId,
