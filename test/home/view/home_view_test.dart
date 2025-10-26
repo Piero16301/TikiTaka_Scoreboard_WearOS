@@ -84,6 +84,9 @@ void main() {
 
       expect(find.byType(HomeView), findsOneWidget);
       expect(find.byType(SettingsHome), findsOneWidget);
+
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
     });
 
     testWidgets('renders loading state', (tester) async {
@@ -109,6 +112,9 @@ void main() {
       expect(find.byType(LastUpdateHome), findsOneWidget);
 
       await tester.pumpAndSettle();
+
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
     });
 
     testWidgets('renders error state', (tester) async {
@@ -168,6 +174,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(MatchCardHome), findsNWidgets(2));
+
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
     });
 
     testWidgets('sorts matches correctly', (tester) async {
@@ -205,6 +214,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 500));
 
       expect(find.byType(MatchCardHome), findsNWidgets(4));
+
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
     });
 
     testWidgets(
@@ -233,6 +245,9 @@ void main() {
         await tester.pump();
 
         expect(find.byType(HomeView), findsOneWidget);
+
+        await tester.pump(const Duration(seconds: 3));
+        await tester.pump();
       },
       timeout: const Timeout(Duration(seconds: 10)),
     );
@@ -261,6 +276,9 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(mockHomeCubit.reload(value: false)).called(greaterThan(0));
+
+      await tester.pump(const Duration(seconds: 3));
+      await tester.pump();
     });
   });
 

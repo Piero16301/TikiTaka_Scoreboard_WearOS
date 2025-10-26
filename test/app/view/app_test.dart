@@ -43,6 +43,7 @@ void main() {
           home: AppPage(userRepository: userRepository),
         ),
       );
+      await tester.pumpAndSettle();
 
       expect(find.byType(AppPage), findsOneWidget);
     });
@@ -61,6 +62,7 @@ void main() {
             home: AppPage(userRepository: userRepository),
           ),
         );
+        await tester.pumpAndSettle();
 
         expect(find.byType(AppPage), findsOneWidget);
       },
@@ -80,6 +82,7 @@ void main() {
             home: AppPage(userRepository: userRepository),
           ),
         );
+        await tester.pumpAndSettle();
 
         expect(find.byType(AppPage), findsOneWidget);
       },

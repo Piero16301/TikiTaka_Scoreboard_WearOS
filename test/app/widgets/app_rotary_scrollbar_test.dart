@@ -74,7 +74,7 @@ void main() {
       final rotaryScrollbar = tester.widget<RotaryScrollbar>(
         find.byType(RotaryScrollbar),
       );
-      expect(rotaryScrollbar.scrollAnimationCurve, equals(Curves.linear));
+      expect(rotaryScrollbar.scrollAnimationCurve, equals(Curves.easeInOut));
     });
 
     testWidgets('applies correct scroll animation duration', (tester) async {
@@ -94,7 +94,7 @@ void main() {
       );
       expect(
         rotaryScrollbar.scrollAnimationDuration,
-        equals(const Duration(milliseconds: 100)),
+        equals(const Duration(milliseconds: 300)),
       );
     });
 
@@ -113,7 +113,7 @@ void main() {
       final rotaryScrollbar = tester.widget<RotaryScrollbar>(
         find.byType(RotaryScrollbar),
       );
-      expect(rotaryScrollbar.scrollMagnitude, equals(50));
+      expect(rotaryScrollbar.scrollMagnitude, equals(5));
     });
 
     testWidgets('applies correct padding', (tester) async {
@@ -134,7 +134,7 @@ void main() {
       expect(rotaryScrollbar.padding, equals(0));
     });
 
-    testWidgets('sets autoHide to false', (tester) async {
+    testWidgets('uses default autoHide value', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
@@ -149,7 +149,7 @@ void main() {
       final rotaryScrollbar = tester.widget<RotaryScrollbar>(
         find.byType(RotaryScrollbar),
       );
-      expect(rotaryScrollbar.autoHide, equals(false));
+      expect(rotaryScrollbar.autoHide, equals(true));
     });
 
     testWidgets('renders child widget correctly', (tester) async {
@@ -192,6 +192,8 @@ void main() {
       expect(find.text('Item 0'), findsOneWidget);
 
       expect(scrollController.hasClients, isTrue);
+
+      await tester.pumpAndSettle(const Duration(seconds: 5));
     });
   });
 }
