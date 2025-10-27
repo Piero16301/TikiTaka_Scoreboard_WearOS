@@ -18,7 +18,7 @@ class AppRotaryScrollbar extends StatelessWidget {
       width: 7,
       padding: 0,
       scrollAnimationCurve: Curves.easeInOut,
-      scrollAnimationDuration: const Duration(milliseconds: 300),
+      scrollAnimationDuration: const Duration(milliseconds: 200),
       scrollMagnitude: 5,
       child: child,
     );
