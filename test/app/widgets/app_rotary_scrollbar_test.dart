@@ -94,7 +94,7 @@ void main() {
       );
       expect(
         rotaryScrollbar.scrollAnimationDuration,
-        equals(const Duration(milliseconds: 300)),
+        equals(const Duration(milliseconds: 200)),
       );
     });
 
