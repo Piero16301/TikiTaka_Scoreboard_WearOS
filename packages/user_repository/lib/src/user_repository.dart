@@ -5,9 +5,7 @@ import 'package:user_api/user_api.dart';
 /// {@endtemplate}
 class UserRepository {
   /// {@macro user_repository}
-  const UserRepository({
-    required IUserApi userApi,
-  }) : _userApi = userApi;
+  const UserRepository({required IUserApi userApi}) : _userApi = userApi;
 
   final IUserApi _userApi;
 
@@ -15,8 +13,7 @@ class UserRepository {
   Future<void> saveEnabledLeague({
     required String league,
     required bool enabled,
-  }) =>
-      _userApi.saveEnabledLeague(league: league, enabled: enabled);
+  }) => _userApi.saveEnabledLeague(league: league, enabled: enabled);
 
   /// Get enabled leagues from local storage
   List<String> getEnabledLeagues() => _userApi.getEnabledLeagues();
@@ -28,10 +25,10 @@ class UserRepository {
   /// Get language from local storage
   String? getLanguage() => _userApi.getLanguage();
 
-  /// Save dark mode in local storage
-  Future<void> saveDarkMode({bool darkMode = true}) =>
-      _userApi.saveDarkMode(darkMode: darkMode);
+  /// Save base color in local storage
+  Future<void> saveBaseColor({String baseColor = 'INDIGO'}) =>
+      _userApi.saveBaseColor(baseColor: baseColor);
 
-  /// Get dark mode from local storage
-  bool? getDarkMode() => _userApi.getDarkMode();
+  /// Get save color from local storage
+  String? getBaseColor() => _userApi.getBaseColor();
 }

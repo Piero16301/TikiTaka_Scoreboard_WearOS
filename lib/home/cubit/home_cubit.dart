@@ -12,8 +12,12 @@ class HomeCubit extends Cubit<HomeState> {
   final UserRepository userRepository;
 
   void initCollections() {
-    final matches = FirebaseFirestore.instance.collection(matchesCollection);
-    final configs = FirebaseFirestore.instance.collection(configsCollection);
+    final matches = FirebaseFirestore.instance.collection(
+      AppVariables.matchesCollection,
+    );
+    final configs = FirebaseFirestore.instance.collection(
+      AppVariables.configsCollection,
+    );
 
     emit(
       state.copyWith(
@@ -30,11 +34,14 @@ class HomeCubit extends Cubit<HomeState> {
   Stream<QuerySnapshot<Map<String, dynamic>>>? getMatches() {
     final enabledLeagues = userRepository.getEnabledLeagues();
     final nowDate = DateTime.now();
+    // final nowDate = DateTime(2025, 10, 21);
 
     final snapshots = state.matchesCollection
         ?.where(
           'competition.code',
-          whereIn: (enabledLeagues.isEmpty ? [emptyLeague] : enabledLeagues),
+          whereIn: (enabledLeagues.isEmpty
+              ? [AppVariables.emptyLeague]
+              : enabledLeagues),
         )
         .where(
           'utcDate',
@@ -52,7 +59,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getMatchConfigs() {
     final snapshots = state.configsCollection
-        ?.where('id', isEqualTo: matchesCollection)
+        ?.where('id', isEqualTo: AppVariables.matchesCollection)
         .snapshots();
 
     return snapshots;

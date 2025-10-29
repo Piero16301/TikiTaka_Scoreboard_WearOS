@@ -12,8 +12,12 @@ class TeamCubit extends Cubit<TeamState> {
   final UserRepository userRepository;
 
   void initCollections(int teamId) {
-    final teams = FirebaseFirestore.instance.collection(teamsCollection);
-    final configs = FirebaseFirestore.instance.collection(configsCollection);
+    final teams = FirebaseFirestore.instance.collection(
+      AppVariables.teamsCollection,
+    );
+    final configs = FirebaseFirestore.instance.collection(
+      AppVariables.configsCollection,
+    );
     emit(
       state.copyWith(
         teamId: teamId,
@@ -32,7 +36,7 @@ class TeamCubit extends Cubit<TeamState> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getTeamConfigs() {
     final snapshots = state.configsCollection
-        ?.where('id', isEqualTo: teamsCollection)
+        ?.where('id', isEqualTo: AppVariables.teamsCollection)
         .snapshots();
     return snapshots;
   }

@@ -13,13 +13,13 @@ class MatchCubit extends Cubit<MatchState> {
 
   void initCollections(int matchId) {
     final matches = FirebaseFirestore.instance.collection(
-      matchesCollection,
+      AppVariables.matchesCollection,
     );
     final configs = FirebaseFirestore.instance.collection(
-      configsCollection,
+      AppVariables.configsCollection,
     );
     final standings = FirebaseFirestore.instance.collection(
-      standingsCollection,
+      AppVariables.standingsCollection,
     );
     emit(
       state.copyWith(
@@ -55,7 +55,7 @@ class MatchCubit extends Cubit<MatchState> {
 
   Stream<QuerySnapshot<Map<String, dynamic>>>? getMatchConfigs() {
     final snapshots = state.configsCollection
-        ?.where('id', isEqualTo: matchesCollection)
+        ?.where('id', isEqualTo: AppVariables.matchesCollection)
         .snapshots();
     return snapshots;
   }

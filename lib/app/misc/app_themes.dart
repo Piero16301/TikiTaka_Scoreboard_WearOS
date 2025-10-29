@@ -1,84 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
-ThemeData appDarkTheme({required bool isAmbientModeActive}) {
-  return ThemeData(
-    fontFamily: GoogleFonts.montserrat().fontFamily,
-    useMaterial3: true,
-    visualDensity: VisualDensity.compact,
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: Colors.black,
-    cardTheme: CardThemeData(
-      color: const Color.fromRGBO(50, 49, 47, 1),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+class AppThemes {
+  static ThemeData globalTheme({
+    required bool isAmbientModeActive,
+    required String baseColor,
+  }) {
+    final color = AppHelpers.getColorByName(baseColor);
+    final baseTheme = ThemeData(
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: color,
+        brightness: Brightness.dark,
       ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(
-          isAmbientModeActive ? Colors.white24 : Colors.white,
-        ),
-        foregroundColor: WidgetStateProperty.all(
-          isAmbientModeActive ? Colors.white : Colors.black,
-        ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-        ),
-      ),
-    ),
-    dividerColor: Colors.transparent,
-    colorScheme: isAmbientModeActive
-        ? const ColorScheme.dark(
-            primary: Colors.white24,
-            onSurface: Colors.white10,
-          )
-        : const ColorScheme.dark(
-            primary: Colors.white,
-          ),
-  );
-}
+    );
 
-ThemeData appLightTheme({required bool isAmbientModeActive}) {
-  return ThemeData(
-    fontFamily: GoogleFonts.montserrat().fontFamily,
-    useMaterial3: true,
-    visualDensity: VisualDensity.compact,
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: Colors.white,
-    cardTheme: CardThemeData(
-      color: const Color.fromARGB(255, 207, 207, 207),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    return ThemeData(
+      fontFamily: GoogleFonts.montserrat().fontFamily,
+      useMaterial3: true,
+      visualDensity: VisualDensity.compact,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: Colors.black,
+      pageTransitionsTheme: isAmbientModeActive
+          ? const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+              },
+            )
+          : null,
+      cardTheme: CardThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
       ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.all(
-          isAmbientModeActive ? Colors.black12 : Colors.black,
-        ),
-        foregroundColor: WidgetStateProperty.all(
-          isAmbientModeActive ? Colors.black : Colors.white,
-        ),
-        shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(
+            isAmbientModeActive
+                ? Colors.grey.shade900
+                : baseTheme.colorScheme.primaryContainer,
+          ),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
       ),
-    ),
-    dividerColor: Colors.transparent,
-    colorScheme: isAmbientModeActive
-        ? const ColorScheme.light(
-            primary: Colors.black12,
-            onSurface: Colors.black26,
-          )
-        : const ColorScheme.light(
-            primary: Colors.black,
-          ),
-  );
+      textTheme: isAmbientModeActive
+          ? const TextTheme(
+              bodyLarge: TextStyle(color: Colors.white70),
+              bodyMedium: TextStyle(color: Colors.white60),
+              bodySmall: TextStyle(color: Colors.white54),
+            )
+          : null,
+      dividerColor: Colors.transparent,
+      colorScheme: isAmbientModeActive
+          ? ColorScheme.fromSeed(
+              seedColor: Colors.white,
+              brightness: Brightness.dark,
+              primary: Colors.white70,
+              onSurface: Colors.white54,
+              surface: Colors.black,
+              onPrimary: Colors.white70,
+            )
+          : ColorScheme.fromSeed(
+              seedColor: color,
+              brightness: Brightness.dark,
+              primary: Colors.white,
+            ),
+    );
+  }
 }

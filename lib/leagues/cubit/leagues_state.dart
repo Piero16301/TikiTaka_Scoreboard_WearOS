@@ -21,7 +21,7 @@ class LeaguesState extends Equatable {
 
   @override
   List<Object?> get props => [
-        leaguesCollection,
-        enabledLeagues,
-      ];
+    leaguesCollection,
+    enabledLeagues,
+  ];
 }

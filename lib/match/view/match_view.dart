@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
@@ -44,84 +43,74 @@ class _MatchViewState extends State<MatchView> {
       stream: context.read<MatchCubit>().getMatch(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleMatch.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
+          return AppScaffold(
+            controller: _scrollController,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppVariables.horizontalPaddingTitle,
+                    ),
+                    child: ScrollText(
+                      text: l10n.titleMatch.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppVariables.titleSize,
+                        height: AppVariables.titleTextHeight,
                       ),
-                      const LastUpdateMatch(isLoading: true),
-                      const SizedBox(height: 10),
-                      const ShimmerTeamsCardMatch(),
-                      const ShimmerRefereeCardMatch(),
-                      const ShimmerCompetitionCardMatch(),
-                      const ShimmerStandingsMatch(),
-                      const BackButtonMatch(),
-                      const SizedBox(height: 50),
-                    ],
+                    ),
                   ),
-                ),
+                  const LastUpdateMatch(isLoading: true),
+                  const ShimmerTeamsCardMatch(),
+                  const ShimmerRefereeCardMatch(),
+                  const ShimmerCompetitionCardMatch(),
+                  const ShimmerStandingsMatch(),
+                  const BackButtonMatch(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.hasError) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.errorMatch,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorMatch,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.data!.docs.isEmpty) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.notFoundMatch,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const BackButtonMatch(),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.notFoundMatch,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                  const BackButtonMatch(),
+                ],
               ),
             ),
           );
@@ -132,44 +121,36 @@ class _MatchViewState extends State<MatchView> {
             .toList()
             .first;
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: RotaryScrollbar(
-              controller: _scrollController,
-              scrollAnimationCurve: Curves.easeInOut,
-              scrollAnimationDuration: scrollDuration,
-              scrollMagnitude: scrollMagnitude,
-              width: scrollWidth,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleMatch.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
-                      ),
-                      const LastUpdateMatch(),
-                      const SizedBox(height: 10),
-                      TeamsCardMatch(match: match),
-                      if (match.referees.isNotEmpty)
-                        RefereeCardMatch(referees: match.referees),
-                      CompetitionCardMatch(match: match),
-                      StandingsMatch(match: match),
-                      const BackButtonMatch(),
-                      const SizedBox(height: 50),
-                    ],
+        return AppScaffold(
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleMatch.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
+                      height: AppVariables.titleTextHeight,
+                    ),
                   ),
                 ),
-              ),
+                const LastUpdateMatch(),
+                TeamsCardMatch(match: match),
+                if (match.referees.isNotEmpty)
+                  RefereeCardMatch(referees: match.referees),
+                CompetitionCardMatch(match: match),
+                StandingsMatch(match: match),
+                const BackButtonMatch(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           ),
         );
@@ -231,11 +212,19 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
             snapshot.data?.docs
                 .map((doc) => Config.fromJson(doc.data()))
                 .toList() ??
-            [Config(id: matchesCollection, lastUpdate: DateTime.now())];
+            [
+              Config(
+                id: AppVariables.matchesCollection,
+                lastUpdate: DateTime.now(),
+              ),
+            ];
 
         if (configs.isEmpty) {
           configs.add(
-            Config(id: matchesCollection, lastUpdate: DateTime.now()),
+            Config(
+              id: AppVariables.matchesCollection,
+              lastUpdate: DateTime.now(),
+            ),
           );
         }
 
@@ -473,7 +462,7 @@ class TeamsCardMatch extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            getMatchState(match.status, match.utcDate!, l10n),
+            AppFunctions.getMatchState(match.status, match.utcDate!, l10n),
             style: const TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.bold,
@@ -768,7 +757,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
                 ],
               ),
               ...List.generate(
-                numberOfShimmers * 4,
+                AppVariables.numberOfShimmers * 4,
                 (index) => Container(
                   padding: const EdgeInsets.symmetric(
                     vertical: 2.5,
@@ -835,14 +824,7 @@ class StandingsMatch extends StatelessWidget {
       ),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const AppCardData(
-            child: Center(
-              child: SizedBox.square(
-                dimension: 20,
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
+          return const ShimmerStandingsMatch();
         }
 
         if (snapshot.hasError) {
@@ -859,7 +841,8 @@ class StandingsMatch extends StatelessWidget {
         }
 
         final standingsList =
-            result.first[standingsCollection] as List<dynamic>? ?? [];
+            result.first[AppVariables.standingsCollection] as List<dynamic>? ??
+            [];
         if (standingsList.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -890,7 +873,7 @@ class StandingsMatch extends StatelessWidget {
                       children: [
                         const Expanded(child: SizedBox.shrink()),
                         SizedBox(
-                          width: 21,
+                          width: 25,
                           child: Center(
                             child: Text(
                               l10n.playedGamesAbbr,
@@ -903,7 +886,7 @@ class StandingsMatch extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         SizedBox(
-                          width: 21,
+                          width: 25,
                           child: Center(
                             child: Text(
                               l10n.goalDifferenceAbbr,
@@ -916,7 +899,7 @@ class StandingsMatch extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         SizedBox(
-                          width: 21,
+                          width: 25,
                           child: Center(
                             child: Text(
                               l10n.pointsAbbr,
@@ -1129,7 +1112,7 @@ class PointTextMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 21,
+      width: 25,
       child: Center(
         child: Text(
           value.toString(),
@@ -1150,25 +1133,24 @@ class BackButtonMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

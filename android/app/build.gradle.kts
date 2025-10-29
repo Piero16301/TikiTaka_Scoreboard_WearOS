@@ -42,8 +42,8 @@ android {
         applicationId = "com.pmorales.wearos.tikitaka"
         minSdk = 34
         targetSdk = 36
-        versionCode = 41
-        versionName = "2.0.3"
+        versionCode = 45
+        versionName = "2.2.2"
 
         // Configuración para tamaño de página de 16KB
         ndk {

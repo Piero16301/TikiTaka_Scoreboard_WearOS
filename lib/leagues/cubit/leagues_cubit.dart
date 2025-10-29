@@ -12,7 +12,9 @@ class LeaguesCubit extends Cubit<LeaguesState> {
   final UserRepository userRepository;
 
   void initCollections() {
-    final leagues = FirebaseFirestore.instance.collection(leaguesCollection);
+    final leagues = FirebaseFirestore.instance.collection(
+      AppVariables.leaguesCollection,
+    );
     final enabledLeagues = userRepository.getEnabledLeagues();
     emit(
       state.copyWith(

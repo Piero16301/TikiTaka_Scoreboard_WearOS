@@ -57,12 +57,12 @@ class NotificationService {
     final localLanguage = await LocalSettingsService.instance
         .getLocalLanguage();
 
-    // Get device dark mode
-    final darkMode = await LocalSettingsService.instance.getDarkMode();
+    // Get device base color
+    final baseColor = await LocalSettingsService.instance.getBaseColor();
 
     // Setup Flutter local notifications
     await FirebaseFirestore.instance
-        .collection(devicesCollection)
+        .collection(AppVariables.devicesCollection)
         .doc(token)
         .set({
           'platform': 'WEAROS',
@@ -75,16 +75,16 @@ class NotificationService {
           'iosInfo': null,
           'webInfo': null,
           'language': localLanguage,
-          'darkMode': darkMode,
+          'baseColor': baseColor,
           'enabledTeams': FieldValue.arrayUnion(<String>[]),
         }, SetOptions(merge: true));
 
     // Subscribe to AllDevices topic
-    await subscribeToTopic(allDevicesTopic);
+    await subscribeToTopic(AppVariables.allDevicesTopic);
 
     // Subscribe to WearOS topic if not emulator
     if (androidInfo.isPhysicalDevice) {
-      await subscribeToTopic(wearOSTopic);
+      await subscribeToTopic(AppVariables.wearOSTopic);
     } else {
       debugPrint('Emulator detected, not subscribing to WearOS topic');
     }
@@ -186,7 +186,7 @@ class NotificationService {
     debugPrint('Handling a background message: $message');
     if (message.contains('matchId')) {
       final matchId = int.parse(message.split('matchId:')[1]);
-      navigatorKey.currentState
+      AppVariables.navigatorKey.currentState
           ?.pushNamed(MatchPage.routeName, arguments: matchId)
           .ignore();
     }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
@@ -42,83 +41,71 @@ class _LeaguesViewState extends State<LeaguesView> {
       stream: context.read<LeaguesCubit>().getLeagues(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleLeagues.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
+          return AppScaffold(
+            controller: _scrollController,
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppVariables.horizontalPaddingTitle,
+                    ),
+                    child: ScrollText(
+                      text: l10n.titleLeagues.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppVariables.titleSize,
                       ),
-                      const SizedBox(height: 10),
-                      ...List.generate(
-                        numberOfShimmers,
-                        (index) => const ShimmerCardLeagues(),
-                      ),
-                      const BackButtonCompetitions(),
-                      const SizedBox(height: 50),
-                    ],
+                    ),
                   ),
-                ),
+                  ...List.generate(
+                    AppVariables.numberOfShimmers,
+                    (index) => const ShimmerCardLeagues(),
+                  ),
+                  const BackButtonCompetitions(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.hasError) {
-          return Scaffold(
-            backgroundColor: Colors.black,
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.errorLeagues,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorLeagues,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
         }
 
         if (snapshot.data!.docs.isEmpty) {
-          return Scaffold(
-            body: SizedBox.expand(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        l10n.emptyLeagues,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+          return AppScaffold(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.emptyLeagues,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
@@ -128,41 +115,32 @@ class _LeaguesViewState extends State<LeaguesView> {
             .map((doc) => League.fromJson(doc.data()))
             .toList();
 
-        return Scaffold(
-          body: SizedBox.expand(
-            child: RotaryScrollbar(
-              controller: _scrollController,
-              scrollAnimationCurve: Curves.easeInOut,
-              scrollAnimationDuration: scrollDuration,
-              scrollMagnitude: scrollMagnitude,
-              width: scrollWidth,
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40),
-                        child: ScrollText(
-                          text: l10n.titleLeagues.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: titleSize,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      ...leagues.map(
-                        (league) => LeagueCardCompetitions(league: league),
-                      ),
-                      const BackButtonCompetitions(),
-                      const SizedBox(height: 50),
-                    ],
+        return AppScaffold(
+          controller: _scrollController,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleLeagues.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
+                    ),
                   ),
                 ),
-              ),
+                ...leagues.map(
+                  (league) => LeagueCardCompetitions(league: league),
+                ),
+                const BackButtonCompetitions(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           ),
         );
@@ -212,6 +190,7 @@ class LeagueCardCompetitions extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCardData(
       child: Row(
+        spacing: 5,
         children: [
           BlocBuilder<LeaguesCubit, LeaguesState>(
             builder: (context, state) {
@@ -236,9 +215,7 @@ class LeagueCardCompetitions extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(width: 5),
           CrestImage(crest: league.emblem),
-          const SizedBox(width: 5),
           Expanded(child: ScrollText(text: league.name)),
         ],
       ),
@@ -253,25 +230,24 @@ class BackButtonCompetitions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
-import 'package:rotary_scrollbar/rotary_scrollbar.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
@@ -40,59 +39,50 @@ class _SettingsViewState extends State<SettingsView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      body: SizedBox.expand(
-        child: RotaryScrollbar(
-          controller: _scrollController,
-          scrollAnimationCurve: Curves.easeInOut,
-          scrollAnimationDuration: scrollDuration,
-          scrollMagnitude: scrollMagnitude,
-          width: scrollWidth,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: ScrollText(
-                      text: l10n.titleSettings.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: titleSize,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ConfigurationSetting(
-                    title: l10n.titleLeagues.toUpperCase(),
-                    icon: HugeIcons.strokeRoundedFootball,
-                    route: LeaguesPage.routeName,
-                  ),
-                  ConfigurationSetting(
-                    title: l10n.titleNotifications.toUpperCase(),
-                    icon: HugeIcons.strokeRoundedNotification01,
-                    route: NotificationsPage.routeName,
-                  ),
-                  ConfigurationSetting(
-                    title: l10n.titleLanguage.toUpperCase(),
-                    icon: HugeIcons.strokeRoundedLanguageSkill,
-                    route: LanguagesPage.routeName,
-                  ),
-                  ConfigurationSetting(
-                    title: l10n.titleTheme.toUpperCase(),
-                    icon: HugeIcons.strokeRoundedPaintBoard,
-                    route: ThemesPage.routeName,
-                  ),
-                  const BackButtonSettings(),
-                  const AppInfoSettings(),
-                  const SizedBox(height: 30),
-                ],
+    return AppScaffold(
+      controller: _scrollController,
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          spacing: AppVariables.scaffoldSpacing,
+          children: [
+            const SizedBox(height: AppVariables.topScaffoldSpacing),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppVariables.horizontalPaddingTitle,
+              ),
+              child: ScrollText(
+                text: l10n.titleSettings.toUpperCase(),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: AppVariables.titleSize,
+                ),
               ),
             ),
-          ),
+            ConfigurationSetting(
+              title: l10n.titleLeagues.toUpperCase(),
+              icon: HugeIcons.strokeRoundedFootball,
+              route: LeaguesPage.routeName,
+            ),
+            ConfigurationSetting(
+              title: l10n.titleNotifications.toUpperCase(),
+              icon: HugeIcons.strokeRoundedNotification01,
+              route: NotificationsPage.routeName,
+            ),
+            ConfigurationSetting(
+              title: l10n.titleLanguage.toUpperCase(),
+              icon: HugeIcons.strokeRoundedLanguageSkill,
+              route: LanguagesPage.routeName,
+            ),
+            ConfigurationSetting(
+              title: l10n.titleTheme.toUpperCase(),
+              icon: HugeIcons.strokeRoundedPaintBoard,
+              route: ThemesPage.routeName,
+            ),
+            const BackButtonSettings(),
+            const AppInfoSettings(),
+            const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+          ],
         ),
       ),
     );
@@ -115,16 +105,15 @@ class ConfigurationSetting extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCardData(
       child: Row(
+        spacing: 5,
         children: [
-          const SizedBox(width: 10),
+          const SizedBox(width: 2),
           HugeIcon(
             icon: icon,
             size: 30,
             color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(width: 5),
           Expanded(child: ScrollText(text: title)),
-          const SizedBox(width: 5),
           IconButton(
             onPressed: () => Navigator.of(context).pushNamed(route),
             icon: const Icon(Icons.arrow_forward_ios),
@@ -143,25 +132,24 @@ class BackButtonSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: ElevatedButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              child: Text(
-                l10n.backText.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
+    return ElevatedButton(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: AppVariables.verticalPaddingBackButton,
+            ),
+            child: Text(
+              l10n.backText.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -175,24 +163,21 @@ class AppInfoSettings extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final packageInfo = LocalSettingsService.instance.packageInfo;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Column(
-        children: [
-          Text(
-            packageInfo.appName,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          Text(
-            'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
-            style: const TextStyle(fontSize: 10),
-          ),
-          Text(
-            '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
-            style: const TextStyle(fontSize: 10),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Text(
+          packageInfo.appName,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+        Text(
+          'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
+          style: const TextStyle(fontSize: 10),
+        ),
+        Text(
+          '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
+          style: const TextStyle(fontSize: 10),
+        ),
+      ],
     );
   }
 
