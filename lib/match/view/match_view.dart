@@ -969,6 +969,7 @@ class StandingsMatch extends StatelessWidget {
           );
         } else {
           return Column(
+            spacing: AppVariables.scaffoldSpacing,
             children: standings
                 .map(
                   (standing) => AppCardData(
@@ -989,7 +990,7 @@ class StandingsMatch extends StatelessWidget {
                               children: [
                                 const Expanded(child: SizedBox.shrink()),
                                 SizedBox(
-                                  width: 21,
+                                  width: 25,
                                   child: Center(
                                     child: Text(
                                       l10n.playedGamesAbbr,
@@ -1002,7 +1003,7 @@ class StandingsMatch extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 5),
                                 SizedBox(
-                                  width: 21,
+                                  width: 25,
                                   child: Center(
                                     child: Text(
                                       l10n.goalDifferenceAbbr,
@@ -1015,7 +1016,7 @@ class StandingsMatch extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 5),
                                 SizedBox(
-                                  width: 21,
+                                  width: 25,
                                   child: Center(
                                     child: Text(
                                       l10n.pointsAbbr,

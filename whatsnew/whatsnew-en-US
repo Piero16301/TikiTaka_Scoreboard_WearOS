@@ -1,10 +1,8 @@
 🎯 What's new in this version:
 
-• Enhanced notification system with Firebase Cloud Messaging
-• Improved local notifications with better handling
-• Automatic device registration and token management
-• Smart topic subscription for Wear OS devices
-• Background message processing optimization
-• Better notification payload handling for match navigation
+• Match view UI improvements
+• Optimized spacing in standings column
+• Wider abbreviation columns for better readability
+• Layout adjustments for an enhanced visual experience
 
 Thanks for using TikiTaka Scoreboard!
