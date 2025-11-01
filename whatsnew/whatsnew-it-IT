@@ -1,10 +1,8 @@
 🎯 Novità in questa versione:
 
-• Sistema di notifiche migliorato con Firebase Cloud Messaging
-• Notifiche locali ottimizzate con gestione migliorata
-• Registrazione automatica dei dispositivi e gestione dei token
-• Sottoscrizione intelligente ai topic per dispositivi Wear OS
-• Ottimizzazione dell'elaborazione dei messaggi in background
-• Migliore gestione dei payload delle notifiche per la navigazione delle partite
+• Miglioramenti dell'interfaccia utente della vista partita
+• Spaziatura ottimizzata nella colonna della classifica
+• Colonne delle abbreviazioni più larghe per una migliore leggibilità
+• Aggiustamenti del layout per un'esperienza visiva migliorata
 
 Grazie per aver utilizzato TikiTaka Scoreboard!
