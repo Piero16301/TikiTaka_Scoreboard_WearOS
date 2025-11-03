@@ -15,7 +15,7 @@ dependencies:
   fake_cloud_firestore: ^4.0.0
   firebase_core: ^4.2.0
   firebase_core_platform_interface: ^6.0.2
-  firebase_messaging: ^16.0.3
+  firebase_messaging: ^16.0.4
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
