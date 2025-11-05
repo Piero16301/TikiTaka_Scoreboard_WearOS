@@ -43,7 +43,7 @@ dependencies:
     path: packages/user_repository
   vector_graphics: ^1.1.19
   vector_graphics_compiler: ^1.1.19
-  wearable_rotary: ^2.0.2
+  wearable_rotary: ^2.0.3
 
 dev_dependencies:
   bloc_test: ^10.0.0
