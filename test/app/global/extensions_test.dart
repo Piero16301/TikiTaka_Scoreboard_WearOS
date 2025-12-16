@@ -25,40 +25,52 @@ void main() {
       expect(loader.url, isA<String>());
     });
 
-    test('loadBytes returns Future<ByteData>', () {
-      const loader = NetworkSvgLoader(testUrl);
+    test(
+      'loadBytes returns Future<ByteData>',
+      () {
+        const loader = NetworkSvgLoader(testUrl);
 
-      final result = loader.loadBytes(null);
+        final result = loader.loadBytes(null);
 
-      expect(result, isA<Future<ByteData>>());
-    }, skip: true);
+        expect(result, isA<Future<ByteData>>());
+      },
+      skip: true,
+    );
 
-    testWidgets('loadBytes can be called with BuildContext', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Builder(
-            builder: (context) {
-              const loader = NetworkSvgLoader(testUrl);
-              final result = loader.loadBytes(context);
-              expect(result, isA<Future<ByteData>>());
-              return Container();
-            },
+    testWidgets(
+      'loadBytes can be called with BuildContext',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) {
+                const loader = NetworkSvgLoader(testUrl);
+                final result = loader.loadBytes(context);
+                expect(result, isA<Future<ByteData>>());
+                return Container();
+              },
+            ),
           ),
-        ),
-      );
-    }, skip: true);
+        );
+      },
+      skip: true,
+    );
 
-    test('loadBytes with real small SVG from GitHub', () async {
-      const testSvgUrl =
-          'https://raw.githubusercontent.com/simple-icons/simple-icons/develop'
-          '/icons/flutter.svg';
-      const loader = NetworkSvgLoader(testSvgUrl);
+    test(
+      'loadBytes with real small SVG from GitHub',
+      () async {
+        const testSvgUrl =
+            'https://raw.githubusercontent.com/simple-icons/simple-icons/develop'
+            '/icons/flutter.svg';
+        const loader = NetworkSvgLoader(testSvgUrl);
 
-      final byteData = await loader.loadBytes(null);
+        final byteData = await loader.loadBytes(null);
 
-      expect(byteData, isA<ByteData>());
-      expect(byteData.lengthInBytes, greaterThan(0));
-    }, skip: true);
+        expect(byteData, isA<ByteData>());
+        expect(byteData.lengthInBytes, greaterThan(0));
+      },
+      skip: true,
+    );
 
     test('hashCode is based on url', () {
       const loader1 = NetworkSvgLoader(testUrl);
