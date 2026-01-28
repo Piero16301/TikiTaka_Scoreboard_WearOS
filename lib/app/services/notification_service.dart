@@ -54,8 +54,8 @@ class NotificationService {
     final androidInfo = LocalSettingsService.instance.androidInfo;
 
     // Get device locale
-    final localLanguage = await LocalSettingsService.instance
-        .getLocalLanguage();
+    final localLanguage =
+        await LocalSettingsService.instance.getLocalLanguage();
 
     // Get device base color
     final baseColor = await LocalSettingsService.instance.getBaseColor();
@@ -64,20 +64,23 @@ class NotificationService {
     await FirebaseFirestore.instance
         .collection(AppVariables.devicesCollection)
         .doc(token)
-        .set({
-          'platform': 'WEAROS',
-          'token': token,
-          'lastOpenAt': FieldValue.serverTimestamp(),
-          'wearOSInfo': androidInfo.toJson(),
-          'macOsInfo': null,
-          'windowsInfo': null,
-          'androidInfo': null,
-          'iosInfo': null,
-          'webInfo': null,
-          'language': localLanguage,
-          'baseColor': baseColor,
-          'enabledTeams': FieldValue.arrayUnion(<String>[]),
-        }, SetOptions(merge: true));
+        .set(
+      {
+        'platform': 'WEAROS',
+        'token': token,
+        'lastOpenAt': FieldValue.serverTimestamp(),
+        'wearOSInfo': androidInfo.toJson(),
+        'macOsInfo': null,
+        'windowsInfo': null,
+        'androidInfo': null,
+        'iosInfo': null,
+        'webInfo': null,
+        'language': localLanguage,
+        'baseColor': baseColor,
+        'enabledTeams': FieldValue.arrayUnion(<String>[]),
+      },
+      SetOptions(merge: true),
+    );
 
     // Subscribe to AllDevices topic
     await subscribeToTopic(AppVariables.allDevicesTopic);
@@ -120,8 +123,7 @@ class NotificationService {
 
     await _localNotifications
         .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
     const initializationSettingsAndroid = AndroidInitializationSettings(
@@ -133,7 +135,7 @@ class NotificationService {
     );
 
     await _localNotifications.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (details) =>
           _handleBackgroundMessage(details.payload ?? ''),
     );
@@ -146,10 +148,10 @@ class NotificationService {
     final android = message.notification?.android;
     if (notification != null && android != null) {
       await _localNotifications.show(
-        notification.hashCode,
-        notification.title,
-        notification.body,
-        const NotificationDetails(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'high_importance_channel',
             'High Importance Notifications',

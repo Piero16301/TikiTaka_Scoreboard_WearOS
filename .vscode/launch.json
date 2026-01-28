@@ -13,8 +13,20 @@
         "--flavor",
         "production",
         "--target",
-        "lib/main.dart",
-        "--no-enable-impeller"
+        "lib/main.dart"
+      ]
+    },
+    {
+      "name": "Launch Profile",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "production",
+        "--target",
+        "lib/main.dart"
       ]
     }
   ]
