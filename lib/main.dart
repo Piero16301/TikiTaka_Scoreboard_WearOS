@@ -11,25 +11,28 @@ Future<void> main() async {
   // Ensure Firebase is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Initialize Firebase and SharedPreferences in parallel
+  final [_, preferences] = await Future.wait([
+    Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    ),
+    SharedPreferences.getInstance(),
+  ]);
 
-  // Get SharedPreferences instance
-  final preferences = await SharedPreferences.getInstance();
+  // Cast preferences to SharedPreferences since Future.wait returns
+  // List<dynamic> or List<Object?>
+  final sharedPreferences = preferences as SharedPreferences;
+
+  // Initialize Local Settings Service synchronously
+  LocalSettingsService.instance.init(sharedPreferences);
 
   // Initialize User API
-  final userApi = UserApiRemote(preferences: preferences);
+  final userApi = UserApiRemote(preferences: sharedPreferences);
 
   // Initialize User Repository
   final userRepository = UserRepository(userApi: userApi);
 
-  // Initialize Local Settings Service
-  await LocalSettingsService.instance.initialize();
-
-  // Initialize Notification Service
-  await NotificationService.instance.initialize();
+  // Notification Service initialization moved to background in AppCubit
 
   await bootstrap(
     () => AppPage(

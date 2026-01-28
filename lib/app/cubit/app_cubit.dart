@@ -11,6 +11,13 @@ class AppCubit extends Cubit<AppState> {
   final UserRepository userRepository;
 
   Future<void> initialLoad() async {
+    // Ensure platform info is loaded before proceeding with NotificationService
+    // which depends on it
+    await LocalSettingsService.instance.loadPlatformInfo();
+
+    // Initialize Notification Service in background
+    await NotificationService.instance.initialize();
+
     final baseColor = userRepository.getBaseColor();
     if (baseColor == null) {
       await userRepository.saveBaseColor(baseColor: state.baseColor);

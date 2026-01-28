@@ -14,10 +14,19 @@ class LocalSettingsService {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   late SharedPreferences _preferences;
   late AndroidDeviceInfo _androidInfo;
-  late PackageInfo _packageInfo;
+  PackageInfo _packageInfo = PackageInfo(
+    appName: '',
+    packageName: '',
+    version: '',
+    buildNumber: '',
+  );
 
-  Future<void> initialize() async {
-    _preferences = await SharedPreferences.getInstance();
+  void init(SharedPreferences preferences) {
+    _preferences = preferences;
+    unawaited(loadPlatformInfo());
+  }
+
+  Future<void> loadPlatformInfo() async {
     _androidInfo = await DeviceInfoPlugin().androidInfo;
     _packageInfo = await PackageInfo.fromPlatform();
   }
@@ -40,11 +49,11 @@ class LocalSettingsService {
           .collection(AppVariables.devicesCollection)
           .doc(NotificationService.instance.token)
           .set(
-            {
-              'language': language,
-            },
-            SetOptions(merge: true),
-          ),
+        {
+          'language': language,
+        },
+        SetOptions(merge: true),
+      ),
     );
   }
 
@@ -54,11 +63,11 @@ class LocalSettingsService {
           .collection(AppVariables.devicesCollection)
           .doc(NotificationService.instance.token)
           .set(
-            {
-              'baseColor': baseColor,
-            },
-            SetOptions(merge: true),
-          ),
+        {
+          'baseColor': baseColor,
+        },
+        SetOptions(merge: true),
+      ),
     );
   }
 
