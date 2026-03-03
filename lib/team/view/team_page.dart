@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:user_repository/user_repository.dart';
 
 class TeamPage extends StatelessWidget {
   const TeamPage({
@@ -16,8 +15,7 @@ class TeamPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          TeamCubit(context.read<UserRepository>())..initCollections(teamId),
+      create: (_) => TeamCubit()..initialize(teamId: teamId),
       child: TeamView(),
     );
   }

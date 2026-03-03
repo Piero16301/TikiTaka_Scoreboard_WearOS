@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/ambient_mode/ambient_mode.dart';
@@ -7,19 +5,8 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
-class AppView extends StatefulWidget {
+class AppView extends StatelessWidget {
   const AppView({super.key});
-
-  @override
-  State<AppView> createState() => _AppViewState();
-}
-
-class _AppViewState extends State<AppView> {
-  @override
-  void initState() {
-    unawaited(context.read<AppCubit>().initialLoad());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +20,12 @@ class _AppViewState extends State<AppView> {
             theme: AppThemes.globalTheme(
               isAmbientModeActive: isAmbientModeActive,
               baseColor: state.baseColor,
+              fontFamily: state.fontFamily,
             ),
-            themeMode: ThemeMode.light,
+            themeMode: ThemeMode.dark,
             themeAnimationCurve: Curves.easeInOut,
             themeAnimationDuration: const Duration(milliseconds: 500),
-            locale: Locale(
-              state.language.split('_').first,
-              state.language.split('_').last,
-            ),
+            locale: state.language,
             debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

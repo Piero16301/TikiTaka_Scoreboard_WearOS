@@ -1,15 +1,10 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
-import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -37,9 +32,10 @@ class _NotificationsViewState extends State<NotificationsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<NotificationsCubit>().getLeagues(),
+    return StreamBuilder<List<League>>(
+      stream: database.getLeagues(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return AppScaffold(
@@ -93,7 +89,7 @@ class _NotificationsViewState extends State<NotificationsView> {
           );
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
               child: Column(
@@ -112,9 +108,7 @@ class _NotificationsViewState extends State<NotificationsView> {
           );
         }
 
-        final leagues = snapshot.data!.docs
-            .map((doc) => League.fromJson(doc.data()))
-            .toList();
+        final leagues = snapshot.data!;
 
         return AppScaffold(
           controller: _scrollController,

@@ -17,10 +17,11 @@ async function sendNotification() {
     try {
         const token = await getAccessToken();
         const url = 'https://fcm.googleapis.com/v1/projects/tiki-taka-scoreboard/messages:send';
-        
+
         const messagePayload = {
             message: {
-                topic: "all-devices",
+                // topic: "all-devices",
+                token: "fCMgJV0ZQvGKnBM8SGHCG0:APA91bFyuAtxau51znP6NuVINPpV8NzZB8Omdbi3wYrZU8yHdd6l8Bas5WGq-BDoBhGfcESsaouePf9yuWbjnW1ulznDspBjMuOP8hF-98-X1dySigpxlbc",
                 notification: {
                     title: "¡Gol de FC Barcelona! ⚽",
                     body: "🔴🔵 Barça 4️⃣ - 3️⃣ Real Madrid ⚪⚪",
@@ -30,12 +31,12 @@ async function sendNotification() {
                 },
             }
         };
-        
+
         const headers = {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         };
-        
+
         const response = await axios.post(url, messagePayload, { headers });
         console.log('Notification sent successfully:', response.data);
     } catch (error) {

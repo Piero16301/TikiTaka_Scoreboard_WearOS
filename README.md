@@ -1,8 +1,9 @@
-# 📖 Tiki Taka Scoreboard WearOS – Code Documentation
+# 📖 Tiki Taka WearOS
 
-![coverage][coverage_badge]
-[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![License: MIT][license_badge]][license_link]
+[![analysis](https://github.com/Piero16301/TikiTaka_Scoreboard_WearOS/actions/workflows/beta.yaml/badge.svg?branch=dev)](https://github.com/Piero16301/TikiTaka_Scoreboard_WearOS/actions/workflows/beta.yaml?query=branch%3Adev)
+[![codecov](https://codecov.io/gh/Piero16301/TikiTaka_Scoreboard_WearOS/branch/dev/graph/badge.svg?token=BLA9I7WHBC)](https://codecov.io/gh/Piero16301/TikiTaka_Scoreboard_WearOS/branch/dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/sanjuanpamk)
 
 Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS** application. This guide covers all key Dart files, organized by functional modules, explains their responsibilities, and illustrates how they interconnect.
 
@@ -368,9 +369,3 @@ flowchart TD
 ---
 
 > **Enjoy building and extending the Tiki Taka Scoreboard WearOS app!**
-
-[coverage_badge]: coverage_badge.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg

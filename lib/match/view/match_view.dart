@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -8,9 +7,7 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -38,9 +35,11 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final matchId = context.read<MatchCubit>().state.matchId;
+    final database = getIt<DatabaseService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<MatchCubit>().getMatch(),
+    return StreamBuilder<List<Match>>(
+      stream: database.getMatch(matchId: matchId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return AppScaffold(
@@ -96,7 +95,7 @@ class _MatchViewState extends State<MatchView> {
           );
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
               child: Column(
@@ -116,10 +115,7 @@ class _MatchViewState extends State<MatchView> {
           );
         }
 
-        final match = snapshot.data!.docs
-            .map((doc) => Match.fromJson(doc.data()))
-            .toList()
-            .first;
+        final match = snapshot.data!.first;
 
         return AppScaffold(
           controller: _scrollController,
@@ -194,6 +190,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
 
     if (widget.isLoading) {
       return Text(
@@ -205,13 +202,10 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
       );
     }
 
-    return StreamBuilder(
-      stream: context.read<MatchCubit>().getMatchConfigs(),
+    return StreamBuilder<List<Config>>(
+      stream: database.getConfigs(id: AppVariables.matchesCollection),
       builder: (context, snapshot) {
-        final configs =
-            snapshot.data?.docs
-                .map((doc) => Config.fromJson(doc.data()))
-                .toList() ??
+        final configs = snapshot.data ??
             [
               Config(
                 id: AppVariables.matchesCollection,
@@ -817,11 +811,10 @@ class StandingsMatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<MatchCubit>().getStandings(
-        leagueId: match.competition.id.toString(),
-      ),
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: database.getStandings(leagueId: match.competition.id.toString()),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const ShimmerStandingsMatch();
@@ -831,18 +824,17 @@ class StandingsMatch extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return const SizedBox.shrink();
         }
 
-        final result = snapshot.data!.docs.map((doc) => doc.data()).toList();
+        final result = snapshot.data!.first;
         if (result.isEmpty || result.length > 1) {
           return const SizedBox.shrink();
         }
 
         final standingsList =
-            result.first[AppVariables.standingsCollection] as List<dynamic>? ??
-            [];
+            result[AppVariables.standingsCollection] as List<dynamic>? ?? [];
         if (standingsList.isEmpty) {
           return const SizedBox.shrink();
         }

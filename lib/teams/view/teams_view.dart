@@ -1,14 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -36,9 +33,12 @@ class _TeamsViewState extends State<TeamsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final leagueId = context.read<TeamsCubit>().state.leagueId;
+    final database = getIt<DatabaseService>();
+    final notification = getIt<NotificationService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<TeamsCubit>().getTeams(),
+    return StreamBuilder<List<Team>>(
+      stream: database.getTeamsByLeague(leagueId: leagueId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return AppScaffold(
@@ -92,7 +92,7 @@ class _TeamsViewState extends State<TeamsView> {
           );
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
               child: Column(
@@ -111,9 +111,7 @@ class _TeamsViewState extends State<TeamsView> {
           );
         }
 
-        final teams = snapshot.data!.docs
-            .map((doc) => Team.fromJson(doc.data()))
-            .toList();
+        final teams = snapshot.data!;
 
         return AppScaffold(
           controller: _scrollController,
@@ -135,8 +133,8 @@ class _TeamsViewState extends State<TeamsView> {
                     ),
                   ),
                 ),
-                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                  stream: context.read<TeamsCubit>().getDevices(),
+                StreamBuilder<List<Map<String, dynamic>>>(
+                  stream: database.getDevices(token: notification.token),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return const SizedBox.shrink();
@@ -146,12 +144,11 @@ class _TeamsViewState extends State<TeamsView> {
                       return const SizedBox.shrink();
                     }
 
-                    if (snapshot.data!.docs.isEmpty) {
+                    if (snapshot.data!.isEmpty) {
                       return const SizedBox.shrink();
                     }
 
-                    final enabledTeams =
-                        snapshot.data!.docs.first.data()['enabledTeams']
+                    final enabledTeams = snapshot.data!.first['enabledTeams']
                             as List<dynamic>? ??
                         [];
                     final noShowCrestTeams = [779, 828];
@@ -226,6 +223,9 @@ class TeamCardTeams extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final notification = getIt<NotificationService>();
+    final database = getIt<DatabaseService>();
+
     return AppCardData(
       child: Row(
         children: [
@@ -239,12 +239,11 @@ class TeamCardTeams extends StatelessWidget {
                   child: Switch(
                     padding: EdgeInsets.zero,
                     value: enabled,
-                    onChanged: (value) {
-                      context.read<TeamsCubit>().toggleTeam(
-                        team: team,
-                        enabledTeams: enabledTeams,
-                      );
-                    },
+                    onChanged: (value) => database.changeEnabledTeams(
+                      teamId: team.id,
+                      token: notification.token,
+                      enabledTeams: enabledTeams,
+                    ),
                   ),
                 ),
               );

@@ -9,8 +9,7 @@ import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
 import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/themes/themes.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -161,20 +160,22 @@ class AppInfoSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final packageInfo = LocalSettingsService.instance.packageInfo;
+    final deviceInfo = getIt<DeviceInfoService>();
 
     return Column(
       children: [
         Text(
-          packageInfo.appName,
+          deviceInfo.packageInfo.appName,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         Text(
-          'Version: ${packageInfo.version} (${packageInfo.buildNumber})',
+          'Version: ${deviceInfo.packageInfo.version} '
+          '(${deviceInfo.packageInfo.buildNumber})',
           style: const TextStyle(fontSize: 10),
         ),
         Text(
-          '${l10n.updatedOn}: ${getDateOn(l10n, packageInfo.updateTime)}',
+          '${l10n.updatedOn}: '
+          '${getDateOn(l10n, deviceInfo.packageInfo.updateTime)}',
           style: const TextStyle(fontSize: 10),
         ),
       ],

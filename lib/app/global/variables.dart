@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppVariables {
   static const String appName = 'Tiki Taka';
+  static const Color defaultBaseColor = Colors.green;
+  static const String defaultFontFamily = 'Poppins';
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+  static const String appOS = 'WEAROS';
 
   static const int numberOfShimmers = 5;
   static const double titleSize = 18;
@@ -17,27 +23,45 @@ class AppVariables {
   static const double horizontalPaddingTitle = 30;
   static const double titleTextHeight = 0.8;
   static const double verticalPaddingBackButton = 10;
-  static const colorMap = <String, Color>{
-    'Black': Colors.black,
-    'Blue': Colors.blue,
-    'Brown': Colors.brown,
-    'Claret': Color(0xFF7F1734),
-    'Cyan': Colors.cyan,
-    'Dark Blue': Colors.indigo,
-    'Gold': Color(0xFFFFD700),
-    'Green': Colors.green,
-    'Light Blue': Colors.lightBlue,
-    'Maroon': Color(0xFF800000),
-    'Navy Blue': Color(0xFF000080),
-    'Orange': Colors.orange,
-    'Purple': Colors.purple,
-    'Red': Colors.red,
-    'Royal Blue': Color(0xFF4169E1),
-    'Sky Blue': Colors.lightBlueAccent,
-    'Violet': Colors.deepPurple,
-    'White': Colors.white,
-    'Yellow': Colors.yellow,
-  };
+
+  static Map<String, String> availableFonts = getAvailableFonts();
+
+  static Map<String, String> getAvailableFonts() {
+    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+      return {
+        'Merriweather': 'Merriweather',
+        'Montserrat': 'Montserrat',
+        'Nunito': 'Nunito',
+        'Open Sans': 'Open Sans',
+        'Orbitron': 'Orbitron',
+        'Pacifico': 'Pacifico',
+        'Playfair Display': 'Playfair Display',
+        'Poppins': 'Poppins',
+        'Roboto': 'Roboto',
+        'Source Code Pro': 'Source Code Pro',
+      };
+    }
+    return {
+      'Merriweather': GoogleFonts.merriweather().fontFamily ?? 'Merriweather',
+      'Montserrat': GoogleFonts.montserrat().fontFamily ?? 'Montserrat',
+      'Nunito': GoogleFonts.nunito().fontFamily ?? 'Nunito',
+      'Open Sans': GoogleFonts.openSans().fontFamily ?? 'Open Sans',
+      'Orbitron': GoogleFonts.orbitron().fontFamily ?? 'Orbitron',
+      'Pacifico': GoogleFonts.pacifico().fontFamily ?? 'Pacifico',
+      'Playfair Display':
+          GoogleFonts.playfairDisplay().fontFamily ?? 'Playfair Display',
+      'Poppins': GoogleFonts.poppins().fontFamily ?? 'Poppins',
+      'Roboto': GoogleFonts.roboto().fontFamily ?? 'Roboto',
+      'Source Code Pro':
+          GoogleFonts.sourceCodePro().fontFamily ?? 'Source Code Pro',
+    };
+  }
+
+  static const List<Locale> supportedLocales = [
+    Locale('en', 'US'),
+    Locale('es', 'ES'),
+    Locale('it', 'IT'),
+  ];
 
   // Firestore collections
   static const String matchesCollection = 'matches';

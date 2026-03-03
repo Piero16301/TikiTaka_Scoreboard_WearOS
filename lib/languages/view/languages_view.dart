@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -43,10 +42,11 @@ class _LanguagesViewState extends State<LanguagesView> {
       child: SingleChildScrollView(
         controller: _scrollController,
         child: BlocBuilder<AppCubit, AppState>(
-          builder: (context, state) => RadioGroup<String>(
+          builder: (context, state) => RadioGroup<Locale>(
             groupValue: state.language,
-            onChanged: (value) =>
-                context.read<AppCubit>().changeLanguage(value ?? 'en_US'),
+            onChanged: (value) => context.read<AppCubit>().changeLanguage(
+                  language: value ?? AppVariables.supportedLocales.first,
+                ),
             child: Column(
               spacing: AppVariables.scaffoldSpacing,
               children: [
@@ -63,17 +63,11 @@ class _LanguagesViewState extends State<LanguagesView> {
                     ),
                   ),
                 ),
-                CardLanguages(
-                  value: 'en_US',
-                  language: l10n.englishLanguage,
-                ),
-                CardLanguages(
-                  value: 'es_ES',
-                  language: l10n.spanishLanguage,
-                ),
-                CardLanguages(
-                  value: 'it_IT',
-                  language: l10n.italianLanguage,
+                ...AppVariables.supportedLocales.map(
+                  (locale) => CardLanguages(
+                    value: locale,
+                    label: AppFunctions.getLanguageLabel(l10n, locale),
+                  ),
                 ),
                 const BackButtonLanguages(),
                 const SizedBox(height: AppVariables.bottomScaffoldSpacing),
@@ -89,20 +83,20 @@ class _LanguagesViewState extends State<LanguagesView> {
 class CardLanguages extends StatelessWidget {
   const CardLanguages({
     required this.value,
-    required this.language,
+    required this.label,
     super.key,
   });
 
-  final String value;
-  final String language;
+  final Locale value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     return AppCardData(
       child: Row(
         children: [
-          Radio<String>(value: value),
-          Expanded(child: ScrollText(text: language)),
+          Radio<Locale>(value: value),
+          Expanded(child: ScrollText(text: label)),
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -8,9 +7,7 @@ import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -38,14 +35,18 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
+    final localStorage = getIt<LocalStorageService>();
 
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         context.read<HomeCubit>().reload(value: false);
 
-        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        return StreamBuilder<List<Match>>(
           key: state.reload ? UniqueKey() : null,
-          stream: context.read<HomeCubit>().getMatches(),
+          stream: database.getMatches(
+            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
+          ),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return AppScaffold(
@@ -101,7 +102,7 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
-            if (snapshot.data!.docs.isEmpty) {
+            if (snapshot.data!.isEmpty) {
               return AppScaffold(
                 child: Center(
                   child: Column(
@@ -120,26 +121,23 @@ class _HomeViewState extends State<HomeView> {
             }
 
             final nowDate = DateTime.now();
-            final matches =
-                snapshot.data!.docs
-                    .map((doc) => Match.fromJson(doc.data()))
-                    .toList()
-                  ..sort((a, b) {
-                    final statusOrder = {
-                      'IN_PLAY': 0,
-                      'PAUSED': 1,
-                      'SCHEDULED': 2,
-                      'TIMED': 3,
-                    };
-                    final aStatus = a.status;
-                    final bStatus = b.status;
-                    final aOrder = statusOrder[aStatus] ?? 4;
-                    final bOrder = statusOrder[bStatus] ?? 4;
-                    if (aOrder != bOrder) {
-                      return aOrder - bOrder;
-                    }
-                    return aStatus.compareTo(bStatus);
-                  });
+            final matches = snapshot.data!.map((match) => match).toList()
+              ..sort((a, b) {
+                final statusOrder = {
+                  'IN_PLAY': 0,
+                  'PAUSED': 1,
+                  'SCHEDULED': 2,
+                  'TIMED': 3,
+                };
+                final aStatus = a.status;
+                final bStatus = b.status;
+                final aOrder = statusOrder[aStatus] ?? 4;
+                final bOrder = statusOrder[bStatus] ?? 4;
+                if (aOrder != bOrder) {
+                  return aOrder - bOrder;
+                }
+                return aStatus.compareTo(bStatus);
+              });
 
             return AppScaffold(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
@@ -195,6 +193,7 @@ class LastUpdateHome extends StatefulWidget {
 class _LastUpdateHomeState extends State<LastUpdateHome>
     with WidgetsBindingObserver {
   late StreamSubscription<void> _nowSubscription;
+  final DatabaseService database = getIt<DatabaseService>();
 
   @override
   void initState() {
@@ -226,13 +225,10 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
       );
     }
 
-    return StreamBuilder(
-      stream: context.read<HomeCubit>().getMatchConfigs(),
+    return StreamBuilder<List<Config>>(
+      stream: database.getConfigs(id: AppVariables.matchesCollection),
       builder: (context, snapshot) {
-        final configs =
-            snapshot.data?.docs
-                .map((doc) => Config.fromJson(doc.data()))
-                .toList() ??
+        final configs = snapshot.data ??
             [
               Config(
                 id: AppVariables.matchesCollection,
@@ -454,9 +450,8 @@ class SettingsHome extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: () async {
-        final reload =
-            (await Navigator.of(context).pushNamed(SettingsPage.routeName))
-                as bool? ??
+        final reload = (await Navigator.of(context)
+                .pushNamed(SettingsPage.routeName)) as bool? ??
             true;
         if (reload) {
           // ignore: use_build_context_synchronously // It's safe here

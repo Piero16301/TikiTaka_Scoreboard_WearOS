@@ -1,21 +1,18 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
 class TeamView extends StatefulWidget {
   TeamView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
-    : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
+      : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
 
@@ -35,9 +32,11 @@ class _TeamViewState extends State<TeamView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final teamId = context.read<TeamCubit>().state.teamId;
+    final database = getIt<DatabaseService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<TeamCubit>().getTeam(),
+    return StreamBuilder<List<Team>>(
+      stream: database.getTeam(teamId: teamId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return AppScaffold(
@@ -81,7 +80,7 @@ class _TeamViewState extends State<TeamView> {
           );
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
               child: Column(
@@ -101,10 +100,7 @@ class _TeamViewState extends State<TeamView> {
           );
         }
 
-        final team = snapshot.data!.docs
-            .map((doc) => Team.fromJson(doc.data()))
-            .toList()
-            .first;
+        final team = snapshot.data!.first;
 
         return AppScaffold(
           controller: _scrollController,
@@ -129,28 +125,26 @@ class _TeamViewState extends State<TeamView> {
                       SquadCardTeam(
                         squad: team.squad
                           ..sort(
-                            (a, b) =>
-                                AppFunctions.getStaffPositionOrder(
-                                  a.position,
-                                ).compareTo(
-                                  AppFunctions.getStaffPositionOrder(
-                                    b.position,
-                                  ),
-                                ),
+                            (a, b) => AppFunctions.getStaffPositionOrder(
+                              a.position,
+                            ).compareTo(
+                              AppFunctions.getStaffPositionOrder(
+                                b.position,
+                              ),
+                            ),
                           ),
                       ),
                     if (team.staff.isNotEmpty)
                       StaffCardTeam(
                         staff: team.staff
                           ..sort(
-                            (a, b) =>
-                                AppFunctions.getStaffPositionOrder(
-                                  a.position,
-                                ).compareTo(
-                                  AppFunctions.getStaffPositionOrder(
-                                    b.position,
-                                  ),
-                                ),
+                            (a, b) => AppFunctions.getStaffPositionOrder(
+                              a.position,
+                            ).compareTo(
+                              AppFunctions.getStaffPositionOrder(
+                                b.position,
+                              ),
+                            ),
                           ),
                       ),
                     AdditionalInfoTeam(team: team),
@@ -786,6 +780,7 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
 
     if (widget.isLoading) {
       return Text(
@@ -794,13 +789,10 @@ class _LastUpdateTeamState extends State<LastUpdateTeam>
       );
     }
 
-    return StreamBuilder(
-      stream: context.read<TeamCubit>().getTeamConfigs(),
+    return StreamBuilder<List<Config>>(
+      stream: database.getConfigs(id: AppVariables.teamsCollection),
       builder: (context, snapshot) {
-        final configs =
-            snapshot.data?.docs
-                .map((doc) => Config.fromJson(doc.data()))
-                .toList() ??
+        final configs = snapshot.data ??
             [
               Config(
                 id: AppVariables.teamsCollection,

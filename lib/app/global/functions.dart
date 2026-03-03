@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
-import 'package:tiki_taka_scoreboard_wearos/app/global/global.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
 class AppFunctions {
@@ -34,6 +34,19 @@ class AppFunctions {
     }
   }
 
+  static String getLanguageLabel(AppLocalizations l10n, Locale language) {
+    switch (language.languageCode) {
+      case 'en':
+        return l10n.englishLanguage;
+      case 'es':
+        return l10n.spanishLanguage;
+      case 'it':
+        return l10n.italianLanguage;
+      default:
+        return language.languageCode;
+    }
+  }
+
   static String notMatchState(String status, AppLocalizations l10n) {
     switch (status) {
       case 'IN_PLAY':
@@ -61,7 +74,7 @@ class AppFunctions {
     for (final color in list) {
       if (color.trim().isNotEmpty) {
         colorIcons.add(
-          AppVariables.colorMap[color] ?? AppVariables.defaultColor,
+          ColorHelper.colorMap[color] ?? AppVariables.defaultColor,
         );
       }
     }
