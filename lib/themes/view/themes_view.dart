@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
 class ThemesView extends StatefulWidget {
   ThemesView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
-    : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
+      : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
 
   final Stream<RotaryEvent> rotaryEvents;
 
@@ -37,11 +36,11 @@ class _ThemesViewState extends State<ThemesView> {
       child: SingleChildScrollView(
         controller: _scrollController,
         child: BlocBuilder<AppCubit, AppState>(
-          builder: (context, state) => RadioGroup<String>(
+          builder: (context, state) => RadioGroup<Color>(
             groupValue: state.baseColor,
             onChanged: (value) => context.read<AppCubit>().changeBaseColor(
-              value ?? 'INDIGO',
-            ),
+                  baseColor: value ?? AppVariables.defaultBaseColor,
+                ),
             child: Column(
               spacing: AppVariables.scaffoldSpacing,
               children: [
@@ -58,7 +57,7 @@ class _ThemesViewState extends State<ThemesView> {
                     ),
                   ),
                 ),
-                ...AppHelpers.colorMap.entries.map(
+                ...ColorHelper.colorMap.entries.map(
                   (entry) => CardColorThemes(
                     text: entry.key,
                     color: entry.value,
@@ -93,7 +92,7 @@ class CardColorThemes extends StatelessWidget {
     return AppCardData(
       child: Row(
         children: [
-          Radio<String>(value: text),
+          Radio<Color>(value: color),
           Container(
             width: 30,
             height: 30,

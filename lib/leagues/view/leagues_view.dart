@@ -1,14 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
-import 'package:user_api/user_api.dart';
-import 'package:wearable_rotary/wearable_rotary.dart'
-    as wearable_rotary
+import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
     show rotaryEvents;
 import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
@@ -36,9 +33,10 @@ class _LeaguesViewState extends State<LeaguesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final database = getIt<DatabaseService>();
 
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: context.read<LeaguesCubit>().getLeagues(),
+    return StreamBuilder<List<League>>(
+      stream: database.getLeagues(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return AppScaffold(
@@ -92,7 +90,7 @@ class _LeaguesViewState extends State<LeaguesView> {
           );
         }
 
-        if (snapshot.data!.docs.isEmpty) {
+        if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
               child: Column(
@@ -111,9 +109,7 @@ class _LeaguesViewState extends State<LeaguesView> {
           );
         }
 
-        final leagues = snapshot.data!.docs
-            .map((doc) => League.fromJson(doc.data()))
-            .toList();
+        final leagues = snapshot.data!;
 
         return AppScaffold(
           controller: _scrollController,
@@ -202,14 +198,11 @@ class LeagueCardCompetitions extends StatelessWidget {
                   child: Switch(
                     padding: EdgeInsets.zero,
                     value: enabled,
-                    onChanged: (value) {
-                      unawaited(
+                    onChanged: (value) =>
                         context.read<LeaguesCubit>().toggleLeague(
-                          league: league.code,
-                          enabled: value,
-                        ),
-                      );
-                    },
+                              league: league.code,
+                              enabled: value,
+                            ),
                   ),
                 ),
               );

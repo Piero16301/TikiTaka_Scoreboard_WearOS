@@ -1,52 +1,67 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
-import 'package:user_repository/user_repository.dart';
 
 part 'app_state.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit(this.userRepository) : super(const AppState());
+  AppCubit() : super(const AppState());
 
-  final UserRepository userRepository;
+  final LocalStorageService localStorage = getIt<LocalStorageService>();
+  final DatabaseService database = getIt<DatabaseService>();
+  final NotificationService notification = getIt<NotificationService>();
 
-  Future<void> initialLoad() async {
-    // Ensure platform info is loaded before proceeding with NotificationService
-    // which depends on it
-    await LocalSettingsService.instance.loadPlatformInfo();
-
-    // Initialize Notification Service in background
-    await NotificationService.instance.initialize();
-
-    final baseColor = userRepository.getBaseColor();
-    if (baseColor == null) {
-      await userRepository.saveBaseColor(baseColor: state.baseColor);
-    }
-
-    final language = userRepository.getLanguage();
+  void initialize() {
+    // Setting the language to the device language if it's not set
+    final language = localStorage.getLanguage();
     if (language == null) {
-      await userRepository.saveLanguage(language: state.language);
+      final deviceLanguage = AppVariables.supportedLocales.first;
+      localStorage.saveLanguage(language: deviceLanguage);
     }
 
+    // Setting the base color to GREEN if it's not set
+    final baseColor = localStorage.getBaseColor();
+    if (baseColor == null) {
+      localStorage.saveBaseColor(baseColor: AppVariables.defaultBaseColor);
+    }
+
+    // Setting the font family to Popping if it's not set
+    var fontFamily = localStorage.getFontFamily();
+    final isFontSupported = fontFamily != null &&
+        AppVariables.availableFonts.containsValue(fontFamily);
+
+    if (!isFontSupported) {
+      final defaultFont =
+          AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
+              AppVariables.defaultFontFamily;
+      localStorage.saveFontFamily(fontFamily: defaultFont);
+      fontFamily = defaultFont;
+    }
+
+    // Emit state with all loaded configurations at once
     emit(
       state.copyWith(
-        baseColor: userRepository.getBaseColor(),
-        language: userRepository.getLanguage(),
+        language: localStorage.getLanguage(),
+        baseColor: localStorage.getBaseColor(),
+        fontFamily: localStorage.getFontFamily(),
       ),
     );
   }
 
-  Future<void> changeBaseColor(String baseColor) async {
-    await userRepository.saveBaseColor(baseColor: baseColor);
-    emit(state.copyWith(baseColor: baseColor));
-    LocalSettingsService.instance.saveBaseColorOnFirestore(
-      baseColor: baseColor,
-    );
+  void changeLanguage({required Locale language}) {
+    localStorage.saveLanguage(language: language);
+    database.saveLanguage(token: notification.token, language: language);
+    emit(state.copyWith(language: language));
   }
 
-  Future<void> changeLanguage(String language) async {
-    await userRepository.saveLanguage(language: language);
-    emit(state.copyWith(language: language));
-    LocalSettingsService.instance.saveLanguageOnFirestore(language: language);
+  void changeBaseColor({required Color baseColor}) {
+    localStorage.saveBaseColor(baseColor: baseColor);
+    emit(state.copyWith(baseColor: baseColor));
+  }
+
+  void changeFontFamily({required String fontFamily}) {
+    localStorage.saveFontFamily(fontFamily: fontFamily);
+    emit(state.copyWith(fontFamily: fontFamily));
   }
 }

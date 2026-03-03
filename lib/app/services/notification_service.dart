@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -8,16 +6,17 @@ import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await NotificationService.instance.setupFlutterNotifications();
-  await NotificationService.instance.showNotification(message);
+  await getIt<NotificationService>().setupFlutterNotifications();
+  await getIt<NotificationService>().showNotification(message);
 }
 
 class NotificationService {
-  NotificationService._();
+  // ignore: unreachable_from_main // used in dependencies.dart
+  NotificationService({FirebaseMessaging? messaging})
+      : _messaging = messaging ?? FirebaseMessaging.instance;
 
-  static final NotificationService instance = NotificationService._();
+  final FirebaseMessaging _messaging;
 
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   String _token = '';
   final _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
@@ -50,36 +49,19 @@ class NotificationService {
       return;
     }
 
-    // Get device information
-    final androidInfo = LocalSettingsService.instance.androidInfo;
+    // Get services information
+    final deviceInfo = getIt<DeviceInfoService>();
+    final localStorage = getIt<LocalStorageService>();
+    final database = getIt<DatabaseService>();
 
-    // Get device locale
-    final localLanguage =
-        await LocalSettingsService.instance.getLocalLanguage();
-
-    // Get device base color
-    final baseColor = await LocalSettingsService.instance.getBaseColor();
+    final androidInfo = deviceInfo.androidInfo;
+    final localLanguage = localStorage.getLanguage();
 
     // Setup Flutter local notifications
-    await FirebaseFirestore.instance
-        .collection(AppVariables.devicesCollection)
-        .doc(token)
-        .set(
-      {
-        'platform': 'WEAROS',
-        'token': token,
-        'lastOpenAt': FieldValue.serverTimestamp(),
-        'wearOSInfo': androidInfo.toJson(),
-        'macOsInfo': null,
-        'windowsInfo': null,
-        'androidInfo': null,
-        'iosInfo': null,
-        'webInfo': null,
-        'language': localLanguage,
-        'baseColor': baseColor,
-        'enabledTeams': FieldValue.arrayUnion(<String>[]),
-      },
-      SetOptions(merge: true),
+    database.setLocalSettingsDevice(
+      token: token,
+      androidInfo: androidInfo,
+      localLanguage: localLanguage,
     );
 
     // Subscribe to AllDevices topic
@@ -203,48 +185,5 @@ class NotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     await _messaging.unsubscribeFromTopic(topic);
     debugPrint('Unsubscribed from topic: $topic');
-  }
-}
-
-extension AndroidVersion on AndroidBuildVersion {
-  Map<String, dynamic> toJson() {
-    return {
-      'codename': codename,
-      'incremental': incremental,
-      'previewSdkInt': previewSdkInt ?? 0,
-      'release': release,
-      'sdkInt': sdkInt,
-      'securityPatch': securityPatch ?? '',
-    };
-  }
-}
-
-extension AndroidInfo on AndroidDeviceInfo {
-  Map<String, dynamic> toJson() {
-    return {
-      'version': version.toJson(),
-      'board': board,
-      'bootloader': bootloader,
-      'brand': brand,
-      'device': device,
-      'display': display,
-      'fingerprint': fingerprint,
-      'hardware': hardware,
-      'host': host,
-      'id': id,
-      'manufacturer': manufacturer,
-      'model': model,
-      'product': product,
-      'supported32BitAbis': supported32BitAbis,
-      'supported64BitAbis': supported64BitAbis,
-      'supportedAbis': supportedAbis,
-      'tags': tags,
-      'type': type,
-      'isPhysicalDevice': isPhysicalDevice,
-      'systemFeatures': systemFeatures,
-      'isLowRamDevice': isLowRamDevice,
-      'physicalRamSize': physicalRamSize,
-      'availableRamSize': availableRamSize,
-    };
   }
 }
