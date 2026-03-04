@@ -7,30 +7,9 @@ import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class HomeView extends StatefulWidget {
-  HomeView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +29,7 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return AppScaffold(
-                controller: _scrollController,
                 child: SingleChildScrollView(
-                  controller: _scrollController,
                   child: Column(
                     spacing: AppVariables.scaffoldSpacing,
                     children: [
@@ -141,9 +118,7 @@ class _HomeViewState extends State<HomeView> {
 
             return AppScaffold(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
-              controller: _scrollController,
               child: SingleChildScrollView(
-                controller: _scrollController,
                 child: Column(
                   spacing: AppVariables.scaffoldSpacing,
                   children: [
@@ -348,7 +323,12 @@ class MatchCardHome extends StatelessWidget {
                     ],
                   ),
                 ),
-                getMatchStatus(match.status, state, match),
+                getMatchStatus(
+                  context: context,
+                  status: match.status,
+                  state: state,
+                  match: match,
+                ),
                 Expanded(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -370,7 +350,12 @@ class MatchCardHome extends StatelessWidget {
     );
   }
 
-  Widget getMatchStatus(String status, String state, Match match) {
+  Widget getMatchStatus({
+    required BuildContext context,
+    required String status,
+    required String state,
+    required Match match,
+  }) {
     if (status == 'SCHEDULED' || status == 'TIMED') {
       return Expanded(
         child: Column(
@@ -393,7 +378,7 @@ class MatchCardHome extends StatelessWidget {
               '${match.score.fullTime.home} - '
               '${match.score.fullTime.away}',
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -423,7 +408,7 @@ class MatchCardHome extends StatelessWidget {
               '${match.score.fullTime.home} - '
               '${match.score.fullTime.away}',
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -448,33 +433,23 @@ class SettingsHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () async {
-        final reload = (await Navigator.of(context)
-                .pushNamed(SettingsPage.routeName)) as bool? ??
-            true;
-        if (reload) {
-          // ignore: use_build_context_synchronously // It's safe here
-          context.read<HomeCubit>().reload();
-        }
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: ScrollText(
-              text: l10n.titleSettings.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () async {
+              final reload = (await Navigator.of(context)
+                      .pushNamed(SettingsPage.routeName)) as bool? ??
+                  true;
+              if (reload) {
+                // ignore: use_build_context_synchronously // It's safe here
+                context.read<HomeCubit>().reload();
+              }
+            },
+            label: l10n.titleSettings.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

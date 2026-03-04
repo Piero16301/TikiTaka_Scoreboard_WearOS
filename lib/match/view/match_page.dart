@@ -16,7 +16,7 @@ class MatchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => MatchCubit()..initialize(matchId: matchId),
-      child: MatchView(),
+      child: const MatchView(),
     );
   }
 }

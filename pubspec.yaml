@@ -12,9 +12,7 @@ dependencies:
   cloud_firestore: ^6.1.2
   device_info_plus: ^12.3.0
   equatable: ^2.0.8
-  fake_cloud_firestore: ^4.0.1
   firebase_core: ^4.4.0
-  firebase_core_platform_interface: ^6.0.2
   firebase_messaging: ^16.1.1
   flutter:
     sdk: flutter
@@ -28,21 +26,16 @@ dependencies:
   hugeicons: ^1.1.5
   intl: ^0.20.2
   package_info_plus: ^9.0.0
-  plugin_platform_interface: ^2.1.8
-  rotary_scrollbar:
-    git:
-      url: https://github.com/hyperfluid-tech/rotary_scrollbar.git
-      ref: refs/pull/12/head
   shared_preferences: ^2.5.4
   shimmer_animation: ^2.2.2
   text_scroll: ^0.2.1
   vector_graphics: ^1.1.19
   vector_graphics_compiler: ^1.2.0
-  wearable_rotary: ^2.0.4
 
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.11.1
+  fake_cloud_firestore: ^4.0.1
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter

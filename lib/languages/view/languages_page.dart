@@ -8,6 +8,6 @@ class LanguagesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LanguagesView();
+    return const LanguagesView();
   }
 }

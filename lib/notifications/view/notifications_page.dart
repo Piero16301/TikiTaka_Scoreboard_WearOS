@@ -11,7 +11,7 @@ class NotificationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NotificationsCubit(),
-      child: NotificationsView(),
+      child: const NotificationsView(),
     );
   }
 }

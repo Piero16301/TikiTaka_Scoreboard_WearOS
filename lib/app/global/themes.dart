@@ -6,13 +6,6 @@ class AppThemes {
     required Color baseColor,
     required String fontFamily,
   }) {
-    final baseTheme = ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: baseColor,
-        brightness: Brightness.dark,
-      ),
-    );
-
     return ThemeData(
       fontFamily: fontFamily,
       useMaterial3: true,
@@ -29,20 +22,6 @@ class AppThemes {
       cardTheme: CardThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(
-            isAmbientModeActive
-                ? Colors.grey.shade900
-                : baseTheme.colorScheme.primaryContainer,
-          ),
-          shape: WidgetStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
         ),
       ),
       textTheme: isAmbientModeActive

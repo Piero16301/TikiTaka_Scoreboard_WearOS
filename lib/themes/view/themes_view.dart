@@ -1,40 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class ThemesView extends StatefulWidget {
-  ThemesView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
-      : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<ThemesView> createState() => _ThemesViewState();
-}
-
-class _ThemesViewState extends State<ThemesView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class ThemesView extends StatelessWidget {
+  const ThemesView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return AppScaffold(
-      controller: _scrollController,
       child: SingleChildScrollView(
-        controller: _scrollController,
         child: BlocBuilder<AppCubit, AppState>(
           builder: (context, state) => RadioGroup<Color>(
             groupValue: state.baseColor,
@@ -63,7 +40,7 @@ class _ThemesViewState extends State<ThemesView> {
                     color: entry.value,
                   ),
                 ),
-                const BackButtonLanguages(),
+                const BackButtonThemes(),
                 const SizedBox(height: AppVariables.bottomScaffoldSpacing),
               ],
             ),
@@ -109,32 +86,22 @@ class CardColorThemes extends StatelessWidget {
   }
 }
 
-class BackButtonLanguages extends StatelessWidget {
-  const BackButtonLanguages({super.key});
+class BackButtonThemes extends StatelessWidget {
+  const BackButtonThemes({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: Text(
-              l10n.backText.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            label: l10n.backText.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

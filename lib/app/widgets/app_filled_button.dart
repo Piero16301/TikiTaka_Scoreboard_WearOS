@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+
+class AppFilledButton extends StatelessWidget {
+  const AppFilledButton({
+    this.onPressed,
+    this.icon,
+    this.label,
+    this.innerPadding,
+    this.color,
+    this.isOnlyIcon = false,
+    super.key,
+  });
+
+  final void Function()? onPressed;
+  final Widget? icon;
+  final String? label;
+  final EdgeInsetsGeometry? innerPadding;
+  final Color? color;
+  final bool isOnlyIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: onPressed,
+      style: FilledButton.styleFrom(
+        backgroundColor:
+            color ?? Theme.of(context).colorScheme.primaryContainer,
+        padding: innerPadding ??
+            const EdgeInsets.symmetric(
+              vertical: 18,
+              horizontal: 16,
+            ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      icon: icon != null && !isOnlyIcon ? icon : null,
+      label: label != null
+          ? ScrollText(
+              text: label ?? '',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+            )
+          : icon!,
+    );
+  }
+}

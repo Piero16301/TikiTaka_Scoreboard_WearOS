@@ -24,6 +24,28 @@ class AppVariables {
   static const double titleTextHeight = 0.8;
   static const double verticalPaddingBackButton = 10;
 
+  static const teamColorsMap = <String, Color>{
+    'Black': Colors.black,
+    'Blue': Colors.blue,
+    'Brown': Colors.brown,
+    'Claret': Color(0xFF7F1734),
+    'Cyan': Colors.cyan,
+    'Dark Blue': Colors.indigo,
+    'Gold': Color(0xFFFFD700),
+    'Green': Colors.green,
+    'Light Blue': Colors.lightBlue,
+    'Maroon': Color(0xFF800000),
+    'Navy Blue': Color(0xFF000080),
+    'Orange': Colors.orange,
+    'Purple': Colors.purple,
+    'Red': Colors.red,
+    'Royal Blue': Color(0xFF4169E1),
+    'Sky Blue': Colors.lightBlueAccent,
+    'Violet': Colors.deepPurple,
+    'White': Colors.white,
+    'Yellow': Colors.yellow,
+  };
+
   static Map<String, String> availableFonts = getAvailableFonts();
 
   static Map<String, String> getAvailableFonts() {

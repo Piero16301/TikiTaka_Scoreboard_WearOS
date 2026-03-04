@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
@@ -9,39 +7,17 @@ import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
 import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/themes/themes.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
+import 'package:tiki_taka_scoreboard_wearos/typography/typography.dart';
 
-class SettingsView extends StatefulWidget {
-  SettingsView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<SettingsView> createState() => _SettingsViewState();
-}
-
-class _SettingsViewState extends State<SettingsView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class SettingsView extends StatelessWidget {
+  const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return AppScaffold(
-      controller: _scrollController,
       child: SingleChildScrollView(
-        controller: _scrollController,
         child: Column(
           spacing: AppVariables.scaffoldSpacing,
           children: [
@@ -77,6 +53,11 @@ class _SettingsViewState extends State<SettingsView> {
               title: l10n.titleTheme.toUpperCase(),
               icon: HugeIcons.strokeRoundedPaintBoard,
               route: ThemesPage.routeName,
+            ),
+            ConfigurationSetting(
+              title: l10n.titleFont.toUpperCase(),
+              icon: HugeIcons.strokeRoundedTextFont,
+              route: TypographyPage.routeName,
             ),
             const BackButtonSettings(),
             const AppInfoSettings(),
@@ -131,25 +112,15 @@ class BackButtonSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: Text(
-              l10n.backText.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            label: l10n.backText.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

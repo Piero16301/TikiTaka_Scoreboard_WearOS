@@ -8,6 +8,7 @@ import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
 import 'package:tiki_taka_scoreboard_wearos/themes/themes.dart';
+import 'package:tiki_taka_scoreboard_wearos/typography/typography.dart';
 
 class AppRoutes {
   static Map<String, Widget Function(BuildContext)> routes = {
@@ -22,6 +23,7 @@ class AppRoutes {
     LeaguesPage.routeName: (_) => const LeaguesPage(),
     LanguagesPage.routeName: (_) => const LanguagesPage(),
     ThemesPage.routeName: (_) => const ThemesPage(),
+    TypographyPage.routeName: (_) => const TypographyPage(),
     NotificationsPage.routeName: (_) => const NotificationsPage(),
     TeamsPage.routeName: (context) => TeamsPage(
           leagueId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,

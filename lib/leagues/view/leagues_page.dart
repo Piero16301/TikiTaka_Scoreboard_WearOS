@@ -11,7 +11,7 @@ class LeaguesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => LeaguesCubit()..initialize(),
-      child: LeaguesView(),
+      child: const LeaguesView(),
     );
   }
 }
