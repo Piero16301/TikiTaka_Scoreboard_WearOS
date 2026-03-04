@@ -9,61 +9,73 @@ import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/themes/themes.dart';
 import 'package:tiki_taka_scoreboard_wearos/typography/typography.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
+
+  @override
+  State<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppScaffold(
-      child: SingleChildScrollView(
-        child: Column(
-          spacing: AppVariables.scaffoldSpacing,
-          children: [
-            const SizedBox(height: AppVariables.topScaffoldSpacing),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppVariables.horizontalPaddingTitle,
+    return AppScaffold.scrollable(
+      controller: _scrollController,
+      child: Column(
+        spacing: AppVariables.scaffoldSpacing,
+        children: [
+          const SizedBox(height: AppVariables.topScaffoldSpacing),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppVariables.horizontalPaddingTitle,
+            ),
+            child: ScrollText(
+              text: l10n.titleSettings.toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: AppVariables.titleSize,
               ),
-              child: ScrollText(
-                text: l10n.titleSettings.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: AppVariables.titleSize,
-                ),
-              ),
             ),
-            ConfigurationSetting(
-              title: l10n.titleLeagues.toUpperCase(),
-              icon: HugeIcons.strokeRoundedFootball,
-              route: LeaguesPage.routeName,
-            ),
-            ConfigurationSetting(
-              title: l10n.titleNotifications.toUpperCase(),
-              icon: HugeIcons.strokeRoundedNotification01,
-              route: NotificationsPage.routeName,
-            ),
-            ConfigurationSetting(
-              title: l10n.titleLanguage.toUpperCase(),
-              icon: HugeIcons.strokeRoundedLanguageSkill,
-              route: LanguagesPage.routeName,
-            ),
-            ConfigurationSetting(
-              title: l10n.titleTheme.toUpperCase(),
-              icon: HugeIcons.strokeRoundedPaintBoard,
-              route: ThemesPage.routeName,
-            ),
-            ConfigurationSetting(
-              title: l10n.titleFont.toUpperCase(),
-              icon: HugeIcons.strokeRoundedTextFont,
-              route: TypographyPage.routeName,
-            ),
-            const BackButtonSettings(),
-            const AppInfoSettings(),
-            const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-          ],
-        ),
+          ),
+          ConfigurationSetting(
+            title: l10n.titleLeagues.toUpperCase(),
+            icon: HugeIcons.strokeRoundedFootball,
+            route: LeaguesPage.routeName,
+          ),
+          ConfigurationSetting(
+            title: l10n.titleNotifications.toUpperCase(),
+            icon: HugeIcons.strokeRoundedNotification01,
+            route: NotificationsPage.routeName,
+          ),
+          ConfigurationSetting(
+            title: l10n.titleLanguage.toUpperCase(),
+            icon: HugeIcons.strokeRoundedLanguageSkill,
+            route: LanguagesPage.routeName,
+          ),
+          ConfigurationSetting(
+            title: l10n.titleTheme.toUpperCase(),
+            icon: HugeIcons.strokeRoundedPaintBoard,
+            route: ThemesPage.routeName,
+          ),
+          ConfigurationSetting(
+            title: l10n.titleFont.toUpperCase(),
+            icon: HugeIcons.strokeRoundedTextFont,
+            route: TypographyPage.routeName,
+          ),
+          const BackButtonSettings(),
+          const AppInfoSettings(),
+          const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+        ],
       ),
     );
   }

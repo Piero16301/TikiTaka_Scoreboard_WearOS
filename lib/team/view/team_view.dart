@@ -5,8 +5,21 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
 
-class TeamView extends StatelessWidget {
+class TeamView extends StatefulWidget {
   const TeamView({super.key});
+
+  @override
+  State<TeamView> createState() => _TeamViewState();
+}
+
+class _TeamViewState extends State<TeamView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +31,7 @@ class TeamView extends StatelessWidget {
       stream: database.getTeam(teamId: teamId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -36,29 +49,28 @@ class TeamView extends StatelessWidget {
           );
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return AppScaffold(
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: AppVariables.scaffoldSpacing,
-                children: [
-                  const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  const ShimmerMainInfoTeam(),
-                  const ShimmerCoachCardTeam(),
-                  ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
-                  ShimmerExpandableCardTeam(title: l10n.squadTeam),
-                  ShimmerExpandableCardTeam(title: l10n.staffTeam),
-                  ShimmerExpandableCardTeam(title: l10n.infoTeam),
-                  const BackButtonTeam(),
-                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                ],
-              ),
+        if (!snapshot.hasData) {
+          return AppScaffold.scrollable(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                const ShimmerMainInfoTeam(),
+                const ShimmerCoachCardTeam(),
+                ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
+                ShimmerExpandableCardTeam(title: l10n.squadTeam),
+                ShimmerExpandableCardTeam(title: l10n.staffTeam),
+                ShimmerExpandableCardTeam(title: l10n.infoTeam),
+                const BackButtonTeam(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           );
         }
 
         if (snapshot.data!.isEmpty) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -79,54 +91,53 @@ class TeamView extends StatelessWidget {
 
         final team = snapshot.data!.first;
 
-        return AppScaffold(
+        return AppScaffold.scrollable(
+          controller: _scrollController,
           disablePadding: true,
           child: WavingFlagBackground(
             colors: AppFunctions.getTeamColors(team.clubColors),
             child: Padding(
               padding: AppVariables.scaffoldPadding,
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: AppVariables.scaffoldSpacing,
-                  children: [
-                    const SizedBox(height: AppVariables.topScaffoldSpacing),
-                    MainInfoTeam(team: team),
-                    CoachCardTeam(coach: team.coach),
-                    if (team.runningCompetitions.isNotEmpty)
-                      CompetitionsCardTeam(
-                        competitions: team.runningCompetitions,
-                      ),
-                    if (team.squad.isNotEmpty)
-                      SquadCardTeam(
-                        squad: team.squad
-                          ..sort(
-                            (a, b) => AppFunctions.getStaffPositionOrder(
-                              a.position,
-                            ).compareTo(
-                              AppFunctions.getStaffPositionOrder(
-                                b.position,
-                              ),
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  MainInfoTeam(team: team),
+                  CoachCardTeam(coach: team.coach),
+                  if (team.runningCompetitions.isNotEmpty)
+                    CompetitionsCardTeam(
+                      competitions: team.runningCompetitions,
+                    ),
+                  if (team.squad.isNotEmpty)
+                    SquadCardTeam(
+                      squad: team.squad
+                        ..sort(
+                          (a, b) => AppFunctions.getStaffPositionOrder(
+                            a.position,
+                          ).compareTo(
+                            AppFunctions.getStaffPositionOrder(
+                              b.position,
                             ),
                           ),
-                      ),
-                    if (team.staff.isNotEmpty)
-                      StaffCardTeam(
-                        staff: team.staff
-                          ..sort(
-                            (a, b) => AppFunctions.getStaffPositionOrder(
-                              a.position,
-                            ).compareTo(
-                              AppFunctions.getStaffPositionOrder(
-                                b.position,
-                              ),
+                        ),
+                    ),
+                  if (team.staff.isNotEmpty)
+                    StaffCardTeam(
+                      staff: team.staff
+                        ..sort(
+                          (a, b) => AppFunctions.getStaffPositionOrder(
+                            a.position,
+                          ).compareTo(
+                            AppFunctions.getStaffPositionOrder(
+                              b.position,
                             ),
                           ),
-                      ),
-                    AdditionalInfoTeam(team: team),
-                    const BackButtonTeam(),
-                    const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                  ],
-                ),
+                        ),
+                    ),
+                  AdditionalInfoTeam(team: team),
+                  const BackButtonTeam(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+                ],
               ),
             ),
           ),

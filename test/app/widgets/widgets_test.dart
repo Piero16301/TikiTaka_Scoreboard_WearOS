@@ -36,7 +36,7 @@ void main() {
     testWidgets('AppScaffold renders child properly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: AppScaffold(
+          home: AppScaffold.basic(
             child: Text('Test Scaffold'),
           ),
         ),

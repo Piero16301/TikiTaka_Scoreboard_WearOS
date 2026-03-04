@@ -8,8 +8,22 @@ import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  Stream<List<Match>>? _matchesStream;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,51 +33,20 @@ class HomeView extends StatelessWidget {
 
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
+        if (state.reload || _matchesStream == null) {
+          _matchesStream = database.getMatches(
+            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
+          );
+        }
+
         context.read<HomeCubit>().reload(value: false);
 
         return StreamBuilder<List<Match>>(
           key: state.reload ? UniqueKey() : null,
-          stream: database.getMatches(
-            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
-          ),
+          stream: _matchesStream,
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return AppScaffold(
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: AppVariables.scaffoldSpacing,
-                    children: [
-                      const SizedBox(height: AppVariables.topScaffoldSpacing),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppVariables.horizontalPaddingTitle,
-                        ),
-                        child: ScrollText(
-                          text: l10n.titleMatches.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: AppVariables.titleSize,
-                            height: AppVariables.titleTextHeight,
-                          ),
-                        ),
-                      ),
-                      const LastUpdateHome(isLoading: true),
-                      ...List.generate(
-                        AppVariables.numberOfShimmers,
-                        (index) => const ShimmerMatchCardHome(),
-                      ),
-                      const SettingsHome(),
-                      const SizedBox(
-                        height: AppVariables.bottomScaffoldSpacing,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-
             if (snapshot.hasError) {
-              return AppScaffold(
+              return AppScaffold.basic(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -79,8 +62,42 @@ class HomeView extends StatelessWidget {
               );
             }
 
+            if (!snapshot.hasData) {
+              return AppScaffold.scrollable(
+                controller: _scrollController,
+                child: Column(
+                  spacing: AppVariables.scaffoldSpacing,
+                  children: [
+                    const SizedBox(height: AppVariables.topScaffoldSpacing),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppVariables.horizontalPaddingTitle,
+                      ),
+                      child: ScrollText(
+                        text: l10n.titleMatches.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppVariables.titleSize,
+                          height: AppVariables.titleTextHeight,
+                        ),
+                      ),
+                    ),
+                    const LastUpdateHome(isLoading: true),
+                    ...List.generate(
+                      AppVariables.numberOfShimmers,
+                      (index) => const ShimmerMatchCardHome(),
+                    ),
+                    const SettingsHome(),
+                    const SizedBox(
+                      height: AppVariables.bottomScaffoldSpacing,
+                    ),
+                  ],
+                ),
+              );
+            }
+
             if (snapshot.data!.isEmpty) {
-              return AppScaffold(
+              return AppScaffold.basic(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -116,34 +133,35 @@ class HomeView extends StatelessWidget {
                 return aStatus.compareTo(bStatus);
               });
 
-            return AppScaffold(
+            return AppScaffold.scrollable(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: AppVariables.scaffoldSpacing,
-                  children: [
-                    const SizedBox(height: AppVariables.topScaffoldSpacing),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppVariables.horizontalPaddingTitle,
-                      ),
-                      child: ScrollText(
-                        text: l10n.titleMatches.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: AppVariables.titleSize,
-                          height: AppVariables.titleTextHeight,
-                        ),
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppVariables.horizontalPaddingTitle,
+                    ),
+                    child: ScrollText(
+                      text: l10n.titleMatches.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppVariables.titleSize,
+                        height: AppVariables.titleTextHeight,
                       ),
                     ),
-                    const LastUpdateHome(),
-                    ...matches.map(
-                      (match) => MatchCardHome(match: match),
-                    ),
-                    const SettingsHome(),
-                    const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                  ],
-                ),
+                  ),
+                  const LastUpdateHome(),
+                  ...matches.map(
+                    (match) => MatchCardHome(match: match),
+                  ),
+                  const SettingsHome(),
+                  const SizedBox(
+                    height: AppVariables.bottomScaffoldSpacing,
+                  ),
+                ],
               ),
             );
           },
@@ -360,11 +378,14 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              state,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                state,
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -374,12 +395,15 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              '${match.score.fullTime.home} - '
-              '${match.score.fullTime.away}',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${match.score.fullTime.home} - '
+                '${match.score.fullTime.away}',
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ScrollText(
@@ -404,12 +428,15 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              '${match.score.fullTime.home} - '
-              '${match.score.fullTime.away}',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${match.score.fullTime.home} - '
+                '${match.score.fullTime.away}',
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ScrollText(
