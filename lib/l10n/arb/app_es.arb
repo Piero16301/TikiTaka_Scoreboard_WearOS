@@ -1,6 +1,5 @@
 {
     "@@locale": "es",
-
     "titleMatches": "Partidos",
     "@titleMatches": {},
     "updatingMatches": "Actualizando partidos...",
@@ -35,7 +34,6 @@
     "@awardedMatch": {},
     "unknownMatch": "Desconocido",
     "@unknownMatch": {},
-
     "titleMatch": "Partido",
     "@titleMatch": {},
     "errorMatch": "Error al cargar el partido",
@@ -66,7 +64,6 @@
     "@goalDifferenceAbbr": {},
     "pointsAbbr": "PT",
     "@pointsAbbr": {},
-
     "titleTeam": "Equipo",
     "@titleTeam": {},
     "errorTeam": "Error al cargar el equipo",
@@ -111,10 +108,8 @@
     "@addressTeam": {},
     "websiteTeam": "Sitio web",
     "@websiteTeam": {},
-
     "titleSettings": "Ajustes",
     "@titleSettings": {},
-
     "titleLeagues": "Ligas",
     "@titleLeagues": {},
     "emptyLeagues": "No hay ligas disponibles",
@@ -123,7 +118,6 @@
     "@errorLeagues": {},
     "retryLeagues": "Reintentar",
     "@retryLeagues": {},
-
     "titleLanguage": "Idioma",
     "@titleLanguage": {},
     "englishLanguage": "🇬🇧 Inglés",
@@ -132,36 +126,32 @@
     "@spanishLanguage": {},
     "italianLanguage": "🇮🇹 Italiano",
     "@italianLanguage": {},
-
     "titleTheme": "Tema",
     "@titleTheme": {},
     "lightTheme": "Claro",
     "@lightTheme": {},
     "darkTheme": "Oscuro",
     "@darkTheme": {},
-
+    "titleFont": "Fuente",
+    "@titleFont": {},
     "titleNotifications": "Notificaciones",
     "@titleNotifications": {},
     "errorNotifications": "Error al cargar las notificaciones",
     "@errorNotifications": {},
     "emptyNotifications": "No hay notificaciones disponibles",
     "@emptyNotifications": {},
-
     "titleTeams": "Equipos",
     "@titleTeams": {},
     "errorTeams": "Error al cargar los equipos",
     "@errorTeams": {},
     "emptyTeams": "No hay equipos disponibles",
     "@emptyTeams": {},
-
     "backText": "Volver",
     "@backText": {},
-
     "updatedOn": "Actualizado",
     "@updatedOn": {},
     "todayText": "Hoy",
     "@todayText": {},
-
     "leagueCompetition": "Liga",
     "@leagueCompetition": {},
     "cupCompetition": "Copa",
@@ -172,7 +162,6 @@
     "@friendlyCompetition": {},
     "otherCompetition": "Otra",
     "@otherCompetition": {},
-
     "goalkeeperPosition": "PT",
     "@goalkeeperPosition": {},
     "defencePosition": "DF",
@@ -217,7 +206,6 @@
     "@forwardCoachPosition": {},
     "caretakerManagerPosition": "EI",
     "@caretakerManagerPosition": {},
-
     "colorRed": "Rojo",
     "@colorRed": {},
     "colorPink": "Rosa",

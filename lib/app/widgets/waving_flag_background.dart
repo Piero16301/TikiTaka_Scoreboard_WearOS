@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tiki_taka_scoreboard_wearos/app/widgets/widgets.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/widgets/waving_flag_painter.dart';
 
-class RippleBackground extends StatefulWidget {
-  const RippleBackground({
+class WavingFlagBackground extends StatefulWidget {
+  const WavingFlagBackground({
     required this.colors,
     required this.child,
     super.key,
@@ -14,10 +14,10 @@ class RippleBackground extends StatefulWidget {
   final Widget child;
 
   @override
-  State<RippleBackground> createState() => _RippleBackgroundState();
+  State<WavingFlagBackground> createState() => _WavingFlagBackgroundState();
 }
 
-class _RippleBackgroundState extends State<RippleBackground>
+class _WavingFlagBackgroundState extends State<WavingFlagBackground>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
@@ -43,7 +43,7 @@ class _RippleBackgroundState extends State<RippleBackground>
       animation: _animationController,
       builder: (context, child) {
         return CustomPaint(
-          painter: RipplePainter(
+          painter: WavingFlagPainter(
             colors: widget.colors,
             animationValue: _animationController.value,
           ),

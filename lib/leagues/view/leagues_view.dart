@@ -1,34 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class LeaguesView extends StatefulWidget {
-  LeaguesView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<LeaguesView> createState() => _LeaguesViewState();
-}
-
-class _LeaguesViewState extends State<LeaguesView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class LeaguesView extends StatelessWidget {
+  const LeaguesView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +15,28 @@ class _LeaguesViewState extends State<LeaguesView> {
     return StreamBuilder<List<League>>(
       stream: database.getLeagues(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.hasError) {
           return AppScaffold(
-            controller: _scrollController,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorLeagues,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return AppScaffold(
             child: SingleChildScrollView(
-              controller: _scrollController,
               child: Column(
                 spacing: AppVariables.scaffoldSpacing,
                 children: [
@@ -71,25 +65,6 @@ class _LeaguesViewState extends State<LeaguesView> {
           );
         }
 
-        if (snapshot.hasError) {
-          return AppScaffold(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorLeagues,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
         if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
@@ -112,9 +87,7 @@ class _LeaguesViewState extends State<LeaguesView> {
         final leagues = snapshot.data!;
 
         return AppScaffold(
-          controller: _scrollController,
           child: SingleChildScrollView(
-            controller: _scrollController,
             child: Column(
               spacing: AppVariables.scaffoldSpacing,
               children: [
@@ -223,25 +196,15 @@ class BackButtonCompetitions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: Text(
-              l10n.backText.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            label: l10n.backText.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

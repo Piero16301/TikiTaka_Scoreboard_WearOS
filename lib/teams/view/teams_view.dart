@@ -1,34 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class TeamsView extends StatefulWidget {
-  TeamsView({
-    super.key,
-    @visibleForTesting Stream<RotaryEvent>? rotaryEvents,
-  }) : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<TeamsView> createState() => _TeamsViewState();
-}
-
-class _TeamsViewState extends State<TeamsView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class TeamsView extends StatelessWidget {
+  const TeamsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +17,28 @@ class _TeamsViewState extends State<TeamsView> {
     return StreamBuilder<List<Team>>(
       stream: database.getTeamsByLeague(leagueId: leagueId),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
+        if (snapshot.hasError) {
           return AppScaffold(
-            controller: _scrollController,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.errorTeams,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return AppScaffold(
             child: SingleChildScrollView(
-              controller: _scrollController,
               child: Column(
                 spacing: AppVariables.scaffoldSpacing,
                 children: [
@@ -73,25 +67,6 @@ class _TeamsViewState extends State<TeamsView> {
           );
         }
 
-        if (snapshot.hasError) {
-          return AppScaffold(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorTeams,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
         if (snapshot.data!.isEmpty) {
           return AppScaffold(
             child: Center(
@@ -114,9 +89,7 @@ class _TeamsViewState extends State<TeamsView> {
         final teams = snapshot.data!;
 
         return AppScaffold(
-          controller: _scrollController,
           child: SingleChildScrollView(
-            controller: _scrollController,
             child: Column(
               spacing: AppVariables.scaffoldSpacing,
               children: [
@@ -136,11 +109,11 @@ class _TeamsViewState extends State<TeamsView> {
                 StreamBuilder<List<Map<String, dynamic>>>(
                   stream: database.getDevices(token: notification.token),
                   builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+                    if (snapshot.hasError) {
                       return const SizedBox.shrink();
                     }
 
-                    if (snapshot.hasError) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return const SizedBox.shrink();
                     }
 
@@ -266,25 +239,15 @@ class BackButtonTeams extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: Text(
-              l10n.backText.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            label: l10n.backText.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

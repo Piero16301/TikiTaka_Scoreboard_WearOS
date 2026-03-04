@@ -8,6 +8,6 @@ class ThemesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ThemesView();
+    return const ThemesView();
   }
 }

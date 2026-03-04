@@ -74,23 +74,21 @@ class AppFunctions {
     for (final color in list) {
       if (color.trim().isNotEmpty) {
         colorIcons.add(
-          ColorHelper.colorMap[color] ?? AppVariables.defaultColor,
+          AppVariables.teamColorsMap[color] ?? AppVariables.defaultColor,
         );
       }
     }
 
     if (colorIcons.isEmpty) {
       colorIcons
-        ..add(AppVariables.defaultColor)
-        ..add(AppVariables.defaultColor);
+        ..add(Colors.black)
+        ..add(Colors.white);
     } else if (colorIcons.length == 1) {
       colorIcons.add(colorIcons.first);
-    } else if (colorIcons.length > 2) {
-      colorIcons.removeRange(2, colorIcons.length);
     }
 
     return colorIcons.map((color) {
-      return color.withValues(alpha: 0.4);
+      return color.withValues(alpha: 0.5);
     }).toList();
   }
 

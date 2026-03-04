@@ -5,71 +5,113 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/sanjuanpamk)
 
-Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS** application. This guide covers all key Dart files, organized by functional modules, explains their responsibilities, and illustrates how they interconnect.
+Welcome to the comprehensive documentation for the **Tiki Taka WearOS** application. This guide covers all key Dart files, organized by functional modules, explains their responsibilities, and illustrates how they interconnect to manage live football matches, leagues, and teams using Firebase as the backend.
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Ambient Mode](#ambient-mode)  
-2. [App Core](#app-core)  
-   2.1 [State Management (AppCubit)](#state-management-appcubit)  
-   2.2 [Global Utilities](#global-utilities)  
-   2.3 [Routing & Themes](#routing--themes)  
-   2.4 [Services](#services)  
-   2.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)  
-3. [Feature Modules](#feature-modules)  
-   3.1 [Home](#home)  
-   3.2 [Leagues](#leagues)  
-   3.3 [Match](#match)  
-   3.4 [Notifications](#notifications)  
-   3.5 [Settings](#settings)  
-   3.6 [Team & Teams](#team--teams)  
-   3.7 [Themes](#themes)  
-4. [Localization (l10n)](#localization-l10n)  
-5. [Bootstrap & Entrypoint](#bootstrap--entrypoint)  
-6. [Packages & Data Models](#packages--data-models)  
-   6.1 [user_api](#user_api)  
-   6.2 [user_api_remote](#user_api_remote)  
-   6.3 [user_repository](#user_repository)  
+1. [Architecture](#%EF%B8%8F-architecture)
+2. [App Core](#app-core)
+   2.1 [State Management](#state-management)
+   2.2 [Global Utilities](#global-utilities)
+   2.3 [Routing & Themes](#routing--themes)
+   2.4 [Services](#services)
+   2.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
+3. [Feature Modules](#feature-modules)
+   3.1 [Ambient Mode](#ambient-mode)
+   3.2 [Home](#home)
+   3.3 [Leagues](#leagues)
+   3.4 [Match](#match)
+   3.5 [Notifications](#notifications)
+   3.6 [Settings](#settings)
+   3.7 [Team & Teams](#team--teams)
+4. [Localization (l10n)](#localization-l10n)
+5. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
+6. [Packages & Data Models](#packages--data-models)
 7. [Configuration (`pubspec.yaml`)](#configuration-pubspecyaml)
 
 ---
 
-## Ambient Mode
+# 🏗️ Architecture
 
-| File                                              | Responsibility                                                                               |
-|---------------------------------------------------|----------------------------------------------------------------------------------------------|
-| **lib/ambient_mode/ambient_mode.dart**            | Barrel export for ambient-mode widgets and listener.                                         |
-| **lib/ambient_mode/view/ambient_mode_listener.dart** | A singleton `ValueNotifier<bool>` that listens on a `MethodChannel('ambient_mode')` for Android Wear OS ambient events. |
-| **lib/ambient_mode/view/ambient_mode_builder.dart**  | `StatelessWidget` wrapping a `ValueListenableBuilder` over `AmbientModeListener` to rebuild UI based on ambient mode. |
+```mermaid
+flowchart TD
+  subgraph "WearOS Application (Flutter)"
+    direction TB
+    UI[UI Layer / Views & Widgets]
+    
+    subgraph "State Management"
+      AppCubit[AppCubit<br>Global State]
+      FeatureCubits[Feature Cubits<br>Home, Match, Leagues, Teams]
+    end
+    
+    subgraph "Services Layer"
+      DBSvc[Database Service]
+      DeviceInfoSvc[Device Info Service]
+      LocalSvc[Local Storage Service]
+      NotifSvc[Notification Service]
+    end
+    
+    subgraph "Local Data"
+      SharedPrefs[(SharedPreferences)]
+    end
+  end
 
-> **Purpose:**  
-> - Detect when the watch enters/exits ambient mode (low-power display).  
-> - Allow UI theme adjustments (e.g., dimmed colors) seamlessly.
+  %% Invisible link to force vertical ordering
+  SharedPrefs ~~~ FirebaseFunctions
+
+  subgraph "External Providers"
+    direction TB
+    ExternalAPI((External Football API))
+  end
+
+  subgraph "Cloud Backend"
+    direction TB
+    Firestore((Cloud Firestore))
+    FirebaseFunctions((Firebase Functions))
+    FirebaseMessaging((Firebase Messaging))
+  end
+
+  %% Internal App Flow
+  UI <-->|Events & States| FeatureCubits
+  UI <-->|App Settings| AppCubit
+  
+  FeatureCubits --> DBSvc
+  FeatureCubits --> NotifSvc
+  
+  AppCubit --> LocalSvc
+  AppCubit --> DeviceInfoSvc
+  
+  LocalSvc <-->|Read/Write Prefs| SharedPrefs
+  
+  %% External App Integrations
+  DBSvc <-->|Fetch Leagues/Matches/Teams| Firestore
+  NotifSvc <-->|Subscribe/Receive Alerts| FirebaseMessaging
+  
+  %% Backend Logic
+  FirebaseFunctions -->|Scheduled Check - Every Minute| ExternalAPI
+  ExternalAPI -->|Fetch Live Data| FirebaseFunctions
+  FirebaseFunctions -->|Save Latest Data| Firestore
+  FirebaseFunctions -->|If Changes Detected<br>Sends Push Notifications| FirebaseMessaging
+```
+
+- **UI (Flutter Interface)**: Standardized presentation layer designed for WearOS that sends events to the State and interacts with the Services.
+- **State (Bloc/Cubit)**: Manages the application logic, handles read/write operations with the Local DB, and interacts with external services.
+- **Store (Local DB - SharedPreferences)**: Handles local data persistence on the smartwatch for quick access and preferences.
+- **Services (Firebase & Local)**: Main communication gateway managing device info, notifications via Firebase Messaging, local storage, and real-time database updates from Firestore.
+- **Backend**: Firebase provides the core backend infrastructure. A scheduled **Firebase Function** runs every minute to fetch real-time match data from an **External Football API**. If changes are detected compared to the current **Firestore** data, the function updates Firestore and triggers **Firebase Messaging** to deliver notifications directly to the WearOS device.
 
 ---
 
 ## App Core
 
-### 1. State Management (AppCubit)
+### 1. State Management
 
 | File                             | Role                                                                                          |
 |----------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/cubit/app_cubit.dart** | Manages **global app state**: dark mode & language. Persists preferences via `UserRepository` and syncs to Firestore via `LocalSettingsService`. |
-| **lib/app/cubit/app_state.dart** | Immutable state with `darkMode` (bool) and `language` (String). Supports `copyWith`.        |
-
-**Core Methods in `AppCubit`:**
-- `initialLoad()`  
-  - Reads saved dark-mode & language.  
-  - If unset, initializes defaults (`true` for dark, `en_US` for locale).  
-  - Emits updated `AppState`.
-- `changeTheme(darkMode: bool)`  
-  - Persists locally & on Firestore.  
-  - Emits new `AppState.darkMode`.
-- `changeLanguage(String)`  
-  - Persists locally & on Firestore.  
-  - Emits new `AppState.language`.
+| **lib/app/cubit/app_cubit.dart** | Manages **global app state**: core configurations and fundamental app states during runtime. |
+| **lib/app/cubit/app_state.dart** | Immutable state variables serving core elements. Supports `copyWith`.        |
 
 ---
 
@@ -77,15 +119,8 @@ Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS
 
 | File                             | Role                                                                                          |
 |----------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/global/functions.dart**  | Collection of UI/data helper functions:  
-  - Formatting match states & dates (`getMatchState`, `notMatchState`)  
-  - Mapping colors, icons, staff positions  
-  - `NetworkSvgLoader` for async SVG loading & vector graphics decoding. |
-| **lib/app/global/variables.dart**  | App-wide constants:  
-  - `navigatorKey`, shimmer counts, scroll parameters  
-  - Firestore collection names (`matches`, `configs`, `leagues`, etc.)  
-  - Messaging topics & notification types. |
-| **lib/app/global/global.dart**     | Barrel exporting `functions.dart` and `variables.dart`.                                      |
+| **lib/app/helpers/***            | Collection of UI/data helper functions (`color_helper.dart`) for app-wide UI/logic processing. |
+| **lib/app/global/***             | App-wide constants, properties, routes, themes, extensions, and dependencies configuration variables. |
 
 ---
 
@@ -93,14 +128,9 @@ Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS
 
 | File                                  | Role                                                                                  |
 |---------------------------------------|---------------------------------------------------------------------------------------|
-| **lib/app/misc/app_routes.dart**      | Defines `Map<String, WidgetBuilder>` for `MaterialApp.routes`:  
-  - `/` → `HomePage`  
-  - `/match`, `/team`, `/settings`, `/leagues`, `/languages`, `/themes`, `/notifications`, `/teams`. |
-| **lib/app/misc/app_themes.dart**      | Two functions returning `ThemeData` based on `isAmbientModeActive`:  
-  - `appDarkTheme(...)`  
-  - `appLightTheme(...)`  
-  Theme variations tune colors, card shapes, button styles for ambient mode. |
-| **lib/app/misc/misc.dart**            | Barrel exporting routes & themes.                                                       |
+| **lib/app/global/routes.dart**        | Defines the navigation graph defining paths to home, matches, teams, settings, etc. |
+| **lib/app/global/themes.dart**        | Defines theme mappings to adjust UI colors and typography optimized for WearOS displays. |
+| **lib/app/global/dependencies.dart**  | Configuration setup for singletons and dependency injection. |
 
 ---
 
@@ -108,15 +138,10 @@ Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS
 
 | File                                            | Role                                                                                |
 |-------------------------------------------------|-------------------------------------------------------------------------------------|
-| **lib/app/services/local_settings_service.dart** | Singleton managing `SharedPreferences`, device & package info:  
-  - `initialize()` sets up preferences, `DeviceInfoPlugin`, `PackageInfo`.  
-  - `getLocalLanguage()`, `getDarkMode()`.  
-  - `saveLanguageOnFirestore()`, `saveDarkModeOnFirestore()`. |
-| **lib/app/services/notification_service.dart**   | Singleton handling FCM & local notifications:  
-  - `initialize()` sets background handler, requests permissions, obtains token, sets up channels.  
-  - Routes background & foreground messages to UI (e.g., navigates to match).  
-  - Subscribe/unsubscribe to topics.   |
-| **lib/app/services/services.dart**               | Barrel exporting the two services.                                                  |
+| **lib/app/services/database_service.dart**      | Handles data retrieval operations for leagues, matches, and teams via Cloud Firestore. |
+| **lib/app/services/device_info_service.dart**   | Acquires specific hardware or OS information from the WearOS smartwatch. |
+| **lib/app/services/local_storage_service.dart** | Singleton managing local database persistence using `SharedPreferences`. |
+| **lib/app/services/notification_service.dart**  | Manages push notifications and real-time alerts. |
 
 ---
 
@@ -126,145 +151,88 @@ Welcome to the comprehensive documentation for the **Tiki Taka Scoreboard WearOS
 
 | File                               | Role                                                                                          |
 |------------------------------------|-----------------------------------------------------------------------------------------------|
-| **lib/app/view/app_page.dart**     | Top-level widget injecting `UserRepository` & `AppCubit` into widget tree via `MultiProvider`. |
-| **lib/app/view/app_view.dart**     | 
-  - Calls `AppCubit.initialLoad()`.  
-  - Wraps `HomePage` in `AmbientModeBuilder` → `MaterialApp`.  
-  - Configures theme, locale, routes, l10n delegates. |
-| **lib/app/view/view.dart**         | Barrel exporting `app_page.dart` & `app_view.dart`.                                          |
+| **lib/app/view/app.dart**          | Consumes `AppCubit` and configures application components including themes, routing, and l10n. |
 
 #### Widgets
 
 | File                          | Role                                                                                                             |
 |-------------------------------|------------------------------------------------------------------------------------------------------------------|
-| **app_card_data.dart**        | Styled `Card` with horizontal padding & inner padding.                                                          |
-| **app_shimmer.dart**          | Shimmer placeholder for loading states.                                                                          |
-| **crest_image.dart**          | Loads & displays club crest via `VectorGraphics`.                                                                |
-| **ripple_background.dart**    | Animated ripple effect behind content.                                                                           |
-| **ripple_painter.dart**       | `CustomPainter` used by ripple background to draw expanding circles.                                              |
-| **scroll_text.dart**          | Marquee/scrolling text using `text_scroll` package.                                                              |
-| **widgets.dart**              | Barrel exporting all above.                                                                                     |
+| **lib/app/widgets/***         | Global shared UI custom components designed specifically for the limited screen real estate of a smartwatch.     |
+| **lib/themes/***              | Reusable components related to app styling and visual presentation.                      |
 
 ---
 
 ## Feature Modules
 
-Each feature follows a structure:
-1. **barrel** file (`feature.dart`) exporting `cubit/` and `view/`.
-2. **Cubic**: `feature_cubit.dart` + `feature_state.dart`.
-3. **Page**: Stateless widget providing the cubit.
-4. **View**: Stateful widget consuming cubit & Firestore streams, rendering UI.
+Each feature follows a standard architecture pattern structure suited for WearOS:
+1. **barrel** file exporting components.
+2. **Cubit**: Specific logic management (`cubit` folder).
+3. **View**: UI implementation relying on the emitted states (`view` folder).
+
+---
+
+### Ambient Mode
+
+- **lib/ambient_mode/***  
+
+**Features:**  
+Handles the smartwatch's always-on display mode, providing an optimized, low-power interface while the app is inactive but visible.
 
 ---
 
 ### Home
 
-- **lib/home/home.dart**  
-- **lib/home/cubit/home_cubit.dart**  
-- **lib/home/cubit/home_state.dart**  
-- **lib/home/view/home_page.dart**  
-- **lib/home/view/home_view.dart**  
+- **lib/home/***  
 
-**Flow:**  
-`HomePage` → `HomeCubit.initCollections()` → fetch `matches` & `configs` collections → `HomeView` uses `StreamBuilder` to display today’s matches, shimmers, error state, etc.
+**Highlights:**  
+- Acts as the main application dashboard exposing recent matches, leagues, and entry points.
 
 ---
 
 ### Leagues
 
-- **lib/leagues/leagues.dart**  
-- **lib/leagues/cubit/leagues_cubit.dart**  
-- **lib/leagues/cubit/leagues_state.dart**  
-- **lib/leagues/view/leagues_page.dart**  
-- **lib/leagues/view/leagues_view.dart**  
+- **lib/leagues/***  
 
-**Highlights:**  
-- Toggles league enable/disable via `toggleLeague()`.  
-- Persists to `UserRepository`.  
-- UI presents a rotary-scroll list of leagues with switches.
+**Capabilities:**  
+- Lists the available monitored football leagues and provides navigation to their specific matches and tables.
 
 ---
 
 ### Match
 
-- **lib/match/match.dart**  
-- **lib/match/cubit/match_cubit.dart**  
-- **lib/match/cubit/match_state.dart**  
-- **lib/match/view/match_page.dart**  
-- **lib/match/view/match_view.dart**  
+- **lib/match/***  
 
-**Capabilities:**  
-- Displays match details, score updates, and league standings.  
-- Highlights home/away rows in standings.  
-- Back button to return to previous screen.
+**Features:**  
+- Displays real-time details of an ongoing or finished football match, including scores, incidents, and timing.
 
 ---
 
 ### Notifications
 
-- **lib/notifications/notifications.dart**  
-- **lib/notifications/cubit/notifications_cubit.dart**  
-- **lib/notifications/cubit/notifications_state.dart**  
-- **lib/notifications/view/notifications_page.dart**  
-- **lib/notifications/view/notifications_view.dart**  
+- **lib/notifications/***  
 
-**Features:**  
-- Lists subscribed leagues (Firestore).  
-- Handles empty, loading, and error states with shimmers & messages.
+**Controls:**  
+- Manages user-facing alerts and updates for match events sent via Firebase Cloud Messaging.
 
 ---
 
 ### Settings
 
-- **lib/settings/settings.dart**  
-- **lib/settings/cubit/settings_cubit.dart**  
-- **lib/settings/cubit/settings_state.dart**  
-- **lib/settings/view/settings_page.dart**  
-- **lib/settings/view/settings_view.dart**  
+- **lib/settings/***  
 
 **Controls:**  
-- Language selector  
-- Theme toggle  
-- Links to Leagues, Notifications, Themes sub-pages  
-- Displays app info (version, build, last update)
+- Unified hub altering universal parameters. Passes preferences backward to be maintained securely inside `LocalStorageService`.
 
 ---
 
 ### Team & Teams
 
-#### Teams
+- **lib/team/***  
+- **lib/teams/***  
 
-- **lib/teams/teams.dart**  
-- **lib/teams/cubit/teams_cubit.dart**  
-- **lib/teams/cubit/teams_state.dart**  
-- **lib/teams/view/teams_page.dart**  
-- **lib/teams/view/teams_view.dart**  
-
-#### Team
-
-- **lib/team/team.dart**  
-- **lib/team/cubit/team_cubit.dart**  
-- **lib/team/cubit/team_state.dart**  
-- **lib/team/view/team_page.dart**  
-- **lib/team/view/team_view.dart**  
-
-**Detail:**  
-- `Teams` lists clubs in a league; `Team` shows individual club details.  
-- Firestore queries filtered by leagueId/teamId.
-
----
-
-### Themes
-
-- **lib/themes/themes.dart**  
-- **lib/themes/cubit/themes_cubit.dart**  
-- **lib/themes/cubit/themes_state.dart**  
-- **lib/themes/view/themes_page.dart**  
-- **lib/themes/view/themes_view.dart**  
-
-**Purpose:**  
-- Adjust UI accents, perhaps switch material theme variants.  
-- Minimal state: initial/loading/success/failure flow.
+**Highlights:**  
+- **Team**: Shows deep details, line-ups, and statistics for a specific football club.
+- **Teams**: Provides an overview or list of teams within a competition or league.
 
 ---
 
@@ -272,15 +240,10 @@ Each feature follows a structure:
 
 | File                               | Role                                                  |
 |------------------------------------|-------------------------------------------------------|
-| **lib/l10n/arb/app_en.arb**        | English strings.                                      |
-| **lib/l10n/arb/app_es.arb**        | Spanish strings.                                      |
-| **lib/l10n/arb/app_it.arb**        | Italian strings.                                      |
-| **lib/l10n/l10n.dart**             | Generated localization delegates & lookup.            |
-| **lib/l10n/l10n_en.dart**          | English implementation.                               |
-| **lib/l10n/l10n_es.dart**          | Spanish implementation.                               |
-| **lib/l10n/l10n_it.dart**          | Italian implementation.                               |
+| **lib/l10n/***                     | Dictionary values and ARB files for different locales.|
+| **lib/languages/***                | Additional language configuration logic and structures.|
 
-**Mechanism:** Flutter’s ARB → `flutter_localizations` → `AppLocalizations` used by `MaterialApp`.
+**Mechanism:** Utilizing standard multi-language structures to support global football fans.
 
 ---
 
@@ -288,84 +251,32 @@ Each feature follows a structure:
 
 | File                          | Role                                                                                   |
 |-------------------------------|----------------------------------------------------------------------------------------|
-| **lib/bootstrap.dart**        | Sets a custom `BlocObserver` for logging, catches Flutter errors, and runs `runApp`.   |
-| **lib/firebase_options.dart** | Auto-generated via FlutterFire CLI: supplies `FirebaseOptions` per platform.            |
-| **lib/main.dart**             |  
-  1. Initializes Flutter & Firebase  
-  2. Sets up `SharedPreferences`, `UserApiRemote`, `UserRepository`  
-  3. Initializes `LocalSettingsService` & `NotificationService`  
-  4. Calls `bootstrap(() => AppPage(...))`. |
+| **lib/bootstrap.dart**        | Intercepts application initialization, configuring error logging and calling `runApp()`. |
+| **lib/main.dart**             |  <br> 1. Triggers initial execution context. <br> 2. Sets up dependencies and Firebase. <br> 3. Dispatches execution flow over to `bootstrap`. |
 
 ---
 
 ## Packages & Data Models
 
-### user_api
+Tiki Taka Scoreboard WearOS uses remote synchronization through Firestore while maintaining a clean entity structure locally.
 
-- **packages/user_api/lib/src/models/** → Generated JSON-serializable classes: `Area`, `Competition`, `Config`, `Contract`, `League`, `Match`, `Odds`, `Referee`, `Score`, `Season`, `Staff`, `Standing`, `Table`, `Team`, `Time`.  
-- **packages/user_api/lib/src/user_api.dart** → Abstract API interface.  
-- **packages/user_api/lib/user_api.dart** → Exports models & interface.
+### Data Models
 
-### user_api_remote
+- **lib/app/models/match.dart**: Contains the parameters of an individual football match.
+- **lib/app/models/team.dart**: Represents a football team's details.
+- **lib/app/models/league.dart**: Represents user-selectable leagues and competitions.
+- **Further Models**: Encompasses `area.dart`, `competition.dart`, `score.dart`, `season.dart`, `standing.dart`, `staff.dart`, `referee.dart`, `odds.dart`, and `table.dart`.
 
-- **packages/user_api_remote/lib/src/user_api_remote.dart** → Implements `UserApi` against a remote HTTP/REST endpoint.  
-
-### user_repository
-
-- **packages/user_repository/lib/src/user_repository.dart** →  
-  - Bridges `UserApi` & `LocalSettingsService`.  
-  - Persists preferences locally.  
-  - Exposes methods like `getEnabledLeagues()`, `saveEnabledLeague()`, `getDarkMode()`, `saveDarkMode()`, etc.
-
-These packages form the **data/logic layer** feeding the Flutter UI.
+These classes interact seamlessly as the main underlying format populating the application views for match tracking.
 
 ---
 
-## Configuration (pubspec.yaml)
+## Configuration (`pubspec.yaml`)
 
-- Declares dependencies: Flutter, BLoC, Equatable, Firestore, Firebase Messaging, SharedPreferences, DeviceInfo, PackageInfo, VectorGraphics, etc.  
-- Defines assets, fonts, l10n settings.
-
----
-
-# 🎬 Summary of Relationships
-
-```mermaid
-flowchart TD
-  subgraph Core
-    AppPage --> AppCubit
-    AppCubit --> LocalSettingsService
-    AppCubit --> UserRepository
-    AppView --> AppCubit
-    AppView --> AmbientModeBuilder
-    AppView --> MaterialApp
-  end
-
-  subgraph Features
-    HomePage --> HomeCubit
-    LeaguesPage --> LeaguesCubit
-    MatchPage --> MatchCubit
-    NotificationsPage --> NotificationsCubit
-    SettingsPage --> SettingsCubit
-    TeamsPage --> TeamsCubit
-    TeamPage --> TeamCubit
-    ThemesPage --> ThemesCubit
-  end
-
-  subgraph DataLayer
-    UserRepository --> UserApi
-    UserApi --> UserApiRemote
-    Cubits --> FirebaseFirestore
-  end
-
-  AppCubit -->|depends on| UserRepository
-  EachFeatureCubit -->|reads| UserRepository
-```
-
-- **DataLayer**: `UserRepository` → `UserApiRemote` (REST) → remote server  
-- **Services**: `LocalSettingsService` & `NotificationService` manage prefs & FCM  
-- **UI**: `MaterialApp` → routes → `<Feature>Page` → `<Feature>View` → BLoC & Firestore streams  
+- Core dependencies defining internal toolings including standard Flutter state management methodologies.
+- Adapted specifically for the WearOS environment constraints and form factor.
+- Includes code quality lint rules via `very_good_analysis` and incorporates solid architectural practices for testing and mocking.
 
 ---
 
-> **Enjoy building and extending the Tiki Taka Scoreboard WearOS app!**
+> **Enjoy exploring football matches straight from your wrist with Tiki Taka WearOS!**

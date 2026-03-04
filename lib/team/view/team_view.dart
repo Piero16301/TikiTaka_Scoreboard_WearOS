@@ -1,33 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:wearable_rotary/wearable_rotary.dart' as wearable_rotary
-    show rotaryEvents;
-import 'package:wearable_rotary/wearable_rotary.dart' hide rotaryEvents;
 
-class TeamView extends StatefulWidget {
-  TeamView({super.key, @visibleForTesting Stream<RotaryEvent>? rotaryEvents})
-      : rotaryEvents = rotaryEvents ?? wearable_rotary.rotaryEvents;
-
-  final Stream<RotaryEvent> rotaryEvents;
-
-  @override
-  State<TeamView> createState() => _TeamViewState();
-}
-
-class _TeamViewState extends State<TeamView> {
-  final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
+class TeamView extends StatelessWidget {
+  const TeamView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,29 +17,6 @@ class _TeamViewState extends State<TeamView> {
     return StreamBuilder<List<Team>>(
       stream: database.getTeam(teamId: teamId),
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return AppScaffold(
-            controller: _scrollController,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                spacing: AppVariables.scaffoldSpacing,
-                children: [
-                  const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  const ShimmerMainInfoTeam(),
-                  const ShimmerCoachCardTeam(),
-                  ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
-                  ShimmerExpandableCardTeam(title: l10n.squadTeam),
-                  ShimmerExpandableCardTeam(title: l10n.staffTeam),
-                  ShimmerExpandableCardTeam(title: l10n.infoTeam),
-                  const BackButtonTeam(),
-                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                ],
-              ),
-            ),
-          );
-        }
-
         if (snapshot.hasError) {
           return AppScaffold(
             child: Center(
@@ -74,6 +30,27 @@ class _TeamViewState extends State<TeamView> {
                       fontSize: 12,
                     ),
                   ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return AppScaffold(
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  const ShimmerMainInfoTeam(),
+                  const ShimmerCoachCardTeam(),
+                  ShimmerExpandableCardTeam(title: l10n.competitionsTeam),
+                  ShimmerExpandableCardTeam(title: l10n.squadTeam),
+                  ShimmerExpandableCardTeam(title: l10n.staffTeam),
+                  ShimmerExpandableCardTeam(title: l10n.infoTeam),
+                  const BackButtonTeam(),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
                 ],
               ),
             ),
@@ -103,14 +80,12 @@ class _TeamViewState extends State<TeamView> {
         final team = snapshot.data!.first;
 
         return AppScaffold(
-          controller: _scrollController,
           disablePadding: true,
-          child: RippleBackground(
+          child: WavingFlagBackground(
             colors: AppFunctions.getTeamColors(team.clubColors),
             child: Padding(
               padding: AppVariables.scaffoldPadding,
               child: SingleChildScrollView(
-                controller: _scrollController,
                 child: Column(
                   spacing: AppVariables.scaffoldSpacing,
                   children: [
@@ -748,78 +723,6 @@ class AdditionalInfoTeam extends StatelessWidget {
   }
 }
 
-class LastUpdateTeam extends StatefulWidget {
-  const LastUpdateTeam({this.isLoading = false, super.key});
-
-  final bool isLoading;
-
-  @override
-  State<LastUpdateTeam> createState() => _LastUpdateTeamState();
-}
-
-class _LastUpdateTeamState extends State<LastUpdateTeam>
-    with WidgetsBindingObserver {
-  late StreamSubscription<void> _nowSubscription;
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addObserver(this);
-    _nowSubscription = Stream<void>.periodic(
-      const Duration(seconds: 1),
-    ).listen((_) => setState(() {}));
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    unawaited(_nowSubscription.cancel());
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final database = getIt<DatabaseService>();
-
-    if (widget.isLoading) {
-      return Text(
-        l10n.updatingMatches,
-        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-      );
-    }
-
-    return StreamBuilder<List<Config>>(
-      stream: database.getConfigs(id: AppVariables.teamsCollection),
-      builder: (context, snapshot) {
-        final configs = snapshot.data ??
-            [
-              Config(
-                id: AppVariables.teamsCollection,
-                lastUpdate: DateTime.now(),
-              ),
-            ];
-
-        if (configs.isEmpty) {
-          configs.add(
-            Config(
-              id: AppVariables.teamsCollection,
-              lastUpdate: DateTime.now(),
-            ),
-          );
-        }
-
-        final delta = DateTime.now().difference(configs.first.lastUpdate);
-
-        return Text(
-          l10n.updatedDaysAgo(delta.inDays),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-        );
-      },
-    );
-  }
-}
-
 class BackButtonTeam extends StatelessWidget {
   const BackButtonTeam({super.key});
 
@@ -827,25 +730,15 @@ class BackButtonTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return ElevatedButton(
-      onPressed: () => Navigator.of(context).pop(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: AppVariables.verticalPaddingBackButton,
-            ),
-            child: Text(
-              l10n.backText.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-              ),
-            ),
+    return Row(
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            onPressed: () => Navigator.of(context).pop(),
+            label: l10n.backText.toUpperCase(),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

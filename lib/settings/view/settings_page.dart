@@ -11,7 +11,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SettingsCubit(),
-      child: SettingsView(),
+      child: const SettingsView(),
     );
   }
 }

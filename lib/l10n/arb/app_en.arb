@@ -1,6 +1,5 @@
 {
     "@@locale": "en",
-
     "titleMatches": "Matches",
     "@titleMatches": {},
     "updatingMatches": "Updating matches...",
@@ -35,7 +34,6 @@
     "@awardedMatch": {},
     "unknownMatch": "Unknown",
     "@unknownMatch": {},
-
     "titleMatch": "Match",
     "@titleMatch": {},
     "errorMatch": "Error loading match",
@@ -66,7 +64,6 @@
     "@goalDifferenceAbbr": {},
     "pointsAbbr": "PT",
     "@pointsAbbr": {},
-
     "titleTeam": "Team",
     "@titleTeam": {},
     "errorTeam": "Error loading team",
@@ -111,10 +108,8 @@
     "@addressTeam": {},
     "websiteTeam": "Website",
     "@websiteTeam": {},
-
     "titleSettings": "Settings",
     "@titleSettings": {},
-
     "titleLeagues": "Leagues",
     "@titleLeagues": {},
     "emptyLeagues": "No leagues available",
@@ -123,7 +118,6 @@
     "@errorLeagues": {},
     "retryLeagues": "Retry",
     "@retryLeagues": {},
-
     "titleLanguage": "Language",
     "@titleLanguage": {},
     "englishLanguage": "🇬🇧 English",
@@ -132,36 +126,32 @@
     "@spanishLanguage": {},
     "italianLanguage": "🇮🇹 Italian",
     "@italianLanguage": {},
-
     "titleTheme": "Theme",
     "@titleTheme": {},
     "lightTheme": "Light",
     "@lightTheme": {},
     "darkTheme": "Dark",
     "@darkTheme": {},
-
+    "titleFont": "Font",
+    "@titleFont": {},
     "titleNotifications": "Notifications",
     "@titleNotifications": {},
     "errorNotifications": "Error loading notifications",
     "@errorNotifications": {},
     "emptyNotifications": "No notifications available",
     "@emptyNotifications": {},
-
     "titleTeams": "Teams",
     "@titleTeams": {},
     "errorTeams": "Error loading teams",
     "@errorTeams": {},
     "emptyTeams": "No teams available",
     "@emptyTeams": {},
-
     "backText": "Back",
     "@backText": {},
-
     "updatedOn": "Updated",
     "@updatedOn": {},
     "todayText": "Today",
     "@todayText": {},
-
     "leagueCompetition": "League",
     "@leagueCompetition": {},
     "cupCompetition": "Cup",
@@ -172,7 +162,6 @@
     "@friendlyCompetition": {},
     "otherCompetition": "Other",
     "@otherCompetition": {},
-
     "goalkeeperPosition": "GK",
     "@goalkeeperPosition": {},
     "defencePosition": "DF",
@@ -217,7 +206,6 @@
     "@forwardCoachPosition": {},
     "caretakerManagerPosition": "CM",
     "@caretakerManagerPosition": {},
-
     "colorRed": "Red",
     "@colorRed": {},
     "colorPink": "Pink",

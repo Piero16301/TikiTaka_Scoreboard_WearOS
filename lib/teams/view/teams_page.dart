@@ -16,7 +16,7 @@ class TeamsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TeamsCubit()..initialize(leagueId: leagueId),
-      child: TeamsView(),
+      child: const TeamsView(),
     );
   }
 }
