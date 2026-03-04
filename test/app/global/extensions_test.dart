@@ -10,7 +10,7 @@ void main() {
   group('Global Extensions', () {
     test('LocaleParser toShortString formats properly with country code', () {
       const locale = Locale('es', 'ES');
-      expect(locale.toShortString, 'es-ES');
+      expect(locale.toShortString, 'es_ES');
     });
 
     test('LocaleParser toShortString formats properly without country code',

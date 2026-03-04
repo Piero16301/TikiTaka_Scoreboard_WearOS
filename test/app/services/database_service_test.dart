@@ -34,7 +34,7 @@ void main() {
           .get();
 
       expect(doc.exists, isTrue);
-      expect(doc.data()?['language'], 'es-ES');
+      expect(doc.data()?['language'], 'es_ES');
     });
 
     test('setLocalSettingsDevice saves settings to firestore', () async {
@@ -88,7 +88,7 @@ void main() {
 
       expect(doc.exists, isTrue);
       expect(doc.data()?['token'], token);
-      expect(doc.data()?['language'], 'en-US');
+      expect(doc.data()?['language'], 'en_US');
       expect(doc.data()?['platform'], AppVariables.appOS);
     });
 
