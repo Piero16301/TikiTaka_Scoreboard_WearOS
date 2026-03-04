@@ -44,7 +44,7 @@ class DatabaseService {
           'androidInfo': null,
           'iosInfo': null,
           'webInfo': null,
-          'language': localLanguage?.toShortString ?? 'en-US',
+          'language': localLanguage?.toShortString ?? 'en_US',
           'enabledTeams': FieldValue.arrayUnion(<String>[]),
         },
         SetOptions(merge: true),

@@ -88,6 +88,6 @@ extension AndroidInfo on AndroidDeviceInfo {
 extension LocaleParser on Locale {
   String get toShortString {
     if (countryCode == null) return languageCode;
-    return '$languageCode-$countryCode';
+    return '${languageCode}_$countryCode';
   }
 }
