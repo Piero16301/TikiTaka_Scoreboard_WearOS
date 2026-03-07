@@ -41,7 +41,6 @@ class AppScaffold extends StatelessWidget {
                 child: Listener(
                   onPointerSignal: (event) {
                     if (event is PointerScrollEvent) {
-                      // Calculate the new scroll offset
                       final newOffset =
                           controller!.offset + event.scrollDelta.dy;
 
