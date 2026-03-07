@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -36,32 +35,11 @@ class AppScaffold extends StatelessWidget {
               padding: disablePadding
                   ? EdgeInsetsGeometry.zero
                   : AppVariables.scaffoldPadding,
-              child: Focus(
-                autofocus: true,
-                child: Listener(
-                  onPointerSignal: (event) {
-                    if (event is PointerScrollEvent) {
-                      final newOffset =
-                          controller!.offset + event.scrollDelta.dy;
-
-                      // Clamp the offset to ensure it stays within bounds
-                      final maxScrollExtent =
-                          controller!.position.maxScrollExtent;
-                      final minScrollExtent =
-                          controller!.position.minScrollExtent;
-                      final clampedOffset =
-                          newOffset.clamp(minScrollExtent, maxScrollExtent);
-
-                      if (clampedOffset != controller!.offset) {
-                        controller!.jumpTo(clampedOffset);
-                        unawaited(HapticFeedback.selectionClick());
-                      }
-                    }
-                  },
-                  child: SingleChildScrollView(
-                    controller: controller,
-                    child: child,
-                  ),
+              child: _RotaryScrollWrapper(
+                controller: controller!,
+                child: SingleChildScrollView(
+                  controller: controller,
+                  child: child,
                 ),
               ),
             ),
@@ -80,5 +58,58 @@ class AppScaffold extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _RotaryScrollWrapper extends StatefulWidget {
+  const _RotaryScrollWrapper({
+    required this.child,
+    required this.controller,
+  });
+
+  final Widget child;
+  final ScrollController controller;
+
+  @override
+  State<_RotaryScrollWrapper> createState() => _RotaryScrollWrapperState();
+}
+
+class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
+  static const EventChannel _rotaryChannel =
+      EventChannel('com.pmorales.wearos.tikitaka/rotary');
+  StreamSubscription<dynamic>? _rotarySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _rotarySubscription =
+        _rotaryChannel.receiveBroadcastStream().listen((dynamic event) {
+      if (event is double) {
+        // We now receive native standard pixels from ViewConfiguration in
+        // Kotlin.
+        final scrollAmount = event;
+        final newOffset = widget.controller.offset + scrollAmount;
+
+        final maxScrollExtent = widget.controller.position.maxScrollExtent;
+        final minScrollExtent = widget.controller.position.minScrollExtent;
+        final clampedOffset = newOffset.clamp(minScrollExtent, maxScrollExtent);
+
+        if (clampedOffset != widget.controller.offset) {
+          widget.controller.jumpTo(clampedOffset);
+          unawaited(HapticFeedback.selectionClick());
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    unawaited(_rotarySubscription?.cancel());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
