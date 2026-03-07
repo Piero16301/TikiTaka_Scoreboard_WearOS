@@ -44,6 +44,7 @@ class AppScaffold extends StatelessWidget {
                       final newOffset =
                           controller!.offset + event.scrollDelta.dy;
 
+                      // Clamp the offset to ensure it stays within bounds
                       final maxScrollExtent =
                           controller!.position.maxScrollExtent;
                       final minScrollExtent =
