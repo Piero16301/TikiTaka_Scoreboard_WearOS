@@ -77,13 +77,15 @@ class _RotaryScrollWrapper extends StatefulWidget {
 class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
   static const EventChannel _rotaryChannel =
       EventChannel('com.pmorales.wearos.tikitaka/rotary');
+  static final Stream<dynamic> _sharedRotaryStream =
+      _rotaryChannel.receiveBroadcastStream();
+
   StreamSubscription<dynamic>? _rotarySubscription;
 
   @override
   void initState() {
     super.initState();
-    _rotarySubscription =
-        _rotaryChannel.receiveBroadcastStream().listen((dynamic event) {
+    _rotarySubscription = _sharedRotaryStream.listen((dynamic event) {
       if (event is double) {
         // We now receive native standard pixels from ViewConfiguration in
         // Kotlin.
