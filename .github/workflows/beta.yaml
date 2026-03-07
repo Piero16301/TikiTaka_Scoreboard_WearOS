@@ -93,7 +93,7 @@ jobs:
           flutter pub get
       - name: 🛠️ Build the application (AAB)
         run: |
-          flutter build appbundle --flavor production -t lib/main.dart --build-name="2.3.5" --build-number="55"
+          flutter build appbundle --flavor production -t lib/main.dart --build-name="2.3.${{ github.run_number }}" --build-number="${{ github.run_number }}"
 
       - name: ⬇️ Upload AAB to Artifacts
         uses: actions/upload-artifact@master
