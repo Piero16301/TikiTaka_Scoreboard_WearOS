@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AppScaffold extends StatelessWidget {
@@ -32,10 +36,34 @@ class AppScaffold extends StatelessWidget {
               padding: disablePadding
                   ? EdgeInsetsGeometry.zero
                   : AppVariables.scaffoldPadding,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                controller: controller,
-                child: child,
+              child: Focus(
+                autofocus: true,
+                child: Listener(
+                  onPointerSignal: (event) {
+                    if (event is PointerScrollEvent) {
+                      // Calculate the new scroll offset
+                      final newOffset =
+                          controller!.offset + event.scrollDelta.dy;
+
+                      // Clamp the offset to ensure it stays within bounds
+                      final maxScrollExtent =
+                          controller!.position.maxScrollExtent;
+                      final minScrollExtent =
+                          controller!.position.minScrollExtent;
+                      final clampedOffset =
+                          newOffset.clamp(minScrollExtent, maxScrollExtent);
+
+                      if (clampedOffset != controller!.offset) {
+                        controller!.jumpTo(clampedOffset);
+                        unawaited(HapticFeedback.selectionClick());
+                      }
+                    }
+                  },
+                  child: SingleChildScrollView(
+                    controller: controller,
+                    child: child,
+                  ),
+                ),
               ),
             ),
           ),
