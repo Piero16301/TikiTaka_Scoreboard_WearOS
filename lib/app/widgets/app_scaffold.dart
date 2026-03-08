@@ -81,25 +81,49 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
       _rotaryChannel.receiveBroadcastStream();
 
   StreamSubscription<dynamic>? _rotarySubscription;
+  double? _targetOffset;
+  Timer? _clearTargetTimer;
 
   @override
   void initState() {
     super.initState();
     _rotarySubscription = _sharedRotaryStream.listen((dynamic event) {
       if (event is double) {
-        // We now receive native standard pixels from ViewConfiguration in
-        // Kotlin.
-        final scrollAmount = event;
-        final newOffset = widget.controller.offset + scrollAmount;
+        // Multiply by 0.5 to halve the original speed of the scroll, making
+        // it much slower and controlled.
+        // This keeps the smoothness but prevents jumping too fast.
+        final scrollAmount = event * 0.5;
+
+        _targetOffset =
+            (_targetOffset ?? widget.controller.offset) + scrollAmount;
 
         final maxScrollExtent = widget.controller.position.maxScrollExtent;
         final minScrollExtent = widget.controller.position.minScrollExtent;
-        final clampedOffset = newOffset.clamp(minScrollExtent, maxScrollExtent);
+        final clampedOffset =
+            _targetOffset!.clamp(minScrollExtent, maxScrollExtent);
+
+        _targetOffset = clampedOffset;
 
         if (clampedOffset != widget.controller.offset) {
-          widget.controller.jumpTo(clampedOffset);
-          unawaited(HapticFeedback.selectionClick());
+          unawaited(
+            widget.controller.animateTo(
+              clampedOffset,
+              duration: const Duration(milliseconds: 150),
+              curve: Curves.easeOutQuad,
+            ),
+          );
+
+          // Using heavyImpact to mimic the stronger Google Wear OS native
+          // haptic feel
+          unawaited(HapticFeedback.heavyImpact());
         }
+
+        // Reset target offset 200ms after the last rotary interaction
+        // to gracefully allow touch scrolling synchronization.
+        _clearTargetTimer?.cancel();
+        _clearTargetTimer = Timer(const Duration(milliseconds: 200), () {
+          _targetOffset = null;
+        });
       }
     });
   }
@@ -107,6 +131,7 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
   @override
   void dispose() {
     unawaited(_rotarySubscription?.cancel());
+    _clearTargetTimer?.cancel();
     super.dispose();
   }
 
