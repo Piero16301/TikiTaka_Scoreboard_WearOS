@@ -82,6 +82,9 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
 
   StreamSubscription<dynamic>? _rotarySubscription;
 
+  double _accumulatedHapticScroll = 0;
+  static const double _hapticScrollThreshold = 40;
+
   @override
   void initState() {
     super.initState();
@@ -96,7 +99,12 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
 
         if (clampedOffset != widget.controller.offset) {
           widget.controller.jumpTo(clampedOffset);
-          unawaited(HapticFeedback.mediumImpact());
+
+          _accumulatedHapticScroll += scrollAmount;
+          if (_accumulatedHapticScroll.abs() >= _hapticScrollThreshold) {
+            unawaited(HapticFeedback.lightImpact());
+            _accumulatedHapticScroll = 0.0;
+          }
         }
       }
     });

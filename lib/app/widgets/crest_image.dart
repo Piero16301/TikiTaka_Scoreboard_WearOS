@@ -18,19 +18,30 @@ class CrestImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final background = Theme.of(context).colorScheme.inverseSurface;
+
     if (crest.isEmpty || hideCrest) {
       return SizedBox(
         height: dimension,
         width: dimension,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(7),
-          child: SizedBox(
-            width: dimension,
-            height: dimension,
-            child: Icon(
-              Icons.image,
-              size: dimension,
-            ),
+          child: Stack(
+            children: [
+              Container(
+                color: background.withValues(alpha: 0.3),
+                width: dimension,
+                height: dimension,
+              ),
+              SizedBox(
+                width: dimension,
+                height: dimension,
+                child: Icon(
+                  Icons.image,
+                  size: dimension,
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -42,32 +53,50 @@ class CrestImage extends StatelessWidget {
         width: dimension,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(7),
-          child: SizedBox(
-            width: dimension,
-            height: dimension,
-            child: VectorGraphic(
-              loader: NetworkSvgLoader(crest),
-              fit: fit,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.image,
-                size: dimension,
+          child: Stack(
+            children: [
+              Container(
+                color: background.withValues(alpha: 0.3),
+                width: dimension,
+                height: dimension,
               ),
-            ),
+              SizedBox(
+                width: dimension,
+                height: dimension,
+                child: VectorGraphic(
+                  loader: NetworkSvgLoader(crest),
+                  fit: fit,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.image,
+                    size: dimension,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
     } else {
       return ClipRRect(
         borderRadius: BorderRadius.circular(7),
-        child: Image.network(
-          crest,
-          width: dimension,
-          height: dimension,
-          fit: fit,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.image,
-            size: dimension,
-          ),
+        child: Stack(
+          children: [
+            Container(
+              color: background.withValues(alpha: 0.3),
+              width: dimension,
+              height: dimension,
+            ),
+            Image.network(
+              crest,
+              width: dimension,
+              height: dimension,
+              fit: fit,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.image,
+                size: dimension,
+              ),
+            ),
+          ],
         ),
       );
     }
