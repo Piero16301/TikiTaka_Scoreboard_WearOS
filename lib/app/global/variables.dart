@@ -23,6 +23,7 @@ class AppVariables {
   static const double horizontalPaddingTitle = 30;
   static const double titleTextHeight = 0.8;
   static const double verticalPaddingBackButton = 10;
+  static const double cardSpacing = 5;
 
   static const teamColorsMap = <String, Color>{
     'Black': Colors.black,

@@ -1,5 +1,6 @@
 export 'app_card_data.dart';
 export 'app_filled_button.dart';
+export 'app_linear_progress_bar.dart';
 export 'app_scaffold.dart';
 export 'app_shimmer.dart';
 export 'circular_scroll_indicator.dart';

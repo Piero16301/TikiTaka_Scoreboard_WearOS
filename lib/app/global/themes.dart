@@ -11,16 +11,10 @@ class AppThemes {
       visualDensity: VisualDensity.compact,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: Colors.black,
-      cardTheme: CardThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
       dividerColor: Colors.transparent,
       colorScheme: ColorScheme.fromSeed(
         seedColor: baseColor,
         brightness: Brightness.dark,
-        primary: Colors.white,
       ),
     );
   }

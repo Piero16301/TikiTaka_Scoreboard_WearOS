@@ -9,7 +9,7 @@ void main() {
         const MaterialApp(
           home: Scaffold(
             body: AppCardData(
-              child: Text('Test Card'),
+              content: Text('Test Card'),
             ),
           ),
         ),
@@ -86,7 +86,6 @@ void main() {
           home: Scaffold(
             body: WavingFlagBackground(
               colors: [Colors.red, Colors.blue],
-              child: Text('Flag Test'),
             ),
           ),
         ),
@@ -94,7 +93,7 @@ void main() {
 
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text('Flag Test'), findsOneWidget);
+      expect(find.byType(WavingFlagBackground), findsOneWidget);
     });
 
     testWidgets('WavingFlagPainter paints directly', (tester) async {

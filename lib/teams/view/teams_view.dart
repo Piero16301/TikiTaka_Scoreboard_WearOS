@@ -12,7 +12,7 @@ class TeamsView extends StatefulWidget {
 }
 
 class _TeamsViewState extends State<TeamsView> {
-  final _scrollController = ScrollController();
+  final _scrollController = ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -169,7 +169,8 @@ class ShimmerCardTeams extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
           SizedBox(
             width: 40,
@@ -182,9 +183,7 @@ class ShimmerCardTeams extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 5),
           AppSchimmer(height: 40, width: 40),
-          SizedBox(width: 5),
           Expanded(child: AppSchimmer()),
         ],
       ),
@@ -210,7 +209,8 @@ class TeamCardTeams extends StatelessWidget {
     final database = getIt<DatabaseService>();
 
     return AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
           BlocBuilder<TeamsCubit, TeamsState>(
             builder: (context, state) {
@@ -232,9 +232,7 @@ class TeamCardTeams extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(width: 5),
-          CrestImage(crest: team.crest, hideCrest: hideCrest),
-          const SizedBox(width: 5),
+          CrestImage(crest: team.crest, hideCrest: hideCrest, margin: 2.5),
           Expanded(child: ScrollText(text: team.name)),
         ],
       ),

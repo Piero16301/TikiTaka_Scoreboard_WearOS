@@ -8,6 +8,8 @@ class CrestImage extends StatelessWidget {
     this.dimension = 40,
     this.fit = BoxFit.fill,
     this.hideCrest = false,
+    this.margin = 0,
+    this.borderRadius = 10,
     super.key,
   });
 
@@ -15,6 +17,8 @@ class CrestImage extends StatelessWidget {
   final double dimension;
   final BoxFit fit;
   final bool hideCrest;
+  final double margin;
+  final double borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,7 @@ class CrestImage extends StatelessWidget {
         height: dimension,
         width: dimension,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: Stack(
             children: [
               Container(
@@ -34,11 +38,11 @@ class CrestImage extends StatelessWidget {
                 height: dimension,
               ),
               SizedBox(
-                width: dimension,
-                height: dimension,
+                width: dimension - (margin * 2),
+                height: dimension - (margin * 2),
                 child: Icon(
                   Icons.image,
-                  size: dimension,
+                  size: dimension - (margin * 2),
                 ),
               ),
             ],
@@ -52,7 +56,7 @@ class CrestImage extends StatelessWidget {
         height: dimension,
         width: dimension,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: Stack(
             children: [
               Container(
@@ -61,14 +65,14 @@ class CrestImage extends StatelessWidget {
                 height: dimension,
               ),
               SizedBox(
-                width: dimension,
-                height: dimension,
+                width: dimension - (margin * 2),
+                height: dimension - (margin * 2),
                 child: VectorGraphic(
                   loader: NetworkSvgLoader(crest),
                   fit: fit,
                   errorBuilder: (context, error, stackTrace) => Icon(
                     Icons.image,
-                    size: dimension,
+                    size: dimension - (margin * 2),
                   ),
                 ),
               ),
@@ -78,7 +82,7 @@ class CrestImage extends StatelessWidget {
       );
     } else {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(7),
+        borderRadius: BorderRadius.circular(borderRadius),
         child: Stack(
           children: [
             Container(
@@ -86,14 +90,17 @@ class CrestImage extends StatelessWidget {
               width: dimension,
               height: dimension,
             ),
-            Image.network(
-              crest,
-              width: dimension,
-              height: dimension,
-              fit: fit,
-              errorBuilder: (context, error, stackTrace) => Icon(
-                Icons.image,
-                size: dimension,
+            Padding(
+              padding: EdgeInsets.all(margin),
+              child: Image.network(
+                width: dimension - (margin * 2),
+                height: dimension - (margin * 2),
+                crest,
+                fit: fit,
+                errorBuilder: (context, error, stackTrace) => Icon(
+                  Icons.image,
+                  size: dimension - (margin * 2),
+                ),
               ),
             ),
           ],

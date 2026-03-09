@@ -11,7 +11,8 @@ class ThemesView extends StatefulWidget {
 }
 
 class _ThemesViewState extends State<ThemesView> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -79,7 +80,7 @@ class CardColorThemes extends StatelessWidget {
     final colorName = AppFunctions.getColorName(text, l10n);
 
     return AppCardData(
-      child: Row(
+      content: Row(
         children: [
           Radio<Color>(value: color),
           Container(

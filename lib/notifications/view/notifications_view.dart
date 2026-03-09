@@ -11,7 +11,7 @@ class NotificationsView extends StatefulWidget {
 }
 
 class _NotificationsViewState extends State<NotificationsView> {
-  final _scrollController = ScrollController();
+  final _scrollController = ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -134,7 +134,7 @@ class ShimmerCardNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Row(
+      content: Row(
         children: [
           SizedBox(width: 10),
           AppSchimmer(height: 40, width: 40),
@@ -167,12 +167,11 @@ class LeagueCardNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
-          CrestImage(crest: league.emblem),
-          const SizedBox(width: 5),
+          CrestImage(crest: league.emblem, margin: 2.5),
           Expanded(child: ScrollText(text: league.name)),
-          const SizedBox(width: 5),
           SizedBox(
             width: 40,
             height: 40,

@@ -11,7 +11,8 @@ class TypographyView extends StatefulWidget {
 }
 
 class _TypographyViewState extends State<TypographyView> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -76,10 +77,9 @@ class CardFonts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
         children: [
           Radio<String>(value: value),
-          const SizedBox(width: 10),
           Expanded(
             child: ScrollText(
               text: label,

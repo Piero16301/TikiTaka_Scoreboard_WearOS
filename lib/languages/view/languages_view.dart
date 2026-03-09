@@ -11,7 +11,8 @@ class LanguagesView extends StatefulWidget {
 }
 
 class _LanguagesViewState extends State<LanguagesView> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -76,7 +77,7 @@ class CardLanguages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
         children: [
           Radio<Locale>(value: value),
           Expanded(child: ScrollText(text: label)),

@@ -8,6 +8,7 @@ class AppScaffold extends StatelessWidget {
   const AppScaffold.basic({
     required this.child,
     this.disablePadding = false,
+    this.background,
     super.key,
   })  : controller = null,
         isScrollable = false;
@@ -16,6 +17,7 @@ class AppScaffold extends StatelessWidget {
     required this.child,
     required this.controller,
     this.disablePadding = false,
+    this.background,
     super.key,
   }) : isScrollable = true;
 
@@ -23,6 +25,7 @@ class AppScaffold extends StatelessWidget {
   final bool disablePadding;
   final ScrollController? controller;
   final bool isScrollable;
+  final Widget? background;
 
   @override
   Widget build(BuildContext context) {
@@ -31,17 +34,22 @@ class AppScaffold extends StatelessWidget {
         controller: controller!,
         child: Scaffold(
           body: SizedBox.expand(
-            child: Padding(
-              padding: disablePadding
-                  ? EdgeInsetsGeometry.zero
-                  : AppVariables.scaffoldPadding,
-              child: _RotaryScrollWrapper(
-                controller: controller!,
-                child: SingleChildScrollView(
-                  controller: controller,
-                  child: child,
+            child: Stack(
+              children: [
+                if (background != null) background!,
+                Padding(
+                  padding: disablePadding
+                      ? EdgeInsetsGeometry.zero
+                      : AppVariables.scaffoldPadding,
+                  child: _RotaryScrollWrapper(
+                    controller: controller!,
+                    child: SingleChildScrollView(
+                      controller: controller,
+                      child: child,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -50,11 +58,16 @@ class AppScaffold extends StatelessWidget {
 
     return Scaffold(
       body: SizedBox.expand(
-        child: Padding(
-          padding: disablePadding
-              ? EdgeInsetsGeometry.zero
-              : AppVariables.scaffoldPadding,
-          child: child,
+        child: Stack(
+          children: [
+            if (background != null) background!,
+            Padding(
+              padding: disablePadding
+                  ? EdgeInsetsGeometry.zero
+                  : AppVariables.scaffoldPadding,
+              child: child,
+            ),
+          ],
         ),
       ),
     );
@@ -83,7 +96,7 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
   StreamSubscription<dynamic>? _rotarySubscription;
 
   double _accumulatedHapticScroll = 0;
-  static const double _hapticScrollThreshold = 40;
+  static const double _hapticScrollThreshold = 20;
 
   @override
   void initState() {

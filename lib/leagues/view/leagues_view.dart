@@ -12,7 +12,8 @@ class LeaguesView extends StatefulWidget {
 }
 
 class _LeaguesViewState extends State<LeaguesView> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -135,7 +136,7 @@ class ShimmerCardLeagues extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Row(
+      content: Row(
         children: [
           SizedBox(
             width: 40,
@@ -169,7 +170,7 @@ class LeagueCardCompetitions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
         spacing: 5,
         children: [
           BlocBuilder<LeaguesCubit, LeaguesState>(

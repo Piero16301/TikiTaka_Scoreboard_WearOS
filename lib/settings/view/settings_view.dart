@@ -17,7 +17,7 @@ class SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  final _scrollController = ScrollController();
+  final _scrollController = ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -96,20 +96,23 @@ class ConfigurationSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
         spacing: 5,
         children: [
-          const SizedBox(width: 2),
           HugeIcon(
             icon: icon,
             size: 30,
             color: Theme.of(context).colorScheme.primary,
           ),
           Expanded(child: ScrollText(text: title)),
-          IconButton(
-            onPressed: () => Navigator.of(context).pushNamed(route),
-            icon: const Icon(Icons.arrow_forward_ios),
-            padding: EdgeInsets.zero,
+          SizedBox(
+            width: 40,
+            height: 40,
+            child: IconButton(
+              onPressed: () => Navigator.of(context).pushNamed(route),
+              icon: const Icon(Icons.arrow_forward_ios),
+              padding: EdgeInsets.zero,
+            ),
           ),
         ],
       ),

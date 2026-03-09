@@ -17,7 +17,8 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   Stream<List<Match>>? _matchesStream;
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
 
   @override
   void dispose() {
@@ -258,7 +259,7 @@ class ShimmerMatchCardHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Column(
+      content: Column(
         children: [
           AppSchimmer(width: 100),
           SizedBox(height: 5),
@@ -311,56 +312,54 @@ class MatchCardHome extends StatelessWidget {
     );
 
     return AppCardData(
-      child: GestureDetector(
+      title: match.competition.name,
+      content: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           MatchPage.routeName,
           arguments: match.id,
         ),
-        child: Column(
+        child: Row(
+          spacing: 5,
           children: [
-            Text(
-              match.competition.name,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CrestImage(
+                    crest: match.homeTeam.crest,
+                    dimension: 50,
+                    margin: 2.5,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    match.homeTeam.tla,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CrestImage(crest: match.homeTeam.crest),
-                      const SizedBox(height: 5),
-                      Text(
-                        match.homeTeam.tla,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+            getMatchStatus(
+              context: context,
+              status: match.status,
+              state: state,
+              match: match,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CrestImage(
+                    crest: match.awayTeam.crest,
+                    dimension: 50,
+                    margin: 2.5,
                   ),
-                ),
-                getMatchStatus(
-                  context: context,
-                  status: match.status,
-                  state: state,
-                  match: match,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CrestImage(crest: match.awayTeam.crest),
-                      const SizedBox(height: 5),
-                      Text(
-                        match.awayTeam.tla,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  const SizedBox(height: 5),
+                  Text(
+                    match.awayTeam.tla,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -415,11 +414,8 @@ class MatchCardHome extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: LinearProgressIndicator(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                backgroundColor: Colors.grey,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: AppLinearProgressBar(strokeWidth: 4),
             ),
           ],
         ),
