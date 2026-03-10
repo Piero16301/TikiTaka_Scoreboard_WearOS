@@ -96,7 +96,7 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
   StreamSubscription<dynamic>? _rotarySubscription;
 
   double _accumulatedHapticScroll = 0;
-  static const double _hapticScrollThreshold = 20;
+  static const double _hapticScrollThreshold = 30;
 
   @override
   void initState() {
@@ -115,7 +115,7 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
 
           _accumulatedHapticScroll += scrollAmount;
           if (_accumulatedHapticScroll.abs() >= _hapticScrollThreshold) {
-            unawaited(HapticFeedback.lightImpact());
+            unawaited(HapticFeedback.selectionClick());
             _accumulatedHapticScroll = 0.0;
           }
         }
