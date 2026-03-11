@@ -1,15 +1,10 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
-
-class MockNotificationsCubit extends MockCubit<NotificationsState>
-    implements NotificationsCubit {}
 
 class MockDatabaseService extends Mock implements DatabaseService {}
 
@@ -21,7 +16,6 @@ class FakeRoute extends Fake implements Route<dynamic> {}
 
 void main() {
   group('NotificationsPage and NotificationsView', () {
-    late MockNotificationsCubit notificationsCubit;
     late MockDatabaseService mockDatabase;
     late MockNavigatorObserver mockObserver;
 
@@ -37,10 +31,7 @@ void main() {
     });
 
     setUp(() {
-      notificationsCubit = MockNotificationsCubit();
       mockObserver = MockNavigatorObserver();
-      when(() => notificationsCubit.state)
-          .thenReturn(const NotificationsState());
     });
 
     testWidgets(
@@ -50,13 +41,10 @@ void main() {
           .thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<NotificationsCubit>.value(
-            value: notificationsCubit,
-            child: const NotificationsPage(),
-          ),
+          home: NotificationsPage(),
         ),
       );
 
@@ -69,13 +57,10 @@ void main() {
           .thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<NotificationsCubit>.value(
-            value: notificationsCubit,
-            child: const NotificationsView(),
-          ),
+          home: NotificationsView(),
         ),
       );
 
@@ -89,13 +74,10 @@ void main() {
       when(() => mockDatabase.getLeagues()).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<NotificationsCubit>.value(
-            value: notificationsCubit,
-            child: const NotificationsView(),
-          ),
+          home: NotificationsView(),
         ),
       );
 
@@ -114,13 +96,10 @@ void main() {
           .thenAnswer((_) => Stream.value([mockLeague]));
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<NotificationsCubit>.value(
-            value: notificationsCubit,
-            child: const NotificationsView(),
-          ),
+          home: NotificationsView(),
         ),
       );
 
@@ -149,10 +128,7 @@ void main() {
           routes: {
             TeamsPage.routeName: (context) => const SizedBox(),
           },
-          home: BlocProvider<NotificationsCubit>.value(
-            value: notificationsCubit,
-            child: const NotificationsView(),
-          ),
+          home: const NotificationsView(),
         ),
       );
 

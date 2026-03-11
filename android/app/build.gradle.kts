@@ -42,8 +42,8 @@ android {
         applicationId = "com.pmorales.wearos.tikitaka"
         minSdk = 34
         targetSdk = 36
-        versionCode = 51
-        versionName = "2.3.1"
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
 
         // Configuración para tamaño de página de 16KB
         ndk {

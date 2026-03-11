@@ -3,8 +3,21 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
 
-class NotificationsView extends StatelessWidget {
+class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
+
+  @override
+  State<NotificationsView> createState() => _NotificationsViewState();
+}
+
+class _NotificationsViewState extends State<NotificationsView> {
+  final _scrollController = ScrollController(keepScrollOffset: false);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +28,7 @@ class NotificationsView extends StatelessWidget {
       stream: database.getLeagues(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -33,39 +46,38 @@ class NotificationsView extends StatelessWidget {
           );
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return AppScaffold(
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: AppVariables.scaffoldSpacing,
-                children: [
-                  const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppVariables.horizontalPaddingTitle,
-                    ),
-                    child: ScrollText(
-                      text: l10n.titleNotifications.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppVariables.titleSize,
-                      ),
+        if (!snapshot.hasData) {
+          return AppScaffold.scrollable(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleNotifications.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
                     ),
                   ),
-                  ...List.generate(
-                    AppVariables.numberOfShimmers,
-                    (index) => const ShimmerCardNotifications(),
-                  ),
-                  const BackButtonNotifications(),
-                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                ],
-              ),
+                ),
+                ...List.generate(
+                  AppVariables.numberOfShimmers,
+                  (index) => const ShimmerCardNotifications(),
+                ),
+                const BackButtonNotifications(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           );
         }
 
         if (snapshot.data!.isEmpty) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -85,31 +97,30 @@ class NotificationsView extends StatelessWidget {
 
         final leagues = snapshot.data!;
 
-        return AppScaffold(
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppVariables.horizontalPaddingTitle,
-                  ),
-                  child: ScrollText(
-                    text: l10n.titleNotifications.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppVariables.titleSize,
-                    ),
+        return AppScaffold.scrollable(
+          controller: _scrollController,
+          child: Column(
+            spacing: AppVariables.scaffoldSpacing,
+            children: [
+              const SizedBox(height: AppVariables.topScaffoldSpacing),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppVariables.horizontalPaddingTitle,
+                ),
+                child: ScrollText(
+                  text: l10n.titleNotifications.toUpperCase(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppVariables.titleSize,
                   ),
                 ),
-                ...leagues.map(
-                  (league) => LeagueCardNotifications(league: league),
-                ),
-                const BackButtonNotifications(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+              ),
+              ...leagues.map(
+                (league) => LeagueCardNotifications(league: league),
+              ),
+              const BackButtonNotifications(),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+            ],
           ),
         );
       },
@@ -123,7 +134,7 @@ class ShimmerCardNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Row(
+      content: Row(
         children: [
           SizedBox(width: 10),
           AppSchimmer(height: 40, width: 40),
@@ -156,12 +167,11 @@ class LeagueCardNotifications extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
-          CrestImage(crest: league.emblem),
-          const SizedBox(width: 5),
+          CrestImage(crest: league.emblem, margin: 2.5),
           Expanded(child: ScrollText(text: league.name)),
-          const SizedBox(width: 5),
           SizedBox(
             width: 40,
             height: 40,

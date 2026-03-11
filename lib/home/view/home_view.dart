@@ -8,8 +8,23 @@ import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  Stream<List<Match>>? _matchesStream;
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,51 +34,20 @@ class HomeView extends StatelessWidget {
 
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
+        if (state.reload || _matchesStream == null) {
+          _matchesStream = database.getMatches(
+            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
+          );
+        }
+
         context.read<HomeCubit>().reload(value: false);
 
         return StreamBuilder<List<Match>>(
           key: state.reload ? UniqueKey() : null,
-          stream: database.getMatches(
-            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
-          ),
+          stream: _matchesStream,
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return AppScaffold(
-                child: SingleChildScrollView(
-                  child: Column(
-                    spacing: AppVariables.scaffoldSpacing,
-                    children: [
-                      const SizedBox(height: AppVariables.topScaffoldSpacing),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppVariables.horizontalPaddingTitle,
-                        ),
-                        child: ScrollText(
-                          text: l10n.titleMatches.toUpperCase(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: AppVariables.titleSize,
-                            height: AppVariables.titleTextHeight,
-                          ),
-                        ),
-                      ),
-                      const LastUpdateHome(isLoading: true),
-                      ...List.generate(
-                        AppVariables.numberOfShimmers,
-                        (index) => const ShimmerMatchCardHome(),
-                      ),
-                      const SettingsHome(),
-                      const SizedBox(
-                        height: AppVariables.bottomScaffoldSpacing,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-
             if (snapshot.hasError) {
-              return AppScaffold(
+              return AppScaffold.basic(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -79,8 +63,42 @@ class HomeView extends StatelessWidget {
               );
             }
 
+            if (!snapshot.hasData) {
+              return AppScaffold.scrollable(
+                controller: _scrollController,
+                child: Column(
+                  spacing: AppVariables.scaffoldSpacing,
+                  children: [
+                    const SizedBox(height: AppVariables.topScaffoldSpacing),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppVariables.horizontalPaddingTitle,
+                      ),
+                      child: ScrollText(
+                        text: l10n.titleMatches.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: AppVariables.titleSize,
+                          height: AppVariables.titleTextHeight,
+                        ),
+                      ),
+                    ),
+                    const LastUpdateHome(isLoading: true),
+                    ...List.generate(
+                      AppVariables.numberOfShimmers,
+                      (index) => const ShimmerMatchCardHome(),
+                    ),
+                    const SettingsHome(),
+                    const SizedBox(
+                      height: AppVariables.bottomScaffoldSpacing,
+                    ),
+                  ],
+                ),
+              );
+            }
+
             if (snapshot.data!.isEmpty) {
-              return AppScaffold(
+              return AppScaffold.basic(
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -116,34 +134,35 @@ class HomeView extends StatelessWidget {
                 return aStatus.compareTo(bStatus);
               });
 
-            return AppScaffold(
+            return AppScaffold.scrollable(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
-              child: SingleChildScrollView(
-                child: Column(
-                  spacing: AppVariables.scaffoldSpacing,
-                  children: [
-                    const SizedBox(height: AppVariables.topScaffoldSpacing),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppVariables.horizontalPaddingTitle,
-                      ),
-                      child: ScrollText(
-                        text: l10n.titleMatches.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: AppVariables.titleSize,
-                          height: AppVariables.titleTextHeight,
-                        ),
+              controller: _scrollController,
+              child: Column(
+                spacing: AppVariables.scaffoldSpacing,
+                children: [
+                  const SizedBox(height: AppVariables.topScaffoldSpacing),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppVariables.horizontalPaddingTitle,
+                    ),
+                    child: ScrollText(
+                      text: l10n.titleMatches.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: AppVariables.titleSize,
+                        height: AppVariables.titleTextHeight,
                       ),
                     ),
-                    const LastUpdateHome(),
-                    ...matches.map(
-                      (match) => MatchCardHome(match: match),
-                    ),
-                    const SettingsHome(),
-                    const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                  ],
-                ),
+                  ),
+                  const LastUpdateHome(),
+                  ...matches.map(
+                    (match) => MatchCardHome(match: match),
+                  ),
+                  const SettingsHome(),
+                  const SizedBox(
+                    height: AppVariables.bottomScaffoldSpacing,
+                  ),
+                ],
               ),
             );
           },
@@ -240,7 +259,7 @@ class ShimmerMatchCardHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Column(
+      content: Column(
         children: [
           AppSchimmer(width: 100),
           SizedBox(height: 5),
@@ -293,56 +312,54 @@ class MatchCardHome extends StatelessWidget {
     );
 
     return AppCardData(
-      child: GestureDetector(
+      title: match.competition.name,
+      content: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           MatchPage.routeName,
           arguments: match.id,
         ),
-        child: Column(
+        child: Row(
+          spacing: 5,
           children: [
-            Text(
-              match.competition.name,
-              style: const TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CrestImage(
+                    crest: match.homeTeam.crest,
+                    dimension: 50,
+                    margin: 2.5,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    match.homeTeam.tla,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 5),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CrestImage(crest: match.homeTeam.crest),
-                      const SizedBox(height: 5),
-                      Text(
-                        match.homeTeam.tla,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+            getMatchStatus(
+              context: context,
+              status: match.status,
+              state: state,
+              match: match,
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CrestImage(
+                    crest: match.awayTeam.crest,
+                    dimension: 50,
+                    margin: 2.5,
                   ),
-                ),
-                getMatchStatus(
-                  context: context,
-                  status: match.status,
-                  state: state,
-                  match: match,
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CrestImage(crest: match.awayTeam.crest),
-                      const SizedBox(height: 5),
-                      Text(
-                        match.awayTeam.tla,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  const SizedBox(height: 5),
+                  Text(
+                    match.awayTeam.tla,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -360,11 +377,14 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              state,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                state,
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -374,12 +394,15 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              '${match.score.fullTime.home} - '
-              '${match.score.fullTime.away}',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${match.score.fullTime.home} - '
+                '${match.score.fullTime.away}',
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ScrollText(
@@ -391,11 +414,8 @@ class MatchCardHome extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: LinearProgressIndicator(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                backgroundColor: Colors.grey,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: AppLinearProgressBar(strokeWidth: 4),
             ),
           ],
         ),
@@ -404,12 +424,15 @@ class MatchCardHome extends StatelessWidget {
       return Expanded(
         child: Column(
           children: [
-            Text(
-              '${match.score.fullTime.home} - '
-              '${match.score.fullTime.away}',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                '${match.score.fullTime.home} - '
+                '${match.score.fullTime.away}',
+                style: const TextStyle(
+                  fontSize: 60,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ScrollText(

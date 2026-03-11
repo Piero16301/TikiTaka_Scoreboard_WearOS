@@ -6,12 +6,10 @@ import 'package:tiki_taka_scoreboard_wearos/app/widgets/waving_flag_painter.dart
 class WavingFlagBackground extends StatefulWidget {
   const WavingFlagBackground({
     required this.colors,
-    required this.child,
     super.key,
   });
 
   final List<Color> colors;
-  final Widget child;
 
   @override
   State<WavingFlagBackground> createState() => _WavingFlagBackgroundState();
@@ -39,18 +37,18 @@ class _WavingFlagBackgroundState extends State<WavingFlagBackground>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      builder: (context, child) {
-        return CustomPaint(
-          painter: WavingFlagPainter(
-            colors: widget.colors,
-            animationValue: _animationController.value,
-          ),
-          child: child,
-        );
-      },
-      child: widget.child,
+    return SizedBox.expand(
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return CustomPaint(
+            painter: WavingFlagPainter(
+              colors: widget.colors,
+              animationValue: _animationController.value,
+            ),
+          );
+        },
+      ),
     );
   }
 }

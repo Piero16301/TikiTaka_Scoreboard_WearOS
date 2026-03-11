@@ -4,8 +4,21 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
 
-class TeamsView extends StatelessWidget {
+class TeamsView extends StatefulWidget {
   const TeamsView({super.key});
+
+  @override
+  State<TeamsView> createState() => _TeamsViewState();
+}
+
+class _TeamsViewState extends State<TeamsView> {
+  final _scrollController = ScrollController(keepScrollOffset: false);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +31,7 @@ class TeamsView extends StatelessWidget {
       stream: database.getTeamsByLeague(leagueId: leagueId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -36,39 +49,38 @@ class TeamsView extends StatelessWidget {
           );
         }
 
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return AppScaffold(
-            child: SingleChildScrollView(
-              child: Column(
-                spacing: AppVariables.scaffoldSpacing,
-                children: [
-                  const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppVariables.horizontalPaddingTitle,
-                    ),
-                    child: ScrollText(
-                      text: l10n.titleTeams.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppVariables.titleSize,
-                      ),
+        if (!snapshot.hasData) {
+          return AppScaffold.scrollable(
+            controller: _scrollController,
+            child: Column(
+              spacing: AppVariables.scaffoldSpacing,
+              children: [
+                const SizedBox(height: AppVariables.topScaffoldSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppVariables.horizontalPaddingTitle,
+                  ),
+                  child: ScrollText(
+                    text: l10n.titleTeams.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppVariables.titleSize,
                     ),
                   ),
-                  ...List.generate(
-                    AppVariables.numberOfShimmers,
-                    (index) => const ShimmerCardTeams(),
-                  ),
-                  const BackButtonTeams(),
-                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                ],
-              ),
+                ),
+                ...List.generate(
+                  AppVariables.numberOfShimmers,
+                  (index) => const ShimmerCardTeams(),
+                ),
+                const BackButtonTeams(),
+                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+              ],
             ),
           );
         }
 
         if (snapshot.data!.isEmpty) {
-          return AppScaffold(
+          return AppScaffold.basic(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -88,64 +100,62 @@ class TeamsView extends StatelessWidget {
 
         final teams = snapshot.data!;
 
-        return AppScaffold(
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppVariables.horizontalPaddingTitle,
-                  ),
-                  child: ScrollText(
-                    text: l10n.titleTeams.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppVariables.titleSize,
-                    ),
+        return AppScaffold.scrollable(
+          controller: _scrollController,
+          child: Column(
+            spacing: AppVariables.scaffoldSpacing,
+            children: [
+              const SizedBox(height: AppVariables.topScaffoldSpacing),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppVariables.horizontalPaddingTitle,
+                ),
+                child: ScrollText(
+                  text: l10n.titleTeams.toUpperCase(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppVariables.titleSize,
                   ),
                 ),
-                StreamBuilder<List<Map<String, dynamic>>>(
-                  stream: database.getDevices(token: notification.token),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const SizedBox.shrink();
-                    }
+              ),
+              StreamBuilder<List<Map<String, dynamic>>>(
+                stream: database.getDevices(token: notification.token),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const SizedBox.shrink();
+                  }
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const SizedBox.shrink();
-                    }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SizedBox.shrink();
+                  }
 
-                    if (snapshot.data!.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
+                  if (snapshot.data!.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
 
-                    final enabledTeams = snapshot.data!.first['enabledTeams']
-                            as List<dynamic>? ??
-                        [];
-                    final noShowCrestTeams = [779, 828];
+                  final enabledTeams =
+                      snapshot.data!.first['enabledTeams'] as List<dynamic>? ??
+                          [];
+                  final noShowCrestTeams = [779, 828];
 
-                    return Column(
-                      spacing: AppVariables.scaffoldSpacing,
-                      children: teams
-                          .map(
-                            (team) => TeamCardTeams(
-                              enabledTeams: enabledTeams
-                                  .map((e) => e.toString())
-                                  .toList(),
-                              team: team,
-                              hideCrest: noShowCrestTeams.contains(team.id),
-                            ),
-                          )
-                          .toList(),
-                    );
-                  },
-                ),
-                const BackButtonTeams(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+                  return Column(
+                    spacing: AppVariables.scaffoldSpacing,
+                    children: teams
+                        .map(
+                          (team) => TeamCardTeams(
+                            enabledTeams:
+                                enabledTeams.map((e) => e.toString()).toList(),
+                            team: team,
+                            hideCrest: noShowCrestTeams.contains(team.id),
+                          ),
+                        )
+                        .toList(),
+                  );
+                },
+              ),
+              const BackButtonTeams(),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+            ],
           ),
         );
       },
@@ -159,7 +169,8 @@ class ShimmerCardTeams extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
           SizedBox(
             width: 40,
@@ -172,9 +183,7 @@ class ShimmerCardTeams extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(width: 5),
           AppSchimmer(height: 40, width: 40),
-          SizedBox(width: 5),
           Expanded(child: AppSchimmer()),
         ],
       ),
@@ -200,7 +209,8 @@ class TeamCardTeams extends StatelessWidget {
     final database = getIt<DatabaseService>();
 
     return AppCardData(
-      child: Row(
+      content: Row(
+        spacing: 5,
         children: [
           BlocBuilder<TeamsCubit, TeamsState>(
             builder: (context, state) {
@@ -222,9 +232,7 @@ class TeamCardTeams extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(width: 5),
-          CrestImage(crest: team.crest, hideCrest: hideCrest),
-          const SizedBox(width: 5),
+          CrestImage(crest: team.crest, hideCrest: hideCrest, margin: 2.5),
           Expanded(child: ScrollText(text: team.name)),
         ],
       ),

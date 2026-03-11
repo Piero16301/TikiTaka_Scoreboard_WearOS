@@ -3,47 +3,60 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
-class ThemesView extends StatelessWidget {
+class ThemesView extends StatefulWidget {
   const ThemesView({super.key});
+
+  @override
+  State<ThemesView> createState() => _ThemesViewState();
+}
+
+class _ThemesViewState extends State<ThemesView> {
+  final ScrollController _scrollController =
+      ScrollController(keepScrollOffset: false);
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppScaffold(
-      child: SingleChildScrollView(
-        child: BlocBuilder<AppCubit, AppState>(
-          builder: (context, state) => RadioGroup<Color>(
-            groupValue: state.baseColor,
-            onChanged: (value) => context.read<AppCubit>().changeBaseColor(
-                  baseColor: value ?? AppVariables.defaultBaseColor,
+    return AppScaffold.scrollable(
+      controller: _scrollController,
+      child: BlocBuilder<AppCubit, AppState>(
+        builder: (context, state) => RadioGroup<Color>(
+          groupValue: state.baseColor,
+          onChanged: (value) => context.read<AppCubit>().changeBaseColor(
+                baseColor: value ?? AppVariables.defaultBaseColor,
+              ),
+          child: Column(
+            spacing: AppVariables.scaffoldSpacing,
+            children: [
+              const SizedBox(height: AppVariables.topScaffoldSpacing),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppVariables.horizontalPaddingTitle,
                 ),
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppVariables.horizontalPaddingTitle,
-                  ),
-                  child: ScrollText(
-                    text: l10n.titleTheme.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppVariables.titleSize,
-                    ),
-                  ),
-                ),
-                ...ColorHelper.colorMap.entries.map(
-                  (entry) => CardColorThemes(
-                    text: entry.key,
-                    color: entry.value,
+                child: ScrollText(
+                  text: l10n.titleTheme.toUpperCase(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: AppVariables.titleSize,
                   ),
                 ),
-                const BackButtonThemes(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+              ),
+              ...ColorHelper.colorMap.entries.map(
+                (entry) => CardColorThemes(
+                  text: entry.key,
+                  color: entry.value,
+                ),
+              ),
+              const BackButtonThemes(),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+            ],
           ),
         ),
       ),
@@ -67,7 +80,7 @@ class CardColorThemes extends StatelessWidget {
     final colorName = AppFunctions.getColorName(text, l10n);
 
     return AppCardData(
-      child: Row(
+      content: Row(
         children: [
           Radio<Color>(value: color),
           Container(

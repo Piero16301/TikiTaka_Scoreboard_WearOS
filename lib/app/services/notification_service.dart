@@ -12,19 +12,29 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class NotificationService {
   // ignore: unreachable_from_main // used in dependencies.dart
-  NotificationService({FirebaseMessaging? messaging})
-      : _messaging = messaging ?? FirebaseMessaging.instance;
+  NotificationService({
+    FirebaseMessaging? messaging,
+    FlutterLocalNotificationsPlugin? localNotifications,
+  })  : _messaging = messaging ?? FirebaseMessaging.instance,
+        _localNotifications =
+            localNotifications ?? FlutterLocalNotificationsPlugin();
 
   final FirebaseMessaging _messaging;
+  final FlutterLocalNotificationsPlugin _localNotifications;
 
   String _token = '';
-  final _localNotifications = FlutterLocalNotificationsPlugin();
   bool _isFlutterLocalNotificationsInitialized = false;
 
   // ignore: unreachable_from_main // used in main.dart
   Future<void> initialize() async {
     // Background message handler
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    try {
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
+    } on Exception catch (e) {
+      debugPrint('Error setting background message handler: $e');
+    }
 
     // Request permission
     await _requestPermission();
@@ -119,7 +129,7 @@ class NotificationService {
     await _localNotifications.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (details) =>
-          _handleBackgroundMessage(details.payload ?? ''),
+          handleBackgroundMessage(details.payload ?? ''),
     );
 
     _isFlutterLocalNotificationsInitialized = true;
@@ -156,23 +166,26 @@ class NotificationService {
 
     // Background message handler
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      _handleBackgroundMessage(message.data['match'] as String? ?? '');
+      handleBackgroundMessage(message.data['match'] as String? ?? '');
     });
 
     // Opened app
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage != null) {
-      _handleBackgroundMessage(initialMessage.data['match'] as String? ?? '');
+      handleBackgroundMessage(initialMessage.data['match'] as String? ?? '');
     }
   }
 
-  void _handleBackgroundMessage(String message) {
+  @visibleForTesting
+  void handleBackgroundMessage(String message) {
     debugPrint('Handling a background message: $message');
     if (message.contains('matchId')) {
-      final matchId = int.parse(message.split('matchId:')[1]);
-      AppVariables.navigatorKey.currentState
-          ?.pushNamed(MatchPage.routeName, arguments: matchId)
-          .ignore();
+      final matchId = int.tryParse(message.split('matchId:')[1]);
+      if (matchId != null) {
+        AppVariables.navigatorKey.currentState
+            ?.pushNamed(MatchPage.routeName, arguments: matchId)
+            .ignore();
+      }
     }
   }
 
