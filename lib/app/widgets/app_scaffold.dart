@@ -115,7 +115,7 @@ class _RotaryScrollWrapperState extends State<_RotaryScrollWrapper> {
 
           _accumulatedHapticScroll += scrollAmount;
           if (_accumulatedHapticScroll.abs() >= _hapticScrollThreshold) {
-            unawaited(HapticFeedback.selectionClick());
+            unawaited(HapticFeedback.vibrate());
             _accumulatedHapticScroll = 0.0;
           }
         }
