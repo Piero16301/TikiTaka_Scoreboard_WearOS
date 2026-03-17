@@ -107,7 +107,7 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.wear:wear:1.3.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.10")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    implementation("androidx.wear:wear:1.4.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

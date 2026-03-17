@@ -193,7 +193,7 @@ class LeagueCardCompetitions extends StatelessWidget {
               );
             },
           ),
-          CrestImage(crest: league.emblem),
+          CrestImage(crest: league.emblem, margin: 2.5),
           Expanded(child: ScrollText(text: league.name)),
         ],
       ),
