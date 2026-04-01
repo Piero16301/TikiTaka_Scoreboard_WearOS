@@ -43,8 +43,8 @@ class _TypographyViewState extends State<TypographyView> {
                 child: ScrollText(
                   text: l10n.titleFont.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),

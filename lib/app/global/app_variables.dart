@@ -9,7 +9,7 @@ class AppVariables {
   static const String appOS = 'WEAROS';
 
   static const int numberOfShimmers = 5;
-  static const double titleSize = 18;
+  static const double titleSize = 22;
   static const Color defaultColor = Colors.transparent;
   static const EdgeInsetsGeometry scaffoldPadding = EdgeInsets.symmetric(
     horizontal: 15,

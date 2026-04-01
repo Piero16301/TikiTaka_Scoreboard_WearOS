@@ -63,8 +63,8 @@ class _TeamsViewState extends State<TeamsView> {
                   child: ScrollText(
                     text: l10n.titleTeams.toUpperCase(),
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
                       fontSize: AppVariables.titleSize,
+                      height: AppVariables.titleTextHeight,
                     ),
                   ),
                 ),
@@ -113,8 +113,8 @@ class _TeamsViewState extends State<TeamsView> {
                 child: ScrollText(
                   text: l10n.titleTeams.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),

@@ -44,8 +44,8 @@ class _SettingsViewState extends State<SettingsView> {
             child: ScrollText(
               text: l10n.titleSettings.toUpperCase(),
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
                 fontSize: AppVariables.titleSize,
+                height: AppVariables.titleTextHeight,
               ),
             ),
           ),

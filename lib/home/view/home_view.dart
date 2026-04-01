@@ -77,7 +77,6 @@ class _HomeViewState extends State<HomeView> {
                       child: ScrollText(
                         text: l10n.titleMatches.toUpperCase(),
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
                           fontSize: AppVariables.titleSize,
                           height: AppVariables.titleTextHeight,
                         ),
@@ -151,7 +150,6 @@ class _HomeViewState extends State<HomeView> {
                     child: ScrollText(
                       text: l10n.titleMatches.toUpperCase(),
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
                         fontSize: AppVariables.titleSize,
                         height: AppVariables.titleTextHeight,
                       ),
@@ -216,7 +214,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
       return Text(
         l10n.updatingMatches,
         style: const TextStyle(
-          fontWeight: FontWeight.bold,
+          height: 0.8,
           fontSize: 10,
         ),
       );
@@ -236,7 +234,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
+            height: 0.8,
             fontSize: 10,
           ),
         );

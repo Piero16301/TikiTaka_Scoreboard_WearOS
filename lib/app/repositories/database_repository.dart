@@ -437,8 +437,8 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
   Stream<List<Match>> getMatchesStream({
     required List<String> enabledLeagues,
   }) {
-    final nowDate = DateTime.now();
-    // final nowDate = DateTime(2026, 03, 18);
+    // final nowDate = DateTime.now();
+    final nowDate = DateTime(2026, 03, 18);
 
     return _firestore
         .collection(AppVariables.matchesCollection)

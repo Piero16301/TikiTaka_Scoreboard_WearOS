@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AppFilledButton extends StatelessWidget {
   const AppFilledButton({
@@ -37,10 +36,11 @@ class AppFilledButton extends StatelessWidget {
       ),
       icon: icon != null && !isOnlyIcon ? icon : null,
       label: label != null
-          ? ScrollText(
-              text: label ?? '',
+          ? Text(
+              label ?? '',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
             )
           : icon!,

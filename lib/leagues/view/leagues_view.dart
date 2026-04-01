@@ -62,8 +62,8 @@ class _LeaguesViewState extends State<LeaguesView> {
                   child: ScrollText(
                     text: l10n.titleLeagues.toUpperCase(),
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
                       fontSize: AppVariables.titleSize,
+                      height: AppVariables.titleTextHeight,
                     ),
                   ),
                 ),
@@ -112,8 +112,8 @@ class _LeaguesViewState extends State<LeaguesView> {
                 child: ScrollText(
                   text: l10n.titleLeagues.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),

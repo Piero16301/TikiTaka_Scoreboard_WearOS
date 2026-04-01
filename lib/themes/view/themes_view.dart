@@ -43,8 +43,8 @@ class _ThemesViewState extends State<ThemesView> {
                 child: ScrollText(
                   text: l10n.titleTheme.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),

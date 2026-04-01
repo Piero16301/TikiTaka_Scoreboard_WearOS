@@ -60,8 +60,8 @@ class _NotificationsViewState extends State<NotificationsView> {
                   child: ScrollText(
                     text: l10n.titleNotifications.toUpperCase(),
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
                       fontSize: AppVariables.titleSize,
+                      height: AppVariables.titleTextHeight,
                     ),
                   ),
                 ),
@@ -110,8 +110,8 @@ class _NotificationsViewState extends State<NotificationsView> {
                 child: ScrollText(
                   text: l10n.titleNotifications.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),

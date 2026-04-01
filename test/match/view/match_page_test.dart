@@ -311,14 +311,14 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Home Team FC').first);
+      await tester.tap(find.byType(CrestImage).first);
       await tester.pumpAndSettle();
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));
 
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Away Team FC').first);
+      await tester.tap(find.byType(CrestImage).last);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(BackButton));

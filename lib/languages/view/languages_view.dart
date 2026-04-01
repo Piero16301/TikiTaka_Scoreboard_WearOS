@@ -43,8 +43,8 @@ class _LanguagesViewState extends State<LanguagesView> {
                 child: ScrollText(
                   text: l10n.titleLanguage.toUpperCase(),
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
                     fontSize: AppVariables.titleSize,
+                    height: AppVariables.titleTextHeight,
                   ),
                 ),
               ),
