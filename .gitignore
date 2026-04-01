@@ -124,3 +124,6 @@ android/serviceAccountBase64
 
 # Generated l10n files
 lib/l10n/gen/
+
+# Environment variables
+.env

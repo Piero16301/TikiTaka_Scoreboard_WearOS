@@ -1,5 +1,7 @@
 import 'dart:ui';
+
 import 'package:bloc_test/bloc_test.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -9,6 +11,12 @@ class MockLocalStorageService extends Mock implements LocalStorageService {}
 class MockDatabaseService extends Mock implements DatabaseService {}
 
 class MockNotificationService extends Mock implements NotificationService {}
+
+class MockPerformanceService extends Mock implements PerformanceService {}
+
+class MockTrace extends Mock implements Trace {}
+
+class MockAnalyticsService extends Mock implements AnalyticsService {}
 
 class FakeLocale extends Fake implements Locale {}
 
@@ -30,10 +38,19 @@ void main() {
       databaseService = MockDatabaseService();
       notificationService = MockNotificationService();
 
+      final mockPerformanceService = MockPerformanceService();
+      final mockTrace = MockTrace();
+      when(mockTrace.start).thenAnswer((_) async {});
+      when(mockTrace.stop).thenAnswer((_) async {});
+      when(() => mockPerformanceService.startTrace(any()))
+          .thenReturn(mockTrace);
+
       getIt
         ..registerSingleton<LocalStorageService>(localStorageService)
         ..registerSingleton<DatabaseService>(databaseService)
-        ..registerSingleton<NotificationService>(notificationService);
+        ..registerSingleton<NotificationService>(notificationService)
+        ..registerSingleton<PerformanceService>(mockPerformanceService)
+        ..registerSingleton<AnalyticsService>(MockAnalyticsService());
     });
 
     tearDown(getIt.reset);
@@ -100,7 +117,7 @@ void main() {
         ).thenReturn(null);
         when(() => notificationService.token).thenReturn('mock_token');
         when(
-          () => databaseService.saveLanguage(
+          () => databaseService.updateDeviceSettings(
             token: any(named: 'token'),
             language: any(named: 'language'),
           ),
@@ -118,7 +135,7 @@ void main() {
           ),
         ).called(1);
         verify(
-          () => databaseService.saveLanguage(
+          () => databaseService.updateDeviceSettings(
             token: 'mock_token',
             language: const Locale('es', 'ES'),
           ),

@@ -9,41 +9,60 @@ class League extends Equatable {
   /// {@macro address}
   const League({
     required this.id,
-    required this.area,
     required this.name,
     required this.code,
     required this.type,
     required this.emblem,
-    required this.plan,
-    required this.currentSeason,
-    required this.numberOfAvailableSeasons,
-    required this.lastUpdated,
+    this.area,
+    this.plan,
+    this.currentSeason,
+    this.numberOfAvailableSeasons,
+    this.lastUpdated,
   });
 
   /// Crea una instancia de [League] a partir de un [Map] json
   factory League.fromJson(Map<String, dynamic> json) {
     return League(
       id: json['id'] as int? ?? 0,
-      area: Area.fromJson(json['area'] as Map<String, dynamic>? ?? {}),
       name: json['name'] as String? ?? '',
       code: json['code'] as String? ?? '',
       type: json['type'] as String? ?? '',
       emblem: json['emblem'] as String? ?? '',
-      plan: json['plan'] as String? ?? '',
-      currentSeason:
-          Season.fromJson(json['currentSeason'] as Map<String, dynamic>? ?? {}),
-      numberOfAvailableSeasons: json['numberOfAvailableSeasons'] as int? ?? 0,
-      lastUpdated: (json['lastUpdated'] as Timestamp? ?? Timestamp.now())
-          .toDate()
-          .toLocal(),
+      area: json['area'] != null
+          ? Area.fromJson(json['area'] as Map<String, dynamic>)
+          : null,
+      plan: json['plan'] != null ? json['plan'] as String : null,
+      currentSeason: json['currentSeason'] != null
+          ? Season.fromJson(json['currentSeason'] as Map<String, dynamic>)
+          : null,
+      numberOfAvailableSeasons: json['numberOfAvailableSeasons'] != null
+          ? json['numberOfAvailableSeasons'] as int
+          : null,
+      lastUpdated: json['lastUpdated'] != null
+          ? (json['lastUpdated'] as Timestamp).toDate().toLocal()
+          : null,
     );
   }
+
+  /// Empty league
+  static final empty = League(
+    id: 0,
+    name: '',
+    code: '',
+    type: '',
+    emblem: '',
+    area: Area.empty,
+    plan: '',
+    currentSeason: Season.empty,
+    numberOfAvailableSeasons: 0,
+    lastUpdated: DateTime.now(),
+  );
 
   /// Id de la liga
   final int id;
 
   /// Área de la liga
-  final Area area;
+  final Area? area;
 
   /// Nombre de la liga
   final String name;
@@ -58,16 +77,16 @@ class League extends Equatable {
   final String emblem;
 
   /// Plan de la liga
-  final String plan;
+  final String? plan;
 
   /// Temporada actual de la liga
-  final Season currentSeason;
+  final Season? currentSeason;
 
   /// Temporadas disponibles de la liga
-  final int numberOfAvailableSeasons;
+  final int? numberOfAvailableSeasons;
 
   /// Última actualización de la liga
-  final DateTime lastUpdated;
+  final DateTime? lastUpdated;
 
   @override
   List<Object?> get props => [

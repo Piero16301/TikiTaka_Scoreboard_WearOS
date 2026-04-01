@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiki_taka_scoreboard_wearos/app/global/variables.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AppCardData extends StatelessWidget {
   const AppCardData({

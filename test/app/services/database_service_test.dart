@@ -1,254 +1,147 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
-class MockAndroidBuildVersion extends Mock implements AndroidBuildVersion {}
+class MockDatabaseRepository extends Mock implements DatabaseRepository {}
 
-class MockAndroidDeviceInfo extends Mock implements AndroidDeviceInfo {}
+class MockAppDeviceInfo extends Mock implements AppDeviceInfo {}
+
+class MockMatch extends Mock implements Match {}
+
+class MockConfig extends Mock implements Config {}
+
+class MockLeague extends Mock implements League {}
+
+class MockLeagueStandings extends Mock implements LeagueStandings {}
+
+class MockTeam extends Mock implements Team {}
+
+class MockDevice extends Mock implements Device {}
 
 void main() {
   group('DatabaseService', () {
-    late FakeFirebaseFirestore fakeFirestore;
+    late MockDatabaseRepository mockRepository;
     late DatabaseService databaseService;
 
     setUp(() {
-      fakeFirestore = FakeFirebaseFirestore();
-      databaseService = DatabaseService(firestore: fakeFirestore);
+      mockRepository = MockDatabaseRepository();
+      databaseService = DatabaseService(databaseRepository: mockRepository);
     });
 
-    test('saveLanguage saves language to firestore', () async {
-      const token = 'test_token';
-      const language = Locale('es', 'ES');
+    test('updateDeviceSettings delegates to repository', () {
+      final mockDeviceInfo = MockAppDeviceInfo();
+      when(
+        () => mockRepository.updateDeviceSettings(
+          token: any(named: 'token'),
+          deviceInfo: any(named: 'deviceInfo'),
+          language: any(named: 'language'),
+          teamToModify: any(named: 'teamToModify'),
+          enabledTeams: any(named: 'enabledTeams'),
+        ),
+      ).thenReturn(null);
 
-      databaseService.saveLanguage(token: token, language: language);
-
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-
-      final doc = await fakeFirestore
-          .collection(AppVariables.devicesCollection)
-          .doc(token)
-          .get();
-
-      expect(doc.exists, isTrue);
-      expect(doc.data()?['language'], 'es_ES');
-    });
-
-    test('setLocalSettingsDevice saves settings to firestore', () async {
-      const token = 'test_token';
-
-      final version = MockAndroidBuildVersion();
-      when(() => version.codename).thenReturn('');
-      when(() => version.incremental).thenReturn('');
-      when(() => version.previewSdkInt).thenReturn(0);
-      when(() => version.release).thenReturn('');
-      when(() => version.sdkInt).thenReturn(0);
-      when(() => version.securityPatch).thenReturn('');
-
-      final androidInfo = MockAndroidDeviceInfo();
-      when(() => androidInfo.version).thenReturn(version);
-      when(() => androidInfo.board).thenReturn('');
-      when(() => androidInfo.bootloader).thenReturn('');
-      when(() => androidInfo.brand).thenReturn('');
-      when(() => androidInfo.device).thenReturn('');
-      when(() => androidInfo.display).thenReturn('');
-      when(() => androidInfo.fingerprint).thenReturn('');
-      when(() => androidInfo.hardware).thenReturn('');
-      when(() => androidInfo.host).thenReturn('');
-      when(() => androidInfo.id).thenReturn('');
-      when(() => androidInfo.manufacturer).thenReturn('');
-      when(() => androidInfo.model).thenReturn('');
-      when(() => androidInfo.product).thenReturn('');
-      when(() => androidInfo.supported32BitAbis).thenReturn(<String>[]);
-      when(() => androidInfo.supported64BitAbis).thenReturn(<String>[]);
-      when(() => androidInfo.supportedAbis).thenReturn(<String>[]);
-      when(() => androidInfo.tags).thenReturn('');
-      when(() => androidInfo.type).thenReturn('');
-      when(() => androidInfo.isPhysicalDevice).thenReturn(true);
-      when(() => androidInfo.systemFeatures).thenReturn(<String>[]);
-      when(() => androidInfo.isLowRamDevice).thenReturn(false);
-      when(() => androidInfo.physicalRamSize).thenReturn(0);
-      when(() => androidInfo.availableRamSize).thenReturn(0);
-
-      databaseService.setLocalSettingsDevice(
-        token: token,
-        androidInfo: androidInfo,
-        localLanguage: const Locale('en', 'US'),
+      databaseService.updateDeviceSettings(
+        token: 'test_token',
+        deviceInfo: mockDeviceInfo,
+        language: const Locale('en', 'US'),
+        teamToModify: 123,
+        enabledTeams: ['team1', 'team2'],
       );
 
-      await Future<void>.delayed(const Duration(milliseconds: 100));
-
-      final doc = await fakeFirestore
-          .collection(AppVariables.devicesCollection)
-          .doc(token)
-          .get();
-
-      expect(doc.exists, isTrue);
-      expect(doc.data()?['token'], token);
-      expect(doc.data()?['language'], 'en_US');
-      expect(doc.data()?['platform'], AppVariables.appOS);
+      verify(
+        () => mockRepository.updateDeviceSettings(
+          token: 'test_token',
+          deviceInfo: mockDeviceInfo,
+          language: const Locale('en', 'US'),
+          teamToModify: 123,
+          enabledTeams: const ['team1', 'team2'],
+        ),
+      ).called(1);
     });
 
-    test('getConfigs returns config stream', () async {
-      await fakeFirestore.collection(AppVariables.configsCollection).add({
-        'id': 'test_config',
-        'lastUpdate': Timestamp.now(),
-      });
+    test('getMatchStream delegates to repository', () {
+      final mockMatchStream = Stream.value(MockMatch());
+      when(() => mockRepository.getMatchStream(matchId: 1))
+          .thenAnswer((_) => mockMatchStream);
 
-      final stream = databaseService.getConfigs(id: 'test_config');
-      final configs = await stream.first;
-
-      expect(configs, isNotEmpty);
-      expect(configs.first.id, 'test_config');
+      final stream = databaseService.getMatchStream(matchId: 1);
+      expect(stream, equals(mockMatchStream));
+      verify(() => mockRepository.getMatchStream(matchId: 1)).called(1);
     });
 
-    test('getLeagues returns league stream', () async {
-      await fakeFirestore.collection(AppVariables.leaguesCollection).add({
-        'id': 2014,
-        'name': 'La Liga',
-        'currentSeason': {
-          'startDate': '2023-01-01T00:00:00Z',
-          'endDate': '2023-12-31T00:00:00Z',
-        },
-      });
+    test('getMatchesStream delegates to repository', () {
+      final mockMatchesStream = Stream.value([MockMatch()]);
+      when(() => mockRepository.getMatchesStream(enabledLeagues: ['PL']))
+          .thenAnswer((_) => mockMatchesStream);
 
-      final stream = databaseService.getLeagues();
-      final leagues = await stream.first;
-
-      expect(leagues, isNotEmpty);
-      expect(leagues.first.id, 2014);
+      final stream =
+          databaseService.getMatchesStream(enabledLeagues: const ['PL']);
+      expect(stream, equals(mockMatchesStream));
+      verify(
+        () => mockRepository.getMatchesStream(enabledLeagues: const ['PL']),
+      ).called(1);
     });
 
-    test('getMatch returns specific match stream', () async {
-      await fakeFirestore.collection(AppVariables.matchesCollection).add({
-        'id': 100,
-        'status': 'FINISHED',
-        'season': {
-          'startDate': '2023-01-01T00:00:00Z',
-          'endDate': '2023-12-31T00:00:00Z',
-        },
-      });
+    test('getConfigStream delegates to repository', () {
+      final mockConfigStream = Stream.value(MockConfig());
+      when(() => mockRepository.getConfigStream(id: 'conf1'))
+          .thenAnswer((_) => mockConfigStream);
 
-      final stream = databaseService.getMatch(matchId: 100);
-      final matches = await stream.first;
-
-      expect(matches, isNotEmpty);
-      expect(matches.first.id, 100);
+      final stream = databaseService.getConfigStream(id: 'conf1');
+      expect(stream, equals(mockConfigStream));
+      verify(() => mockRepository.getConfigStream(id: 'conf1')).called(1);
     });
 
-    test('getStandings returns standings stream', () async {
-      await fakeFirestore.collection(AppVariables.standingsCollection).add({
-        'id': 'PD',
-        'stage': 'REGULAR_SEASON',
-      });
+    test('getLeaguesStream delegates to repository', () {
+      final mockLeaguesStream = Stream.value([MockLeague()]);
+      when(() => mockRepository.getLeaguesStream())
+          .thenAnswer((_) => mockLeaguesStream);
 
-      final stream = databaseService.getStandings(leagueId: 'PD');
-      final standings = await stream.first;
-
-      expect(standings, isNotEmpty);
-      expect(standings.first['stage'], 'REGULAR_SEASON');
+      final stream = databaseService.getLeaguesStream();
+      expect(stream, equals(mockLeaguesStream));
+      verify(() => mockRepository.getLeaguesStream()).called(1);
     });
 
-    test('getTeam returns specific team stream', () async {
-      await fakeFirestore.collection(AppVariables.teamsCollection).add({
-        'id': 81,
-        'name': 'FC Barcelona',
-      });
+    test('getStandingsStream delegates to repository', () {
+      final mockStandingsStream = Stream.value(MockLeagueStandings());
+      when(() => mockRepository.getStandingsStream(leagueId: 'lg1'))
+          .thenAnswer((_) => mockStandingsStream);
 
-      final stream = databaseService.getTeam(teamId: 81);
-      final teams = await stream.first;
-
-      expect(teams, isNotEmpty);
-      expect(teams.first.id, 81);
+      final stream = databaseService.getStandingsStream(leagueId: 'lg1');
+      expect(stream, equals(mockStandingsStream));
+      verify(() => mockRepository.getStandingsStream(leagueId: 'lg1'))
+          .called(1);
     });
 
-    test('getTeamsByLeague returns team stream for league', () async {
-      await fakeFirestore.collection(AppVariables.teamsCollection).add({
-        'id': 81,
-        'name': 'FC Barcelona',
-        'competition': {'id': 2014},
-      });
+    test('getTeamStream delegates to repository', () {
+      final mockTeamStream = Stream.value(MockTeam());
+      when(() => mockRepository.getTeamStream(teamId: 10))
+          .thenAnswer((_) => mockTeamStream);
 
-      final stream = databaseService.getTeamsByLeague(leagueId: 2014);
-      final teams = await stream.first;
-
-      expect(teams, isNotEmpty);
-      expect(teams.first.id, 81);
+      final stream = databaseService.getTeamStream(teamId: 10);
+      expect(stream, equals(mockTeamStream));
+      verify(() => mockRepository.getTeamStream(teamId: 10)).called(1);
     });
 
-    test('getDevices returns specific device stream', () async {
-      await fakeFirestore.collection(AppVariables.devicesCollection).add({
-        'token': 'my_token',
-        'platform': 'WearOS',
-      });
+    test('getTeamsStream delegates to repository', () {
+      final mockTeamsStream = Stream.value([MockTeam()]);
+      when(() => mockRepository.getTeamsStream(leagueId: 5))
+          .thenAnswer((_) => mockTeamsStream);
 
-      final stream = databaseService.getDevices(token: 'my_token');
-      final devices = await stream.first;
-
-      expect(devices, isNotEmpty);
-      expect(devices.first['token'], 'my_token');
+      final stream = databaseService.getTeamsStream(leagueId: 5);
+      expect(stream, equals(mockTeamsStream));
+      verify(() => mockRepository.getTeamsStream(leagueId: 5)).called(1);
     });
 
-    test('changeEnabledTeams adds or removes team from array', () async {
-      const token = 'my_token_2';
-      await fakeFirestore
-          .collection(AppVariables.devicesCollection)
-          .doc(token)
-          .set({
-        'enabledTeams': <String>[],
-      });
+    test('getDeviceStream delegates to repository', () {
+      final mockDeviceStream = Stream.value(MockDevice());
+      when(() => mockRepository.getDeviceStream(token: 'tok1'))
+          .thenAnswer((_) => mockDeviceStream);
 
-      databaseService.changeEnabledTeams(
-        teamId: 81,
-        token: token,
-        enabledTeams: <String>[],
-      );
-
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-
-      final doc1 = await fakeFirestore
-          .collection(AppVariables.devicesCollection)
-          .doc(token)
-          .get();
-      expect(doc1.data()?['enabledTeams'], contains('81'));
-
-      databaseService.changeEnabledTeams(
-        teamId: 81,
-        token: token,
-        enabledTeams: ['81'],
-      );
-
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-
-      final doc2 = await fakeFirestore
-          .collection(AppVariables.devicesCollection)
-          .doc(token)
-          .get();
-      expect(doc2.data()?['enabledTeams'], isNot(contains('81')));
-    });
-
-    test('getMatches returns match stream based on date filters', () async {
-      final now = DateTime.now();
-
-      await fakeFirestore.collection(AppVariables.matchesCollection).add({
-        'id': 200,
-        'competition': {'code': 'PL'},
-        'utcDate':
-            Timestamp.fromDate(DateTime(now.year, now.month, now.day, 12)),
-        'season': {
-          'startDate': '2023-01-01T00:00:00Z',
-          'endDate': '2023-12-31T00:00:00Z',
-        },
-      });
-
-      final stream = databaseService.getMatches(enabledLeagues: ['PL']);
-      final matches = await stream.first;
-
-      expect(matches, isNotEmpty);
-      expect(matches.first.id, 200);
+      final stream = databaseService.getDeviceStream(token: 'tok1');
+      expect(stream, equals(mockDeviceStream));
+      verify(() => mockRepository.getDeviceStream(token: 'tok1')).called(1);
     });
   });
 }

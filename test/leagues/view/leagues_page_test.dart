@@ -16,15 +16,19 @@ class MockLocalStorageService extends Mock implements LocalStorageService {}
 
 class MockLeague extends Mock implements League {}
 
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 void main() {
   group('LeaguesPage and LeaguesView', () {
     late MockLeaguesCubit leaguesCubit;
     late MockDatabaseService mockDatabase;
     late MockLocalStorageService mockLocalStorage;
+    late MockAnalyticsService mockAnalytics;
 
     setUpAll(() async {
       mockDatabase = MockDatabaseService();
       mockLocalStorage = MockLocalStorageService();
+      mockAnalytics = MockAnalyticsService();
 
       if (getIt.isRegistered<DatabaseService>()) {
         await getIt.unregister<DatabaseService>();
@@ -32,9 +36,14 @@ void main() {
       getIt.registerSingleton<DatabaseService>(mockDatabase);
 
       if (getIt.isRegistered<LocalStorageService>()) {
-        getIt.unregister<LocalStorageService>();
+        await getIt.unregister<LocalStorageService>();
       }
       getIt.registerSingleton<LocalStorageService>(mockLocalStorage);
+
+      if (getIt.isRegistered<AnalyticsService>()) {
+        await getIt.unregister<AnalyticsService>();
+      }
+      getIt.registerSingleton<AnalyticsService>(mockAnalytics);
     });
 
     setUp(() {
@@ -42,11 +51,17 @@ void main() {
       when(() => leaguesCubit.state).thenReturn(const LeaguesState());
       when(() => leaguesCubit.initialize()).thenAnswer((_) async {});
       when(() => mockLocalStorage.getEnabledLeagues()).thenReturn([]);
+      when(
+        () => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenAnswer((_) async {});
     });
 
     testWidgets('renders LeaguesPage properly and shows shimmers when loading',
         (tester) async {
-      when(() => mockDatabase.getLeagues())
+      when(() => mockDatabase.getLeaguesStream())
           .thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
@@ -65,7 +80,7 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getLeagues())
+      when(() => mockDatabase.getLeaguesStream())
           .thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
@@ -86,7 +101,8 @@ void main() {
 
     testWidgets('shows empty state when stream emits empty list',
         (tester) async {
-      when(() => mockDatabase.getLeagues()).thenAnswer((_) => Stream.value([]));
+      when(() => mockDatabase.getLeaguesStream())
+          .thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -111,7 +127,7 @@ void main() {
       when(() => mockLeague.name).thenReturn('Premier League');
 
       final mockLeagues = <League>[mockLeague];
-      when(() => mockDatabase.getLeagues())
+      when(() => mockDatabase.getLeaguesStream())
           .thenAnswer((_) => Stream.value(mockLeagues));
 
       await tester.pumpWidget(
@@ -138,7 +154,7 @@ void main() {
       when(() => mockLeague.name).thenReturn('Premier League');
 
       final mockLeagues = <League>[mockLeague];
-      when(() => mockDatabase.getLeagues())
+      when(() => mockDatabase.getLeaguesStream())
           .thenAnswer((_) => Stream.value(mockLeagues));
 
       await tester.pumpWidget(

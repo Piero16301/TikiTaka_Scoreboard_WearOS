@@ -9,8 +9,11 @@ class Score extends Equatable {
   const Score({
     required this.winner,
     required this.duration,
-    required this.fullTime,
     required this.halfTime,
+    required this.fullTime,
+    this.regularTime,
+    this.extraTime,
+    this.penalties,
   });
 
   /// Crea una instancia de [Score] a partir de un [Map] json
@@ -18,8 +21,17 @@ class Score extends Equatable {
     return Score(
       winner: json['winner'] as String? ?? '',
       duration: json['duration'] as String? ?? '',
-      fullTime: Time.fromJson(json['fullTime'] as Map<String, dynamic>? ?? {}),
       halfTime: Time.fromJson(json['halfTime'] as Map<String, dynamic>? ?? {}),
+      fullTime: Time.fromJson(json['fullTime'] as Map<String, dynamic>? ?? {}),
+      regularTime: json['regularTime'] != null
+          ? Time.fromJson(json['regularTime'] as Map<String, dynamic>? ?? {})
+          : null,
+      extraTime: json['extraTime'] != null
+          ? Time.fromJson(json['extraTime'] as Map<String, dynamic>? ?? {})
+          : null,
+      penalties: json['penalties'] != null
+          ? Time.fromJson(json['penalties'] as Map<String, dynamic>? ?? {})
+          : null,
     );
   }
 
@@ -27,8 +39,8 @@ class Score extends Equatable {
   static const empty = Score(
     winner: '',
     duration: '',
-    fullTime: Time.empty,
     halfTime: Time.empty,
+    fullTime: Time.empty,
   );
 
   /// Ganador del partido
@@ -37,17 +49,29 @@ class Score extends Equatable {
   /// Duración del partido
   final String duration;
 
-  /// Marcador final del partido
-  final Time fullTime;
-
   /// Marcador del primer tiempo
   final Time halfTime;
 
+  /// Marcador final del partido
+  final Time fullTime;
+
+  /// Marcador del tiempo regular
+  final Time? regularTime;
+
+  /// Marcador del tiempo extra
+  final Time? extraTime;
+
+  /// Marcador de los penales
+  final Time? penalties;
+
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         winner,
         duration,
-        fullTime,
         halfTime,
+        fullTime,
+        regularTime,
+        extraTime,
+        penalties,
       ];
 }

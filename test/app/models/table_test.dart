@@ -61,9 +61,9 @@ void main() {
 
       expect(
         Table.fromJson(json),
-        const Table(
+        Table(
           position: position,
-          team: Team.empty,
+          team: Team.fromJson(const {}),
           playedGames: playedGames,
           form: form,
           won: won,

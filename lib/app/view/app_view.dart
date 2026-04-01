@@ -24,6 +24,9 @@ class AppView extends StatelessWidget {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         routes: AppRoutes.routes,
+        navigatorObservers: [
+          RouteAnalyticsObserver(analyticsService: getIt<AnalyticsService>()),
+        ],
       ),
     );
   }

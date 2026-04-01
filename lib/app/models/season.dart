@@ -11,17 +11,23 @@ class Season extends Equatable {
     required this.startDate,
     required this.endDate,
     required this.currentMatchday,
-    required this.winner,
+    this.winner,
   });
 
   /// Crea una instancia de [Season] a partir de un [Map] json
   factory Season.fromJson(Map<String, dynamic> json) {
     return Season(
       id: json['id'] as int? ?? 0,
-      startDate: DateTime.parse(json['startDate'] as String).toLocal(),
-      endDate: DateTime.parse(json['endDate'] as String).toLocal(),
+      startDate: json['startDate'] != null
+          ? DateTime.parse(json['startDate'] as String).toLocal()
+          : null,
+      endDate: json['endDate'] != null
+          ? DateTime.parse(json['endDate'] as String).toLocal()
+          : null,
       currentMatchday: json['currentMatchday'] as int? ?? 0,
-      winner: Team.fromJson(json['winner'] as Map<String, dynamic>? ?? {}),
+      winner: json['winner'] != null
+          ? Team.fromJson(json['winner'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -47,7 +53,7 @@ class Season extends Equatable {
   final int currentMatchday;
 
   /// Ganador de la temporada
-  final Team winner;
+  final Team? winner;
 
   @override
   List<Object?> get props => [

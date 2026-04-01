@@ -45,7 +45,7 @@ void main() {
 
     testWidgets('renders TeamsPage properly and shows shimmers when loading',
         (tester) async {
-      when(() => mockDatabase.getTeamsByLeague(leagueId: 1))
+      when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
@@ -64,7 +64,7 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getTeamsByLeague(leagueId: 1))
+      when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
@@ -85,7 +85,7 @@ void main() {
 
     testWidgets('shows empty state when stream emits empty list',
         (tester) async {
-      when(() => mockDatabase.getTeamsByLeague(leagueId: 1))
+      when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(
@@ -110,14 +110,14 @@ void main() {
       when(() => mockTeam.name).thenReturn('FC Barcelona');
       when(() => mockTeam.crest).thenReturn('crest.png');
 
-      when(() => mockDatabase.getTeamsByLeague(leagueId: 1))
+      when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.value([mockTeam]));
-      when(() => mockDatabase.getDevices(token: 'mock_token')).thenAnswer(
-        (_) => Stream.value([
-          {
+      when(() => mockDatabase.getDeviceStream(token: 'mock_token')).thenAnswer(
+        (_) => Stream.value(
+          Device.fromJson(const {
             'enabledTeams': ['99'],
-          }
-        ]),
+          }),
+        ),
       );
 
       await tester.pumpWidget(
@@ -144,22 +144,22 @@ void main() {
       when(() => mockTeam.name).thenReturn('FC Barcelona');
       when(() => mockTeam.crest).thenReturn('crest.png');
 
-      when(() => mockDatabase.getTeamsByLeague(leagueId: 1))
+      when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.value([mockTeam]));
-      when(() => mockDatabase.getDevices(token: 'mock_token')).thenAnswer(
-        (_) => Stream.value([
-          {
+      when(() => mockDatabase.getDeviceStream(token: 'mock_token')).thenAnswer(
+        (_) => Stream.value(
+          Device.fromJson(const {
             'enabledTeams': ['99'],
-          }
-        ]),
+          }),
+        ),
       );
       when(
-        () => mockDatabase.changeEnabledTeams(
-          teamId: 99,
+        () => mockDatabase.updateDeviceSettings(
+          teamToModify: 99,
           token: 'mock_token',
           enabledTeams: ['99'],
         ),
-      ).thenAnswer((_) async {});
+      ).thenReturn(null);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -179,8 +179,8 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(
-        () => mockDatabase.changeEnabledTeams(
-          teamId: 99,
+        () => mockDatabase.updateDeviceSettings(
+          teamToModify: 99,
           token: 'mock_token',
           enabledTeams: ['99'],
         ),

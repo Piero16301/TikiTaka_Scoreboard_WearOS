@@ -9,38 +9,42 @@ environment:
 
 dependencies:
   bloc: ^9.2.0
-  cloud_firestore: ^6.1.3
-  device_info_plus: ^12.3.0
+  cloud_firestore: ^6.2.0
+  device_info_plus: ^12.4.0
   equatable: ^2.0.8
-  firebase_core: ^4.5.0
-  firebase_messaging: ^16.1.2
+  firebase_analytics: ^12.2.0
+  firebase_app_check: ^0.4.2
+  firebase_core: ^4.6.0
+  firebase_crashlytics: ^5.1.0
+  firebase_messaging: ^16.1.3
+  firebase_performance: ^0.11.2
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_dotenv: ^6.0.0
   flutter_local_notifications: ^21.0.0
   flutter_localizations:
     sdk: flutter
   get_it: ^9.2.1
-  google_fonts: ^8.0.2
   http: ^1.6.0
-  hugeicons: ^1.1.5
+  hugeicons: ^1.1.6
   intl: ^0.20.2
-  package_info_plus: ^9.0.0
-  shared_preferences: ^2.5.4
+  package_info_plus: ^9.0.1
+  shared_preferences: ^2.5.5
   shimmer_animation: ^2.2.2
   text_scroll: ^0.2.1
-  vector_graphics: ^1.1.19
+  vector_graphics: ^1.1.21
   vector_graphics_compiler: ^1.2.0
   wear_os_scrollbar: ^0.0.3
 
 dev_dependencies:
   bloc_test: ^10.0.0
-  build_runner: ^2.12.2
-  fake_cloud_firestore: ^4.0.1
+  build_runner: ^2.13.1
+  fake_cloud_firestore: ^4.1.0+1
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  mockito: ^5.6.3
+  mockito: ^5.6.4
   mocktail: ^1.0.4
   test_coverage_badge: ^0.3.2
   very_good_analysis: ^10.2.0
@@ -57,3 +61,56 @@ flutter:
 
   assets:
     - assets/app-logo.png
+    - .env
+    - assets/fonts/
+
+  fonts:
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/Merriweather-Regular.ttf
+        - asset: assets/fonts/Merriweather-Bold.ttf
+          weight: 700
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Bold.ttf
+          weight: 700
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Bold.ttf
+          weight: 700
+    - family: Open Sans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Bold.ttf
+          weight: 700
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/Orbitron-Regular.ttf
+        - asset: assets/fonts/Orbitron-Bold.ttf
+          weight: 700
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
+    - family: Playfair Display
+      fonts:
+        - asset: assets/fonts/PlayfairDisplay-Regular.ttf
+        - asset: assets/fonts/PlayfairDisplay-Bold.ttf
+          weight: 700
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
+    - family: Source Code Pro
+      fonts:
+        - asset: assets/fonts/SourceCodePro-Regular.ttf
+        - asset: assets/fonts/SourceCodePro-Bold.ttf
+          weight: 700
+

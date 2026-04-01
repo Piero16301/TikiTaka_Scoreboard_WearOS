@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,12 @@ class MockNotificationService extends Mock implements NotificationService {}
 
 class MockDeviceInfoService extends Mock implements DeviceInfoService {}
 
+class MockPerformanceService extends Mock implements PerformanceService {}
+
+class MockTrace extends Mock implements Trace {}
+
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class FakeRoute extends Fake implements Route<dynamic> {}
@@ -33,7 +40,7 @@ class MockScore extends Mock implements Score {}
 
 class MockTime extends Mock implements Time {}
 
-class MockCompetition extends Mock implements Competition {}
+class MockLeague extends Mock implements League {}
 
 void main() {
   group('HomeView', () {
@@ -47,7 +54,9 @@ void main() {
         ..registerSingleton<LocalStorageService>(MockLocalStorageService())
         ..registerSingleton<DatabaseService>(MockDatabaseService())
         ..registerSingleton<NotificationService>(MockNotificationService())
-        ..registerSingleton<DeviceInfoService>(MockDeviceInfoService());
+        ..registerSingleton<DeviceInfoService>(MockDeviceInfoService())
+        ..registerSingleton<PerformanceService>(MockPerformanceService())
+        ..registerSingleton<AnalyticsService>(MockAnalyticsService());
     });
 
     setUp(() {
@@ -57,8 +66,15 @@ void main() {
 
       when(() => homeCubit.state).thenReturn(const HomeState());
       when(() => localStorage.getEnabledLeagues()).thenReturn([]);
-      when(() => database.getConfigs(id: any(named: 'id')))
-          .thenAnswer((_) => Stream.value([]));
+
+      final mockTrace = MockTrace();
+      when(mockTrace.start).thenAnswer((_) async {});
+      when(mockTrace.stop).thenAnswer((_) async {});
+      when(() => getIt<PerformanceService>().startTrace(any()))
+          .thenReturn(mockTrace);
+      when(() => database.getConfigStream(id: any(named: 'id'))).thenAnswer(
+        (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
+      );
     });
 
     Widget buildSubject({NavigatorObserver? observer}) {
@@ -81,7 +97,9 @@ void main() {
 
     testWidgets('renders error text when stream has error', (tester) async {
       when(
-        () => database.getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+        () => database.getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => Stream.error(Exception('error')));
 
       await tester.pumpWidget(buildSubject());
@@ -93,12 +111,13 @@ void main() {
     testWidgets('renders shimmers when loading (no data yet)', (tester) async {
       final controller = StreamController<List<Match>>();
       when(
-        () => database.getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+        () => database.getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => controller.stream);
 
       await tester.pumpWidget(buildSubject());
 
-      // Should show shimmers initially
       expect(find.byType(ShimmerMatchCardHome), findsWidgets);
       expect(find.text('Updating matches...'), findsOneWidget);
 
@@ -108,7 +127,9 @@ void main() {
     testWidgets('renders empty matches text when data is empty',
         (tester) async {
       when(
-        () => database.getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+        () => database.getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(buildSubject());
@@ -132,8 +153,8 @@ void main() {
       when(() => awayTeam.crest).thenReturn('');
       when(() => awayTeam.tla).thenReturn('AWA');
 
-      final competition = MockCompetition();
-      when(() => competition.name).thenReturn('Premier League');
+      final league = MockLeague();
+      when(() => league.name).thenReturn('Premier League');
 
       final time = MockTime();
       when(() => time.home).thenReturn(1);
@@ -146,7 +167,7 @@ void main() {
         when(() => m.status).thenReturn(status);
         when(() => m.homeTeam).thenReturn(homeTeam);
         when(() => m.awayTeam).thenReturn(awayTeam);
-        when(() => m.competition).thenReturn(competition);
+        when(() => m.competition).thenReturn(league);
         when(() => m.score).thenReturn(score);
         when(() => m.utcDate).thenReturn(DateTime.now());
       }
@@ -156,7 +177,9 @@ void main() {
       setupMatch(match3, 'FINISHED', 3);
 
       when(
-        () => database.getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+        () => database.getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => Stream.value([match1, match2, match3]));
 
       final observer = MockNavigatorObserver();
@@ -164,22 +187,17 @@ void main() {
       await tester.pumpWidget(buildSubject(observer: observer));
       await tester.pump(const Duration(seconds: 1));
 
-      // IN_PLAY, SCHEDULED, FINISHED matches order
       expect(find.byType(MatchCardHome), findsNWidgets(3));
 
-      // Test tapping settings
       await tester.tap(find.text('SETTINGS'));
       await tester.pump(const Duration(seconds: 1));
       verify(() => observer.didPush(any(), any())).called(greaterThan(0));
 
-      // The settings tap pushed a new route. We pop it.
       Navigator.of(tester.element(find.byType(HomeView))).pop();
       await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(MatchCardHome).first);
       await tester.pump(const Duration(seconds: 1));
-
-      // Match card pushed a new route, test is complete
     });
 
     testWidgets('renders LastUpdateHome with configs', (tester) async {
@@ -190,8 +208,8 @@ void main() {
       final awayTeam = MockTeam();
       when(() => awayTeam.crest).thenReturn('');
       when(() => awayTeam.tla).thenReturn('AWA');
-      final competition = MockCompetition();
-      when(() => competition.name).thenReturn('Premier League');
+      final league = MockLeague();
+      when(() => league.name).thenReturn('Premier League');
       final time = MockTime();
       when(() => time.home).thenReturn(1);
       when(() => time.away).thenReturn(0);
@@ -202,20 +220,22 @@ void main() {
       when(() => mockMatch.status).thenReturn('IN_PLAY');
       when(() => mockMatch.homeTeam).thenReturn(homeTeam);
       when(() => mockMatch.awayTeam).thenReturn(awayTeam);
-      when(() => mockMatch.competition).thenReturn(competition);
+      when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.score).thenReturn(score);
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
 
       when(
-        () => database.getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+        () => database.getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => Stream.value([mockMatch]));
 
       final config = Config(
         id: 'matches',
         lastUpdate: DateTime.now().subtract(const Duration(seconds: 5)),
       );
-      when(() => database.getConfigs(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value([config]));
+      when(() => database.getConfigStream(id: AppVariables.matchesCollection))
+          .thenAnswer((_) => Stream.value(config));
 
       await tester.pumpWidget(buildSubject());
       await tester.pump(const Duration(seconds: 1));

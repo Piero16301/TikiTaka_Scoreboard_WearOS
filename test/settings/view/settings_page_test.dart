@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
@@ -12,6 +12,8 @@ class MockSettingsCubit extends MockCubit<SettingsState>
     implements SettingsCubit {}
 
 class MockDeviceInfoService extends Mock implements DeviceInfoService {}
+
+class MockAnalyticsService extends Mock implements AnalyticsService {}
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
@@ -29,7 +31,12 @@ void main() {
       if (getIt.isRegistered<DeviceInfoService>()) {
         await getIt.unregister<DeviceInfoService>();
       }
-      getIt.registerSingleton<DeviceInfoService>(mockDeviceInfo);
+      if (getIt.isRegistered<AnalyticsService>()) {
+        await getIt.unregister<AnalyticsService>();
+      }
+      getIt
+        ..registerSingleton<DeviceInfoService>(mockDeviceInfo)
+        ..registerSingleton<AnalyticsService>(MockAnalyticsService());
 
       registerFallbackValue(FakeRoute());
     });
@@ -39,11 +46,11 @@ void main() {
       mockObserver = MockNavigatorObserver();
       when(() => settingsCubit.state).thenReturn(const SettingsState());
 
-      final mockPackageInfo = PackageInfo(
+      final mockPackageInfo = AppPackageInfo(
         appName: 'Tiki Taka Scoreboard',
-        packageName: 'com.pieromorales.tiki_taka',
         version: '1.0.0',
         buildNumber: '10',
+        updateTime: DateTime.now(),
       );
       when(() => mockDeviceInfo.packageInfo).thenReturn(mockPackageInfo);
     });
@@ -97,11 +104,11 @@ void main() {
     });
 
     testWidgets('getDateOn handles same day format properly', (tester) async {
-      final mockPackageInfo = PackageInfo(
+      final mockPackageInfo = AppPackageInfo(
         appName: 'Tiki Taka Scoreboard',
-        packageName: 'com.pieromorales.tiki_taka',
         version: '1.0.0',
         buildNumber: '10',
+        updateTime: DateTime.now(),
       );
 
       when(() => mockDeviceInfo.packageInfo).thenReturn(mockPackageInfo);
@@ -117,7 +124,7 @@ void main() {
         ),
       );
 
-      expect(find.textContaining('Today'), findsOneWidget);
+      expect(find.textContaining(RegExp(r'\d{2}:\d{2}:\d{2}')), findsOneWidget);
     });
   });
 }
