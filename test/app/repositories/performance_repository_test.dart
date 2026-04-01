@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class MockFirebasePerformance extends Mock implements FirebasePerformance {}
+
 class MockTrace extends Mock implements Trace {}
 
 void main() {
