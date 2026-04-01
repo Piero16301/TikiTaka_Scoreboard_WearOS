@@ -13,6 +13,8 @@ class AppCubit extends Cubit<AppState> {
   final NotificationService notification = getIt<NotificationService>();
 
   void initialize() {
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('app_cubit_initialization');
     // Setting the language to the device language if it's not set
     final language = localStorage.getLanguage();
     if (language == null) {
@@ -47,11 +49,15 @@ class AppCubit extends Cubit<AppState> {
         fontFamily: localStorage.getFontFamily(),
       ),
     );
+    performance.stopTrace(trace);
   }
 
   void changeLanguage({required Locale language}) {
     localStorage.saveLanguage(language: language);
-    database.saveLanguage(token: notification.token, language: language);
+    database.updateDeviceSettings(
+      token: notification.token,
+      language: language,
+    );
     emit(state.copyWith(language: language));
   }
 

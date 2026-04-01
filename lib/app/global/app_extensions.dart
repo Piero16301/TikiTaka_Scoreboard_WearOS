@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -39,49 +38,6 @@ class NetworkSvgLoader extends BytesLoader {
   @override
   bool operator ==(Object other) {
     return other is NetworkSvgLoader && other.url == url;
-  }
-}
-
-extension AndroidVersion on AndroidBuildVersion {
-  Map<String, dynamic> toJson() {
-    return {
-      'codename': codename,
-      'incremental': incremental,
-      'previewSdkInt': previewSdkInt ?? 0,
-      'release': release,
-      'sdkInt': sdkInt,
-      'securityPatch': securityPatch ?? '',
-    };
-  }
-}
-
-extension AndroidInfo on AndroidDeviceInfo {
-  Map<String, dynamic> toJson() {
-    return {
-      'version': version.toJson(),
-      'board': board,
-      'bootloader': bootloader,
-      'brand': brand,
-      'device': device,
-      'display': display,
-      'fingerprint': fingerprint,
-      'hardware': hardware,
-      'host': host,
-      'id': id,
-      'manufacturer': manufacturer,
-      'model': model,
-      'product': product,
-      'supported32BitAbis': supported32BitAbis,
-      'supported64BitAbis': supported64BitAbis,
-      'supportedAbis': supportedAbis,
-      'tags': tags,
-      'type': type,
-      'isPhysicalDevice': isPhysicalDevice,
-      'systemFeatures': systemFeatures,
-      'isLowRamDevice': isLowRamDevice,
-      'physicalRamSize': physicalRamSize,
-      'availableRamSize': availableRamSize,
-    };
   }
 }
 

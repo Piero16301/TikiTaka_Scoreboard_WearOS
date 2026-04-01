@@ -25,7 +25,7 @@ class _NotificationsViewState extends State<NotificationsView> {
     final database = getIt<DatabaseService>();
 
     return StreamBuilder<List<League>>(
-      stream: database.getLeagues(),
+      stream: database.getLeaguesStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(

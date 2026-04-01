@@ -35,7 +35,7 @@ class _HomeViewState extends State<HomeView> {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         if (state.reload || _matchesStream == null) {
-          _matchesStream = database.getMatches(
+          _matchesStream = database.getMatchesStream(
             enabledLeagues: localStorage.getEnabledLeagues() ?? [],
           );
         }
@@ -115,6 +115,8 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
+            final performance = getIt<PerformanceService>();
+            final trace = performance.startTrace('home_matches_sorting');
             final nowDate = DateTime.now();
             final matches = snapshot.data!.map((match) => match).toList()
               ..sort((a, b) {
@@ -133,6 +135,7 @@ class _HomeViewState extends State<HomeView> {
                 }
                 return aStatus.compareTo(bStatus);
               });
+            performance.stopTrace(trace);
 
             return AppScaffold.scrollable(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
@@ -219,27 +222,16 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
       );
     }
 
-    return StreamBuilder<List<Config>>(
-      stream: database.getConfigs(id: AppVariables.matchesCollection),
+    return StreamBuilder<Config>(
+      stream: database.getConfigStream(id: AppVariables.matchesCollection),
       builder: (context, snapshot) {
-        final configs = snapshot.data ??
-            [
-              Config(
-                id: AppVariables.matchesCollection,
-                lastUpdate: DateTime.now(),
-              ),
-            ];
-
-        if (configs.isEmpty) {
-          configs.add(
+        final config = snapshot.data ??
             Config(
               id: AppVariables.matchesCollection,
               lastUpdate: DateTime.now(),
-            ),
-          );
-        }
+            );
 
-        final delta = DateTime.now().difference(configs.first.lastUpdate);
+        final delta = DateTime.now().difference(config.lastUpdate);
 
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
@@ -314,10 +306,18 @@ class MatchCardHome extends StatelessWidget {
     return AppCardData(
       title: match.competition.name,
       content: GestureDetector(
-        onTap: () => Navigator.of(context).pushNamed(
-          MatchPage.routeName,
-          arguments: match.id,
-        ),
+        onTap: () {
+          getIt<AnalyticsService>().logEvent(
+            name: 'match_clicked',
+            parameters: {'match_id': match.id.toString()},
+          );
+          unawaited(
+            Navigator.of(context).pushNamed(
+              MatchPage.routeName,
+              arguments: match.id,
+            ),
+          );
+        },
         child: Row(
           spacing: 5,
           children: [
@@ -461,6 +461,7 @@ class SettingsHome extends StatelessWidget {
         Expanded(
           child: AppFilledButton(
             onPressed: () async {
+              getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
               final reload = (await Navigator.of(context)
                       .pushNamed(SettingsPage.routeName)) as bool? ??
                   true;

@@ -9,8 +9,8 @@ class Standing extends Equatable {
   const Standing({
     required this.stage,
     required this.type,
-    required this.group,
     required this.table,
+    this.group,
   });
 
   /// Crea una instancia de [Standing] a partir de un [Map] json
@@ -18,7 +18,7 @@ class Standing extends Equatable {
     return Standing(
       stage: json['stage'] as String? ?? '',
       type: json['type'] as String? ?? '',
-      group: json['group'] as String? ?? '',
+      group: json['group'] != null ? json['group'] as String? : null,
       table: (json['table'] as List<dynamic>? ?? [])
           .map(
             (e) => Table.fromJson(e as Map<String, dynamic>? ?? const {}),
@@ -42,7 +42,7 @@ class Standing extends Equatable {
   final String type;
 
   /// Grupo de la clasificación
-  final String group;
+  final String? group;
 
   /// Tabla de clasificación
   final List<Table> table;

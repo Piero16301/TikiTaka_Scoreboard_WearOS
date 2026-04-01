@@ -10,7 +10,6 @@ class Table extends Equatable {
     required this.position,
     required this.team,
     required this.playedGames,
-    required this.form,
     required this.won,
     required this.draw,
     required this.lost,
@@ -18,6 +17,7 @@ class Table extends Equatable {
     required this.goalsFor,
     required this.goalsAgainst,
     required this.goalDifference,
+    this.form,
   });
 
   /// Crea una instancia de [Table] a partir de un [Map] json
@@ -26,7 +26,7 @@ class Table extends Equatable {
       position: json['position'] as int? ?? 0,
       team: Team.fromJson(json['team'] as Map<String, dynamic>? ?? const {}),
       playedGames: json['playedGames'] as int? ?? 0,
-      form: json['form'] as String? ?? '',
+      form: json['form'] != null ? json['form'] as String? : null,
       won: json['won'] as int? ?? 0,
       draw: json['draw'] as int? ?? 0,
       lost: json['lost'] as int? ?? 0,
@@ -62,7 +62,7 @@ class Table extends Equatable {
   final int playedGames;
 
   /// Forma del equipo
-  final String form;
+  final String? form;
 
   /// Partidos ganados
   final int won;

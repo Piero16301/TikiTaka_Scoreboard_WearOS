@@ -1,11 +1,15 @@
+export 'app_device_info.dart';
+export 'app_package_info.dart';
 export 'area.dart';
-export 'competition.dart';
 export 'config.dart';
 export 'contract.dart';
+export 'device.dart';
 export 'league.dart';
+export 'league_standings.dart';
 export 'match.dart';
 export 'odds.dart';
 export 'referee.dart';
+export 'route_analytics_observer.dart';
 export 'score.dart';
 export 'season.dart';
 export 'staff.dart';

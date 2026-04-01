@@ -1,6 +1,6 @@
-export 'dependencies.dart';
-export 'extensions.dart';
-export 'functions.dart';
-export 'routes.dart';
-export 'themes.dart';
-export 'variables.dart';
+export 'app_dependencies.dart';
+export 'app_extensions.dart';
+export 'app_functions.dart';
+export 'app_routes.dart';
+export 'app_themes.dart';
+export 'app_variables.dart';

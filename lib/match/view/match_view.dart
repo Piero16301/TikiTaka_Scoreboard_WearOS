@@ -30,8 +30,8 @@ class _MatchViewState extends State<MatchView> {
     final matchId = context.read<MatchCubit>().state.matchId;
     final database = getIt<DatabaseService>();
 
-    return StreamBuilder<List<Match>>(
-      stream: database.getMatch(matchId: matchId),
+    return StreamBuilder<Match>(
+      stream: database.getMatchStream(matchId: matchId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -84,7 +84,7 @@ class _MatchViewState extends State<MatchView> {
           );
         }
 
-        if (snapshot.data!.isEmpty) {
+        if (snapshot.data == null) {
           return AppScaffold.basic(
             child: Center(
               child: Column(
@@ -104,7 +104,7 @@ class _MatchViewState extends State<MatchView> {
           );
         }
 
-        final match = snapshot.data!.first;
+        final match = snapshot.data!;
 
         return AppScaffold.scrollable(
           controller: _scrollController,
@@ -188,27 +188,16 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
       );
     }
 
-    return StreamBuilder<List<Config>>(
-      stream: database.getConfigs(id: AppVariables.matchesCollection),
+    return StreamBuilder<Config>(
+      stream: database.getConfigStream(id: AppVariables.matchesCollection),
       builder: (context, snapshot) {
-        final configs = snapshot.data ??
-            [
-              Config(
-                id: AppVariables.matchesCollection,
-                lastUpdate: DateTime.now(),
-              ),
-            ];
-
-        if (configs.isEmpty) {
-          configs.add(
+        final config = snapshot.data ??
             Config(
               id: AppVariables.matchesCollection,
               lastUpdate: DateTime.now(),
-            ),
-          );
-        }
+            );
 
-        final delta = DateTime.now().difference(configs.first.lastUpdate);
+        final delta = DateTime.now().difference(config.lastUpdate);
 
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
@@ -355,10 +344,18 @@ class TeamsCardMatch extends StatelessWidget {
             ],
           ),
           GestureDetector(
-            onTap: () => Navigator.of(context).pushNamed(
-              TeamPage.routeName,
-              arguments: match.homeTeam.id,
-            ),
+            onTap: () {
+              getIt<AnalyticsService>().logEvent(
+                name: 'team_clicked',
+                parameters: {'team_id': match.homeTeam.id.toString()},
+              );
+              unawaited(
+                Navigator.of(context).pushNamed(
+                  TeamPage.routeName,
+                  arguments: match.homeTeam.id,
+                ),
+              );
+            },
             child: Row(
               children: [
                 CrestImage(
@@ -399,10 +396,18 @@ class TeamsCardMatch extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           GestureDetector(
-            onTap: () => Navigator.of(context).pushNamed(
-              TeamPage.routeName,
-              arguments: match.awayTeam.id,
-            ),
+            onTap: () {
+              getIt<AnalyticsService>().logEvent(
+                name: 'team_clicked',
+                parameters: {'team_id': match.awayTeam.id.toString()},
+              );
+              unawaited(
+                Navigator.of(context).pushNamed(
+                  TeamPage.routeName,
+                  arguments: match.awayTeam.id,
+                ),
+              );
+            },
             child: Row(
               children: [
                 CrestImage(
@@ -757,8 +762,10 @@ class StandingsMatch extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final database = getIt<DatabaseService>();
 
-    return StreamBuilder<List<Map<String, dynamic>>>(
-      stream: database.getStandings(leagueId: match.competition.id.toString()),
+    return StreamBuilder<LeagueStandings>(
+      stream: database.getStandingsStream(
+        leagueId: match.competition.id.toString(),
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const SizedBox.shrink();
@@ -768,30 +775,16 @@ class StandingsMatch extends StatelessWidget {
           return const ShimmerStandingsMatch();
         }
 
-        if (snapshot.data!.isEmpty) {
+        if (snapshot.data == null) {
           return const SizedBox.shrink();
         }
 
-        final result = snapshot.data!;
-        if (result.isEmpty || result.length > 1) {
+        final leagueStandings = snapshot.data!;
+        if (leagueStandings.standings.isEmpty) {
           return const SizedBox.shrink();
         }
 
-        final standingsList =
-            result.first[AppVariables.standingsCollection] as List<dynamic>? ??
-                [];
-        if (standingsList.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        final standings = standingsList
-            .map(
-              (standing) =>
-                  Standing.fromJson(standing as Map<String, dynamic>? ?? {}),
-            )
-            .toList();
-
-        if (standings.length == 1) {
+        if (leagueStandings.standings.length == 1) {
           return AppCardData(
             title: l10n.standingsMatch.toUpperCase(),
             content: Column(
@@ -840,7 +833,7 @@ class StandingsMatch extends StatelessWidget {
                     ),
                   ],
                 ),
-                ...standings.first.table.map(
+                ...leagueStandings.standings.first.table.map(
                   (row) => Container(
                     padding: const EdgeInsets.symmetric(
                       vertical: 2.5,
@@ -864,10 +857,24 @@ class StandingsMatch extends StatelessWidget {
                             ),
                           ),
                         ),
-                        CrestImage(
-                          crest: row.team.crest,
-                          dimension: 25,
-                          borderRadius: 7.5,
+                        GestureDetector(
+                          onTap: () {
+                            getIt<AnalyticsService>().logEvent(
+                              name: 'team_clicked',
+                              parameters: {'team_id': row.team.id.toString()},
+                            );
+                            unawaited(
+                              Navigator.of(context).pushNamed(
+                                TeamPage.routeName,
+                                arguments: row.team.id,
+                              ),
+                            );
+                          },
+                          child: CrestImage(
+                            crest: row.team.crest,
+                            dimension: 25,
+                            borderRadius: 7.5,
+                          ),
                         ),
                         Expanded(
                           child: Text(
@@ -897,10 +904,10 @@ class StandingsMatch extends StatelessWidget {
         } else {
           return Column(
             spacing: AppVariables.scaffoldSpacing,
-            children: standings
+            children: leagueStandings.standings
                 .map(
                   (standing) => AppCardData(
-                    title: standing.group.toUpperCase(),
+                    title: standing.group?.toUpperCase() ?? '',
                     content: Column(
                       spacing: 5,
                       children: [
@@ -971,10 +978,26 @@ class StandingsMatch extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                CrestImage(
-                                  crest: row.team.crest,
-                                  dimension: 25,
-                                  borderRadius: 7.5,
+                                GestureDetector(
+                                  onTap: () {
+                                    getIt<AnalyticsService>().logEvent(
+                                      name: 'team_clicked',
+                                      parameters: {
+                                        'team_id': row.team.id.toString(),
+                                      },
+                                    );
+                                    unawaited(
+                                      Navigator.of(context).pushNamed(
+                                        TeamPage.routeName,
+                                        arguments: row.team.id,
+                                      ),
+                                    );
+                                  },
+                                  child: CrestImage(
+                                    crest: row.team.crest,
+                                    dimension: 25,
+                                    borderRadius: 7.5,
+                                  ),
                                 ),
                                 Expanded(
                                   child: Text(

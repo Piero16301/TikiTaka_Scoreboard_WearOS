@@ -39,10 +39,12 @@ void main() {
       when(() => homeCubit.state).thenReturn(const HomeState());
       when(
         () => getIt<DatabaseService>()
-            .getMatches(enabledLeagues: any(named: 'enabledLeagues')),
+            .getMatchesStream(enabledLeagues: any(named: 'enabledLeagues')),
       ).thenAnswer((_) => Stream.value([]));
-      when(() => getIt<DatabaseService>().getConfigs(id: any(named: 'id')))
-          .thenAnswer((_) => Stream.value([]));
+      when(() => getIt<DatabaseService>().getConfigStream(id: any(named: 'id')))
+          .thenAnswer(
+        (_) => Stream.value(Config(id: '1', lastUpdate: DateTime.now())),
+      );
       when(() => getIt<LocalStorageService>().getEnabledLeagues())
           .thenReturn([]);
     });

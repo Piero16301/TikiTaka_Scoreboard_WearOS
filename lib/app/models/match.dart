@@ -16,13 +16,13 @@ class Match extends Equatable {
     required this.status,
     required this.matchday,
     required this.stage,
-    required this.group,
     required this.lastUpdated,
     required this.homeTeam,
     required this.awayTeam,
     required this.score,
     required this.odds,
     required this.referees,
+    this.group,
   });
 
   /// Crea una instancia de [Match] a partir de un [Map] json
@@ -31,7 +31,7 @@ class Match extends Equatable {
       area: Area.fromJson(
         json['area'] as Map<String, dynamic>? ?? <String, dynamic>{},
       ),
-      competition: Competition.fromJson(
+      competition: League.fromJson(
         json['competition'] as Map<String, dynamic>? ?? <String, dynamic>{},
       ),
       season: Season.fromJson(
@@ -43,7 +43,7 @@ class Match extends Equatable {
       status: json['status'] as String? ?? '-',
       matchday: json['matchday'] as int? ?? 1,
       stage: json['stage'] as String? ?? '-',
-      group: json['group'] as String? ?? '-',
+      group: json['group'] != null ? json['group'] as String : null,
       lastUpdated: (json['lastUpdated'] as Timestamp? ?? Timestamp.now())
           .toDate()
           .toLocal(),
@@ -67,9 +67,9 @@ class Match extends Equatable {
   }
 
   /// Empty match
-  static const empty = Match(
+  static final empty = Match(
     area: Area.empty,
-    competition: Competition.empty,
+    competition: League.empty,
     season: Season.empty,
     id: 0,
     utcDate: null,
@@ -82,14 +82,14 @@ class Match extends Equatable {
     awayTeam: Team.empty,
     score: Score.empty,
     odds: Odds.empty,
-    referees: [],
+    referees: const [],
   );
 
   /// Área del partido
   final Area area;
 
   /// Competición del partido
-  final Competition competition;
+  final League competition;
 
   /// Temporada del partido
   final Season season;
@@ -110,7 +110,7 @@ class Match extends Equatable {
   final String stage;
 
   /// Grupo del partido
-  final String group;
+  final String? group;
 
   /// Última actualización del partido
   final DateTime? lastUpdated;

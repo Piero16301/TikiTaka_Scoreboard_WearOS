@@ -22,7 +22,7 @@ class MockTime extends Mock implements Time {}
 
 class MockArea extends Mock implements Area {}
 
-class MockCompetition extends Mock implements Competition {}
+class MockLeague extends Mock implements League {}
 
 class MockSeason extends Mock implements Season {}
 
@@ -32,18 +32,27 @@ class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
 class FakeRoute extends Fake implements Route<dynamic> {}
 
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 void main() {
   group('MatchPage and MatchView', () {
     late MockMatchCubit matchCubit;
     late MockDatabaseService mockDatabase;
+    late MockAnalyticsService mockAnalytics;
 
     setUpAll(() async {
       mockDatabase = MockDatabaseService();
+      mockAnalytics = MockAnalyticsService();
 
       if (getIt.isRegistered<DatabaseService>()) {
         await getIt.unregister<DatabaseService>();
       }
       getIt.registerSingleton<DatabaseService>(mockDatabase);
+
+      if (getIt.isRegistered<AnalyticsService>()) {
+        await getIt.unregister<AnalyticsService>();
+      }
+      getIt.registerSingleton<AnalyticsService>(mockAnalytics);
 
       registerFallbackValue(FakeRoute());
     });
@@ -53,11 +62,17 @@ void main() {
 
       when(() => matchCubit.state).thenReturn(const MatchState(matchId: 1));
       when(() => matchCubit.initialize(matchId: 1)).thenAnswer((_) async {});
+      when(
+        () => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenAnswer((_) async {});
     });
 
     testWidgets('renders MatchPage properly and shows shimmers when loading',
         (tester) async {
-      when(() => mockDatabase.getMatch(matchId: 1))
+      when(() => mockDatabase.getMatchStream(matchId: 1))
           .thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
@@ -76,7 +91,7 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getMatch(matchId: 1))
+      when(() => mockDatabase.getMatchStream(matchId: 1))
           .thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
@@ -95,27 +110,6 @@ void main() {
       expect(find.text('Error loading match'), findsOneWidget);
     });
 
-    testWidgets('shows not found state when stream emits empty list',
-        (tester) async {
-      when(() => mockDatabase.getMatch(matchId: 1))
-          .thenAnswer((_) => Stream.value([]));
-
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<MatchCubit>.value(
-            value: matchCubit,
-            child: const MatchView(),
-          ),
-        ),
-      );
-
-      await tester.pump();
-
-      expect(find.text('Match not found'), findsOneWidget);
-    });
-
     testWidgets('shows match details when stream emits data', (tester) async {
       final mockMatch = MockMatch();
       final homeTeam = MockTeam();
@@ -124,7 +118,7 @@ void main() {
       final halfTime = MockTime();
       final fullTime = MockTime();
       final area = MockArea();
-      final competition = MockCompetition();
+      final league = MockLeague();
       final season = MockSeason();
 
       when(() => homeTeam.id).thenReturn(10);
@@ -146,9 +140,9 @@ void main() {
       when(() => area.name).thenReturn('England');
       when(() => area.flag).thenReturn('england.png');
 
-      when(() => competition.id).thenReturn(123);
-      when(() => competition.name).thenReturn('Premier League');
-      when(() => competition.emblem).thenReturn('pl.png');
+      when(() => league.id).thenReturn(123);
+      when(() => league.name).thenReturn('Premier League');
+      when(() => league.emblem).thenReturn('pl.png');
 
       when(() => season.startDate).thenReturn(DateTime(2023, 8));
       when(() => season.endDate).thenReturn(DateTime(2024, 5, 30));
@@ -157,7 +151,7 @@ void main() {
       when(() => mockMatch.awayTeam).thenReturn(awayTeam);
       when(() => mockMatch.score).thenReturn(score);
       when(() => mockMatch.area).thenReturn(area);
-      when(() => mockMatch.competition).thenReturn(competition);
+      when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
       when(() => mockMatch.status).thenReturn('FINISHED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
@@ -168,12 +162,15 @@ void main() {
 
       when(() => mockMatch.referees).thenReturn([mockReferee]);
 
-      when(() => mockDatabase.getMatch(matchId: 1))
-          .thenAnswer((_) => Stream.value([mockMatch]));
-      when(() => mockDatabase.getConfigs(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value([]));
-      when(() => mockDatabase.getStandings(leagueId: '123'))
-          .thenAnswer((_) => Stream.value([]));
+      when(() => mockDatabase.getMatchStream(matchId: 1))
+          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
+      ).thenAnswer(
+        (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
+      );
+      when(() => mockDatabase.getStandingsStream(leagueId: '123'))
+          .thenAnswer((_) => Stream.value(LeagueStandings.empty));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -201,7 +198,7 @@ void main() {
       final awayTeam = MockTeam();
       final score = MockScore();
       final area = MockArea();
-      final competition = MockCompetition();
+      final league = MockLeague();
       final season = MockSeason();
 
       when(() => homeTeam.id).thenReturn(10);
@@ -222,9 +219,9 @@ void main() {
 
       when(() => area.name).thenReturn('England');
       when(() => area.flag).thenReturn('england.png');
-      when(() => competition.id).thenReturn(123);
-      when(() => competition.name).thenReturn('Premier League');
-      when(() => competition.emblem).thenReturn('pl.png');
+      when(() => league.id).thenReturn(123);
+      when(() => league.name).thenReturn('Premier League');
+      when(() => league.emblem).thenReturn('pl.png');
       when(() => season.startDate).thenReturn(DateTime(2023, 8));
       when(() => season.endDate).thenReturn(DateTime(2024, 5, 30));
 
@@ -232,19 +229,21 @@ void main() {
       when(() => mockMatch.awayTeam).thenReturn(awayTeam);
       when(() => mockMatch.score).thenReturn(score);
       when(() => mockMatch.area).thenReturn(area);
-      when(() => mockMatch.competition).thenReturn(competition);
+      when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
       when(() => mockMatch.status).thenReturn('IN_PLAY');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatch(matchId: 1))
-          .thenAnswer((_) => Stream.value([mockMatch]));
-      when(() => mockDatabase.getConfigs(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value([]));
+      when(() => mockDatabase.getMatchStream(matchId: 1))
+          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
+      ).thenAnswer(
+        (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
+      );
 
-      // Single group standings
       final singleStanding = {
         AppVariables.standingsCollection: [
           {
@@ -281,8 +280,14 @@ void main() {
         ],
       };
 
-      when(() => mockDatabase.getStandings(leagueId: '123'))
-          .thenAnswer((_) => Stream.value([singleStanding]));
+      when(() => mockDatabase.getStandingsStream(leagueId: '123')).thenAnswer(
+        (_) => Stream.value(
+          LeagueStandings.fromJson({
+            'leagueId': '123',
+            'standings': singleStanding[AppVariables.standingsCollection],
+          }),
+        ),
+      );
 
       final mockObserver = MockNavigatorObserver();
 
@@ -306,24 +311,19 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Tap Home team
       await tester.tap(find.text('Home Team FC').first);
       await tester.pumpAndSettle();
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));
 
-      // Go back
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      // Tap Away team
       await tester.tap(find.text('Away Team FC').first);
       await tester.pumpAndSettle();
 
-      // Go back
       await tester.tap(find.byType(BackButton));
       await tester.pumpAndSettle();
 
-      // Tap Back button at bottom of MatchView
       await tester.drag(find.byType(MatchView), const Offset(0, -500));
       await tester.pumpAndSettle();
       await tester.tap(find.text('BACK'));
@@ -336,7 +336,7 @@ void main() {
       final awayTeam = MockTeam();
       final score = MockScore();
       final area = MockArea();
-      final competition = MockCompetition();
+      final league = MockLeague();
       final season = MockSeason();
 
       when(() => homeTeam.id).thenReturn(10);
@@ -357,9 +357,9 @@ void main() {
 
       when(() => area.name).thenReturn('England');
       when(() => area.flag).thenReturn('england.png');
-      when(() => competition.id).thenReturn(123);
-      when(() => competition.name).thenReturn('Champions League');
-      when(() => competition.emblem).thenReturn('ucl.png');
+      when(() => league.id).thenReturn(123);
+      when(() => league.name).thenReturn('Champions League');
+      when(() => league.emblem).thenReturn('ucl.png');
       when(() => season.startDate).thenReturn(DateTime(2023, 8));
       when(() => season.endDate).thenReturn(DateTime(2024, 5, 30));
 
@@ -367,19 +367,21 @@ void main() {
       when(() => mockMatch.awayTeam).thenReturn(awayTeam);
       when(() => mockMatch.score).thenReturn(score);
       when(() => mockMatch.area).thenReturn(area);
-      when(() => mockMatch.competition).thenReturn(competition);
+      when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
       when(() => mockMatch.status).thenReturn('PAUSED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatch(matchId: 1))
-          .thenAnswer((_) => Stream.value([mockMatch]));
-      when(() => mockDatabase.getConfigs(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value([]));
+      when(() => mockDatabase.getMatchStream(matchId: 1))
+          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
+      ).thenAnswer(
+        (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
+      );
 
-      // Multiple groups standings
       final multipleStandings = {
         AppVariables.standingsCollection: [
           {
@@ -423,8 +425,14 @@ void main() {
         ],
       };
 
-      when(() => mockDatabase.getStandings(leagueId: '123'))
-          .thenAnswer((_) => Stream.value([multipleStandings]));
+      when(() => mockDatabase.getStandingsStream(leagueId: '123')).thenAnswer(
+        (_) => Stream.value(
+          LeagueStandings.fromJson({
+            'leagueId': '123',
+            'standings': multipleStandings[AppVariables.standingsCollection],
+          }),
+        ),
+      );
 
       await tester.pumpWidget(
         MaterialApp(
@@ -449,7 +457,7 @@ void main() {
       final awayTeam = MockTeam();
       final score = MockScore();
       final area = MockArea();
-      final competition = MockCompetition();
+      final league = MockLeague();
       final season = MockSeason();
 
       when(() => homeTeam.id).thenReturn(10);
@@ -470,9 +478,9 @@ void main() {
 
       when(() => area.name).thenReturn('England');
       when(() => area.flag).thenReturn('england.png');
-      when(() => competition.id).thenReturn(123);
-      when(() => competition.name).thenReturn('Champions League');
-      when(() => competition.emblem).thenReturn('ucl.png');
+      when(() => league.id).thenReturn(123);
+      when(() => league.name).thenReturn('Champions League');
+      when(() => league.emblem).thenReturn('ucl.png');
       when(() => season.startDate).thenReturn(DateTime(2023, 8));
       when(() => season.endDate).thenReturn(DateTime(2024, 5, 30));
 
@@ -480,23 +488,26 @@ void main() {
       when(() => mockMatch.awayTeam).thenReturn(awayTeam);
       when(() => mockMatch.score).thenReturn(score);
       when(() => mockMatch.area).thenReturn(area);
-      when(() => mockMatch.competition).thenReturn(competition);
+      when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
       when(() => mockMatch.status).thenReturn('PAUSED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatch(matchId: 1))
-          .thenAnswer((_) => Stream.value([mockMatch]));
-      when(() => mockDatabase.getConfigs(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value([]));
+      when(() => mockDatabase.getMatchStream(matchId: 1))
+          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
+      ).thenAnswer(
+        (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
+      );
 
-      // Standings without the valid key
       final invalidStandings = {'invalid_key': <dynamic>[]};
 
-      when(() => mockDatabase.getStandings(leagueId: '123'))
-          .thenAnswer((_) => Stream.value([invalidStandings]));
+      when(() => mockDatabase.getStandingsStream(leagueId: '123')).thenAnswer(
+        (_) => Stream.value(LeagueStandings.fromJson(invalidStandings)),
+      );
 
       await tester.pumpWidget(
         MaterialApp(

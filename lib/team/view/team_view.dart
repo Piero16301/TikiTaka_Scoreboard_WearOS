@@ -27,8 +27,8 @@ class _TeamViewState extends State<TeamView> {
     final teamId = context.read<TeamCubit>().state.teamId;
     final database = getIt<DatabaseService>();
 
-    return StreamBuilder<List<Team>>(
-      stream: database.getTeam(teamId: teamId),
+    return StreamBuilder<Team>(
+      stream: database.getTeamStream(teamId: teamId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -69,7 +69,7 @@ class _TeamViewState extends State<TeamView> {
           );
         }
 
-        if (snapshot.data!.isEmpty) {
+        if (snapshot.data == null) {
           return AppScaffold.basic(
             child: Center(
               child: Column(
@@ -89,26 +89,26 @@ class _TeamViewState extends State<TeamView> {
           );
         }
 
-        final team = snapshot.data!.first;
+        final team = snapshot.data!;
 
         return AppScaffold.scrollable(
           controller: _scrollController,
           background: WavingFlagBackground(
-            colors: AppFunctions.getTeamColors(team.clubColors),
+            colors: AppFunctions.getTeamColors(team.clubColors ?? ''),
           ),
           child: Column(
             spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               MainInfoTeam(team: team),
-              CoachCardTeam(coach: team.coach),
-              if (team.runningCompetitions.isNotEmpty)
+              CoachCardTeam(coach: team.coach ?? Staff.empty),
+              if (team.runningCompetitions?.isNotEmpty ?? false)
                 CompetitionsCardTeam(
-                  competitions: team.runningCompetitions,
+                  competitions: team.runningCompetitions ?? [],
                 ),
-              if (team.squad.isNotEmpty)
+              if (team.squad?.isNotEmpty ?? false)
                 SquadCardTeam(
-                  squad: team.squad
+                  squad: team.squad!
                     ..sort(
                       (a, b) => AppFunctions.getStaffPositionOrder(
                         a.position,
@@ -119,9 +119,9 @@ class _TeamViewState extends State<TeamView> {
                       ),
                     ),
                 ),
-              if (team.staff.isNotEmpty)
+              if (team.staff?.isNotEmpty ?? false)
                 StaffCardTeam(
-                  staff: team.staff
+                  staff: team.staff!
                     ..sort(
                       (a, b) => AppFunctions.getStaffPositionOrder(
                         a.position,
@@ -373,7 +373,7 @@ class ShimmerCardTeam extends StatelessWidget {
 class CompetitionsCardTeam extends StatelessWidget {
   const CompetitionsCardTeam({required this.competitions, super.key});
 
-  final List<Competition> competitions;
+  final List<League> competitions;
 
   @override
   Widget build(BuildContext context) {
@@ -629,7 +629,7 @@ class AdditionalInfoTeam extends StatelessWidget {
           buildInfoRow(
             icon: HugeIcons.strokeRoundedColosseum,
             title: l10n.stadiumTeam,
-            value: team.venue,
+            value: team.venue ?? '-',
             context: context,
           ),
           buildInfoRow(
@@ -641,13 +641,13 @@ class AdditionalInfoTeam extends StatelessWidget {
           buildInfoRow(
             icon: HugeIcons.strokeRoundedLocation01,
             title: l10n.addressTeam,
-            value: team.address,
+            value: team.address ?? '-',
             context: context,
           ),
           buildInfoRow(
             icon: HugeIcons.strokeRoundedInternet,
             title: l10n.websiteTeam,
-            value: team.website,
+            value: team.website ?? '-',
             context: context,
           ),
         ],

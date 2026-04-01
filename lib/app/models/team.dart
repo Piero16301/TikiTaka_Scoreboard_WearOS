@@ -8,53 +8,60 @@ class Team extends Equatable {
   /// {@macro team}
   const Team({
     required this.id,
-    required this.area,
     required this.name,
     required this.shortName,
     required this.tla,
     required this.crest,
-    required this.address,
-    required this.website,
-    required this.founded,
-    required this.clubColors,
-    required this.venue,
-    required this.runningCompetitions,
-    required this.coach,
-    required this.squad,
-    required this.staff,
+    this.address,
+    this.website,
+    this.founded,
+    this.clubColors,
+    this.venue,
+    this.runningCompetitions,
+    this.coach,
+    this.squad,
+    this.staff,
+    this.area,
   });
 
   /// Crea una instancia de [Team] a partir de un [Map] json
   factory Team.fromJson(Map<String, dynamic> json) {
     return Team(
       id: json['id'] as int? ?? 0,
-      area: Area.fromJson(
-        json['area'] as Map<String, dynamic>? ?? <String, dynamic>{},
-      ),
+      area: json['area'] != null
+          ? Area.fromJson(json['area'] as Map<String, dynamic>)
+          : null,
       name: json['name'] as String? ?? '',
       shortName: json['shortName'] as String? ?? '',
       tla: json['tla'] as String? ?? '',
       crest: json['crest'] as String? ?? '',
-      address: json['address'] as String? ?? '',
-      website: json['website'] as String? ?? '',
-      founded: json['founded'] as int? ?? 0,
-      clubColors: json['clubColors'] as String? ?? '',
-      venue: json['venue'] as String? ?? '',
-      runningCompetitions: (json['runningCompetitions'] as List<dynamic>?)
-              ?.map((e) => Competition.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          <Competition>[],
-      coach: Staff.fromJson(
-        json['coach'] as Map<String, dynamic>? ?? <String, dynamic>{},
-      ),
-      squad: (json['squad'] as List<dynamic>?)
+      address:
+          json['address'] != null ? json['address'] as String? ?? '' : null,
+      website:
+          json['website'] != null ? json['website'] as String? ?? '' : null,
+      founded: json['founded'] != null ? json['founded'] as int? ?? 0 : null,
+      clubColors: json['clubColors'] != null
+          ? json['clubColors'] as String? ?? ''
+          : null,
+      venue: json['venue'] != null ? json['venue'] as String? ?? '' : null,
+      runningCompetitions: json['runningCompetitions'] != null
+          ? (json['runningCompetitions'] as List<dynamic>?)
+              ?.map((e) => League.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
+      coach: json['coach'] != null
+          ? Staff.fromJson(json['coach'] as Map<String, dynamic>)
+          : null,
+      squad: json['squad'] != null
+          ? (json['squad'] as List<dynamic>?)
               ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          <Staff>[],
-      staff: (json['staff'] as List<dynamic>?)
+              .toList()
+          : null,
+      staff: json['staff'] != null
+          ? (json['staff'] as List<dynamic>?)
               ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          <Staff>[],
+              .toList()
+          : null,
     );
   }
 
@@ -71,7 +78,7 @@ class Team extends Equatable {
     founded: 0,
     clubColors: '',
     venue: '',
-    runningCompetitions: <Competition>[],
+    runningCompetitions: <League>[],
     coach: Staff.empty,
     squad: <Staff>[],
     staff: <Staff>[],
@@ -81,7 +88,7 @@ class Team extends Equatable {
   final int id;
 
   /// Area del equipo
-  final Area area;
+  final Area? area;
 
   /// Nombre del equipo
   final String name;
@@ -96,34 +103,34 @@ class Team extends Equatable {
   final String crest;
 
   /// Dirección del equipo
-  final String address;
+  final String? address;
 
   /// Sitio web del equipo
-  final String website;
+  final String? website;
 
   /// Año de fundación del equipo
-  final int founded;
+  final int? founded;
 
   /// Colores del club
-  final String clubColors;
+  final String? clubColors;
 
   /// Estadio del equipo
-  final String venue;
+  final String? venue;
 
   /// Competiciones en las que participa el equipo
-  final List<Competition> runningCompetitions;
+  final List<League>? runningCompetitions;
 
   /// Entrenador del equipo
-  final Staff coach;
+  final Staff? coach;
 
   /// Squad del equipo
-  final List<Staff> squad;
+  final List<Staff>? squad;
 
   /// Staff del equipo
-  final List<Staff> staff;
+  final List<Staff>? staff;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         area,
         name,

@@ -1,20 +1,21 @@
 import 'dart:async';
 
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class DeviceInfoService {
-  DeviceInfoService();
+  DeviceInfoService({required DeviceInfoRepository deviceInfoRepository})
+      : _deviceInfoRepository = deviceInfoRepository;
 
-  late final AndroidDeviceInfo _androidInfo;
-  late final PackageInfo _packageInfo;
+  final DeviceInfoRepository _deviceInfoRepository;
 
   Future<void> initialize() async {
-    _androidInfo = await DeviceInfoPlugin().androidInfo;
-    _packageInfo = await PackageInfo.fromPlatform();
+    final performance = getIt<PerformanceService>();
+    final trace = performance.startTrace('device_info_service_initialization');
+    await _deviceInfoRepository.initialize();
+    performance.stopTrace(trace);
   }
 
-  AndroidDeviceInfo get androidInfo => _androidInfo;
+  AppDeviceInfo get deviceInfo => _deviceInfoRepository.deviceInfo;
 
-  PackageInfo get packageInfo => _packageInfo;
+  AppPackageInfo get packageInfo => _deviceInfoRepository.packageInfo;
 }

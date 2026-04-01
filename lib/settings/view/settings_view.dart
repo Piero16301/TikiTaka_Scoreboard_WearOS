@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
@@ -109,7 +111,13 @@ class ConfigurationSetting extends StatelessWidget {
             width: 40,
             height: 40,
             child: IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(route),
+              onPressed: () {
+                getIt<AnalyticsService>().logEvent(
+                  name: 'setting_option_clicked',
+                  parameters: {'route': route},
+                );
+                unawaited(Navigator.of(context).pushNamed(route));
+              },
               icon: const Icon(Icons.arrow_forward_ios),
               padding: EdgeInsets.zero,
             ),

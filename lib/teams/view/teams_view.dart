@@ -28,7 +28,7 @@ class _TeamsViewState extends State<TeamsView> {
     final notification = getIt<NotificationService>();
 
     return StreamBuilder<List<Team>>(
-      stream: database.getTeamsByLeague(leagueId: leagueId),
+      stream: database.getTeamsStream(leagueId: leagueId),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -118,8 +118,8 @@ class _TeamsViewState extends State<TeamsView> {
                   ),
                 ),
               ),
-              StreamBuilder<List<Map<String, dynamic>>>(
-                stream: database.getDevices(token: notification.token),
+              StreamBuilder<Device>(
+                stream: database.getDeviceStream(token: notification.token),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const SizedBox.shrink();
@@ -129,13 +129,12 @@ class _TeamsViewState extends State<TeamsView> {
                     return const SizedBox.shrink();
                   }
 
-                  if (snapshot.data!.isEmpty) {
+                  if (snapshot.data == null) {
                     return const SizedBox.shrink();
                   }
 
-                  final enabledTeams =
-                      snapshot.data!.first['enabledTeams'] as List<dynamic>? ??
-                          [];
+                  final device = snapshot.data!;
+                  final enabledTeams = device.enabledTeams;
                   final noShowCrestTeams = [779, 828];
 
                   return Column(
@@ -143,8 +142,7 @@ class _TeamsViewState extends State<TeamsView> {
                     children: teams
                         .map(
                           (team) => TeamCardTeams(
-                            enabledTeams:
-                                enabledTeams.map((e) => e.toString()).toList(),
+                            enabledTeams: enabledTeams,
                             team: team,
                             hideCrest: noShowCrestTeams.contains(team.id),
                           ),
@@ -222,9 +220,9 @@ class TeamCardTeams extends StatelessWidget {
                   child: Switch(
                     padding: EdgeInsets.zero,
                     value: enabled,
-                    onChanged: (value) => database.changeEnabledTeams(
-                      teamId: team.id,
+                    onChanged: (value) => database.updateDeviceSettings(
                       token: notification.token,
+                      teamToModify: team.id,
                       enabledTeams: enabledTeams,
                     ),
                   ),

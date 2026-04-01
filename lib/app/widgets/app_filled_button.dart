@@ -39,8 +39,7 @@ class AppFilledButton extends StatelessWidget {
       label: label != null
           ? ScrollText(
               text: label ?? '',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                   ),
             )

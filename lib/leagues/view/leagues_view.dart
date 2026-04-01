@@ -27,7 +27,7 @@ class _LeaguesViewState extends State<LeaguesView> {
     final database = getIt<DatabaseService>();
 
     return StreamBuilder<List<League>>(
-      stream: database.getLeagues(),
+      stream: database.getLeaguesStream(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -183,11 +183,19 @@ class LeagueCardCompetitions extends StatelessWidget {
                   child: Switch(
                     padding: EdgeInsets.zero,
                     value: enabled,
-                    onChanged: (value) =>
-                        context.read<LeaguesCubit>().toggleLeague(
-                              league: league.code,
-                              enabled: value,
-                            ),
+                    onChanged: (value) {
+                      getIt<AnalyticsService>().logEvent(
+                        name: 'league_toggled',
+                        parameters: {
+                          'league': league.code,
+                          'enabled': value.toString(),
+                        },
+                      );
+                      context.read<LeaguesCubit>().toggleLeague(
+                            league: league.code,
+                            enabled: value,
+                          );
+                    },
                   ),
                 ),
               );
