@@ -143,6 +143,7 @@ jobs:
           whatsNewDirectory: whatsnew
 
       - name: 🗑️ Delete Artifact
+        if: always()
         continue-on-error: true
         uses: geekyeggo/delete-artifact@v6
         with:
