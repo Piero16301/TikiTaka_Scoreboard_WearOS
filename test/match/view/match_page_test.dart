@@ -326,7 +326,7 @@ void main() {
 
       await tester.drag(find.byType(MatchView), const Offset(0, -500));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('BACK'));
+      await tester.tap(find.byType(BackButtonMatch));
       await tester.pumpAndSettle();
     });
 
