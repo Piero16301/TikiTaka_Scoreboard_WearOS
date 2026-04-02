@@ -56,18 +56,7 @@ class _TeamsViewState extends State<TeamsView> {
               spacing: AppVariables.scaffoldSpacing,
               children: [
                 const SizedBox(height: AppVariables.topScaffoldSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppVariables.horizontalPaddingTitle,
-                  ),
-                  child: ScrollText(
-                    text: l10n.titleTeams.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppVariables.titleSize,
-                    ),
-                  ),
-                ),
+                AppTitleText(title: l10n.titleTeams.toUpperCase()),
                 ...List.generate(
                   AppVariables.numberOfShimmers,
                   (index) => const ShimmerCardTeams(),
@@ -106,18 +95,7 @@ class _TeamsViewState extends State<TeamsView> {
             spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppVariables.horizontalPaddingTitle,
-                ),
-                child: ScrollText(
-                  text: l10n.titleTeams.toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: AppVariables.titleSize,
-                  ),
-                ),
-              ),
+              AppTitleText(title: l10n.titleTeams.toUpperCase()),
               StreamBuilder<Device>(
                 stream: database.getDeviceStream(token: notification.token),
                 builder: (context, snapshot) {
@@ -245,15 +223,20 @@ class BackButtonTeams extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        Expanded(
-          child: AppFilledButton(
-            onPressed: () => Navigator.of(context).pop(),
-            label: l10n.backText.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppVariables.bottomScaffoldSpacingButton,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppFilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              label: l10n.backText,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

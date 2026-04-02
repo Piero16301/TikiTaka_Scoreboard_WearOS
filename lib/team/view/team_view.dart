@@ -201,11 +201,11 @@ class MainInfoTeam extends StatelessWidget {
         const SizedBox(height: 5),
         ScrollText(
           text: team.name,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         ScrollText(
           text: '${team.shortName} (${team.tla})',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+          style: const TextStyle(fontSize: 11),
         ),
       ],
     );
@@ -290,16 +290,13 @@ class CoachCardTeam extends StatelessWidget {
                     Text(
                       coach.nationality,
                       style: const TextStyle(
-                        fontSize: 10,
                         fontWeight: FontWeight.bold,
+                        fontSize: 10,
                       ),
                     ),
                     Text(
                       l10n.ageTeam(getAge(coach.dateOfBirth)),
-                      style: const TextStyle(
-                        fontSize: 9,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: const TextStyle(fontSize: 10),
                     ),
                   ],
                 ),
@@ -309,10 +306,7 @@ class CoachCardTeam extends StatelessWidget {
                 children: [
                   Text(
                     l10n.untilTeam,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 9,
-                    ),
+                    style: const TextStyle(fontSize: 9),
                   ),
                   Text(
                     getUntilContract(coach.contract.until),
@@ -397,7 +391,10 @@ class CompetitionsCardTeam extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ScrollText(text: competition.name),
+                        ScrollText(
+                          text: competition.name,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
                         Text(
                           AppFunctions.getCompetitionType(
                             competition.type,
@@ -450,7 +447,6 @@ class SquadCardTeam extends StatelessWidget {
                         ScrollText(
                           text: player.name,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
                             fontSize: 11,
                           ),
                         ),
@@ -465,7 +461,6 @@ class SquadCardTeam extends StatelessWidget {
                           l10n.ageTeam(getAge(player.dateOfBirth)),
                           style: const TextStyle(
                             fontSize: 9,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -547,7 +542,6 @@ class StaffCardTeam extends StatelessWidget {
                         ScrollText(
                           text: personal.name,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
                             fontSize: 11,
                           ),
                         ),
@@ -562,7 +556,6 @@ class StaffCardTeam extends StatelessWidget {
                           l10n.ageTeam(getAge(personal.dateOfBirth)),
                           style: const TextStyle(
                             fontSize: 9,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ],
@@ -674,14 +667,13 @@ class AdditionalInfoTeam extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ScrollText(
-                text: title,
+                text: value,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
                   fontSize: 11,
                 ),
               ),
               ScrollText(
-                text: value,
+                text: title,
                 style: const TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
@@ -702,15 +694,20 @@ class BackButtonTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        Expanded(
-          child: AppFilledButton(
-            onPressed: () => Navigator.of(context).pop(),
-            label: l10n.backText.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppVariables.bottomScaffoldSpacingButton,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppFilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              label: l10n.backText,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -59,18 +59,9 @@ class _MatchViewState extends State<MatchView> {
               spacing: AppVariables.scaffoldSpacing,
               children: [
                 const SizedBox(height: AppVariables.topScaffoldSpacing),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppVariables.horizontalPaddingTitle,
-                  ),
-                  child: ScrollText(
-                    text: l10n.titleMatch.toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppVariables.titleSize,
-                      height: AppVariables.titleTextHeight,
-                    ),
-                  ),
+                AppTitleText(
+                  title: l10n.titleMatch.toUpperCase(),
+                  hasBottomSpacing: false,
                 ),
                 const LastUpdateMatch(isLoading: true),
                 const ShimmerTeamsCardMatch(),
@@ -112,18 +103,9 @@ class _MatchViewState extends State<MatchView> {
             spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppVariables.horizontalPaddingTitle,
-                ),
-                child: ScrollText(
-                  text: l10n.titleMatch.toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: AppVariables.titleSize,
-                    height: AppVariables.titleTextHeight,
-                  ),
-                ),
+              AppTitleText(
+                title: l10n.titleMatch.toUpperCase(),
+                hasBottomSpacing: false,
               ),
               const LastUpdateMatch(),
               TeamsCardMatch(match: match),
@@ -182,7 +164,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
       return Text(
         l10n.updatingMatches,
         style: const TextStyle(
-          fontWeight: FontWeight.bold,
+          height: 0.8,
           fontSize: 10,
         ),
       );
@@ -202,7 +184,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
+            height: 0.8,
             fontSize: 10,
           ),
         );
@@ -343,108 +325,118 @@ class TeamsCardMatch extends StatelessWidget {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              getIt<AnalyticsService>().logEvent(
-                name: 'team_clicked',
-                parameters: {'team_id': match.homeTeam.id.toString()},
-              );
-              unawaited(
-                Navigator.of(context).pushNamed(
-                  TeamPage.routeName,
-                  arguments: match.homeTeam.id,
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                CrestImage(
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  getIt<AnalyticsService>().logEvent(
+                    name: 'team_clicked',
+                    parameters: {'team_id': match.homeTeam.id.toString()},
+                  );
+                  unawaited(
+                    Navigator.of(context).pushNamed(
+                      TeamPage.routeName,
+                      arguments: match.homeTeam.id,
+                    ),
+                  );
+                },
+                child: CrestImage(
                   crest: match.homeTeam.crest,
                   fit: BoxFit.cover,
                   margin: 2.5,
                 ),
-                const SizedBox(width: 5),
-                Expanded(child: ScrollText(text: match.homeTeam.name)),
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: 20,
-                  child: Center(
-                    child: Text(
-                      match.score.halfTime.home.toString(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: ScrollText(
+                  text: match.homeTeam.name,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    match.score.halfTime.home.toString(),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: 20,
-                  child: Center(
-                    child: Text(
-                      match.score.fullTime.home.toString(),
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    match.score.fullTime.home.toString(),
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           const SizedBox(height: 5),
-          GestureDetector(
-            onTap: () {
-              getIt<AnalyticsService>().logEvent(
-                name: 'team_clicked',
-                parameters: {'team_id': match.awayTeam.id.toString()},
-              );
-              unawaited(
-                Navigator.of(context).pushNamed(
-                  TeamPage.routeName,
-                  arguments: match.awayTeam.id,
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                CrestImage(
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  getIt<AnalyticsService>().logEvent(
+                    name: 'team_clicked',
+                    parameters: {'team_id': match.awayTeam.id.toString()},
+                  );
+                  unawaited(
+                    Navigator.of(context).pushNamed(
+                      TeamPage.routeName,
+                      arguments: match.awayTeam.id,
+                    ),
+                  );
+                },
+                child: CrestImage(
                   crest: match.awayTeam.crest,
                   fit: BoxFit.cover,
                   margin: 2.5,
                 ),
-                const SizedBox(width: 5),
-                Expanded(child: ScrollText(text: match.awayTeam.name)),
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: 20,
-                  child: Center(
-                    child: Text(
-                      match.score.halfTime.away.toString(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                child: ScrollText(
+                  text: match.awayTeam.name,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    match.score.halfTime.away.toString(),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(width: 5),
-                SizedBox(
-                  width: 20,
-                  child: Center(
-                    child: Text(
-                      match.score.fullTime.away.toString(),
-                      style: const TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
+              ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: 20,
+                child: Center(
+                  child: Text(
+                    match.score.fullTime.away.toString(),
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -527,10 +519,7 @@ class RefereeCardMatch extends StatelessWidget {
                       ),
                       Text(
                         referee.nationality,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     ],
                   ),
@@ -604,7 +593,12 @@ class CompetitionCardMatch extends StatelessWidget {
                 dimension: 30,
               ),
               const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: match.area.name)),
+              Expanded(
+                child: ScrollText(
+                  text: match.area.name,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -616,7 +610,12 @@ class CompetitionCardMatch extends StatelessWidget {
                 dimension: 30,
               ),
               const SizedBox(width: 10),
-              Expanded(child: ScrollText(text: match.competition.name)),
+              Expanded(
+                child: ScrollText(
+                  text: match.competition.name,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -628,13 +627,9 @@ class CompetitionCardMatch extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 5),
           Text(
             '${l10n.matchdayMatch} ${match.matchday}',
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 11),
           ),
         ],
       ),
@@ -1074,15 +1069,20 @@ class BackButtonMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        Expanded(
-          child: AppFilledButton(
-            onPressed: () => Navigator.of(context).pop(),
-            label: l10n.backText.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppVariables.bottomScaffoldSpacingButton,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppFilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              label: l10n.backText,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

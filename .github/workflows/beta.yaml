@@ -68,7 +68,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build:
-    name: "🚀 Build and Deploy to Play Store (Open Beta)"
+    name: "🔨 Build Application"
     needs: quality
     runs-on: ubuntu-latest
     env:
@@ -98,9 +98,40 @@ jobs:
           flutter pub get
       - name: 📄 Create dummy .env file
         run: touch .env
-      - name: 🛠️ Build the application (AAB)
+      - name: 🔨 Build the application (AAB)
         run: |
           flutter build appbundle --flavor production -t lib/main.dart --build-name="2.3.${{ github.run_number }}" --build-number="${{ github.run_number }}"
+
+      - name: ⬇️ Upload AAB to Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: aab-stores
+          path: ${{ env.AAB_PATH }}
+
+  deploy:
+    name: "🚀 Deploy to Play Store"
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
+      AAB_PATH: build/app/outputs/bundle/productionRelease/app-production-release.aab
+      SERVICE_ACCOUNT_PATH: service-account.json
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: 📚 Checkout repo
+        uses: actions/checkout@v6
+      - name: ⬇️ Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: aab-stores
+          path: ./downloaded
+      - name: 📁 Crear estructura de directorios
+        run: |
+          mkdir -p build/app/outputs/bundle/productionRelease/
+          cp ./downloaded/* build/app/outputs/bundle/productionRelease/
+          ls -la build/app/outputs/bundle/productionRelease/
+      - name: 🔑 Decode Service Account
+        run: echo "${{ secrets.ANDROID_RELEASE_SERVICE_ACCOUNT }}" | base64 --decode > ${{ env.SERVICE_ACCOUNT_PATH }}          
 
       - name: 🚀 Upload to Play Store
         uses: r0adkll/upload-google-play@v1
@@ -110,3 +141,10 @@ jobs:
           releaseFiles: ${{ env.AAB_PATH }}
           track: wear:beta
           whatsNewDirectory: whatsnew
+
+      - name: 🗑️ Delete Artifact
+        if: always()
+        continue-on-error: true
+        uses: geekyeggo/delete-artifact@v6
+        with:
+          name: aab-stores

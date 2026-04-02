@@ -70,18 +70,9 @@ class _HomeViewState extends State<HomeView> {
                   spacing: AppVariables.scaffoldSpacing,
                   children: [
                     const SizedBox(height: AppVariables.topScaffoldSpacing),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppVariables.horizontalPaddingTitle,
-                      ),
-                      child: ScrollText(
-                        text: l10n.titleMatches.toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: AppVariables.titleSize,
-                          height: AppVariables.titleTextHeight,
-                        ),
-                      ),
+                    AppTitleText(
+                      title: l10n.titleMatches.toUpperCase(),
+                      hasBottomSpacing: false,
                     ),
                     const LastUpdateHome(isLoading: true),
                     ...List.generate(
@@ -144,18 +135,9 @@ class _HomeViewState extends State<HomeView> {
                 spacing: AppVariables.scaffoldSpacing,
                 children: [
                   const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppVariables.horizontalPaddingTitle,
-                    ),
-                    child: ScrollText(
-                      text: l10n.titleMatches.toUpperCase(),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: AppVariables.titleSize,
-                        height: AppVariables.titleTextHeight,
-                      ),
-                    ),
+                  AppTitleText(
+                    title: l10n.titleMatches.toUpperCase(),
+                    hasBottomSpacing: false,
                   ),
                   const LastUpdateHome(),
                   ...matches.map(
@@ -216,7 +198,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
       return Text(
         l10n.updatingMatches,
         style: const TextStyle(
-          fontWeight: FontWeight.bold,
+          height: 0.8,
           fontSize: 10,
         ),
       );
@@ -236,7 +218,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
+            height: 0.8,
             fontSize: 10,
           ),
         );
@@ -438,8 +420,7 @@ class MatchCardHome extends StatelessWidget {
             ScrollText(
               text: state,
               style: const TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.bold,
+                fontSize: 10,
               ),
             ),
           ],
@@ -456,24 +437,30 @@ class SettingsHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        Expanded(
-          child: AppFilledButton(
-            onPressed: () async {
-              getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
-              final reload = (await Navigator.of(context)
-                      .pushNamed(SettingsPage.routeName)) as bool? ??
-                  true;
-              if (reload) {
-                // ignore: use_build_context_synchronously // It's safe here
-                context.read<HomeCubit>().reload();
-              }
-            },
-            label: l10n.titleSettings.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppVariables.bottomScaffoldSpacingButton,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppFilledButton(
+              onPressed: () async {
+                getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
+                final reload = (await Navigator.of(context)
+                        .pushNamed(SettingsPage.routeName)) as bool? ??
+                    true;
+                if (reload) {
+                  if (context.mounted) {
+                    context.read<HomeCubit>().reload();
+                  }
+                }
+              },
+              label: l10n.titleSettings,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

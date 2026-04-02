@@ -37,40 +37,29 @@ class _SettingsViewState extends State<SettingsView> {
         spacing: AppVariables.scaffoldSpacing,
         children: [
           const SizedBox(height: AppVariables.topScaffoldSpacing),
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppVariables.horizontalPaddingTitle,
-            ),
-            child: ScrollText(
-              text: l10n.titleSettings.toUpperCase(),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: AppVariables.titleSize,
-              ),
-            ),
-          ),
+          AppTitleText(title: l10n.titleSettings.toUpperCase()),
           ConfigurationSetting(
-            title: l10n.titleLeagues.toUpperCase(),
+            title: l10n.titleLeagues,
             icon: HugeIcons.strokeRoundedFootball,
             route: LeaguesPage.routeName,
           ),
           ConfigurationSetting(
-            title: l10n.titleNotifications.toUpperCase(),
+            title: l10n.titleNotifications,
             icon: HugeIcons.strokeRoundedNotification01,
             route: NotificationsPage.routeName,
           ),
           ConfigurationSetting(
-            title: l10n.titleLanguage.toUpperCase(),
+            title: l10n.titleLanguage,
             icon: HugeIcons.strokeRoundedLanguageSkill,
             route: LanguagesPage.routeName,
           ),
           ConfigurationSetting(
-            title: l10n.titleTheme.toUpperCase(),
+            title: l10n.titleTheme,
             icon: HugeIcons.strokeRoundedPaintBoard,
             route: ThemesPage.routeName,
           ),
           ConfigurationSetting(
-            title: l10n.titleFont.toUpperCase(),
+            title: l10n.titleFont,
             icon: HugeIcons.strokeRoundedTextFont,
             route: TypographyPage.routeName,
           ),
@@ -135,15 +124,20 @@ class BackButtonSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Row(
-      children: [
-        Expanded(
-          child: AppFilledButton(
-            onPressed: () => Navigator.of(context).pop(),
-            label: l10n.backText.toUpperCase(),
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: AppVariables.bottomScaffoldSpacingButton,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: AppFilledButton(
+              onPressed: () => Navigator.of(context).pop(),
+              label: l10n.backText,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

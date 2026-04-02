@@ -17,10 +17,7 @@ class ScrollText extends StatelessWidget {
       text,
       pauseBetween: const Duration(seconds: 1),
       velocity: const Velocity(pixelsPerSecond: Offset(20, 0)),
-      style: style ??
-          Theme.of(context).textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+      style: style ?? Theme.of(context).textTheme.titleMedium,
     );
   }
 }

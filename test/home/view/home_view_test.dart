@@ -189,7 +189,9 @@ void main() {
 
       expect(find.byType(MatchCardHome), findsNWidgets(3));
 
-      await tester.tap(find.text('SETTINGS'));
+      await tester.drag(find.byType(HomeView), const Offset(0, -500));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.byType(SettingsHome));
       await tester.pump(const Duration(seconds: 1));
       verify(() => observer.didPush(any(), any())).called(greaterThan(0));
 
