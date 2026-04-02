@@ -16,16 +16,16 @@ Welcome to the comprehensive documentation for the **Tiki Taka WearOS** applicat
    2.1 [State Management](#state-management)
    2.2 [Global Utilities](#global-utilities)
    2.3 [Routing & Themes](#routing--themes)
-   2.4 [Services](#services)
-   2.5 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
+   2.4 [Repositories](#repositories)
+   2.5 [Services](#services)
+   2.6 [UI Layer (View & Widgets)](#ui-layer-view--widgets)
 3. [Feature Modules](#feature-modules)
-   3.1 [Ambient Mode](#ambient-mode)
-   3.2 [Home](#home)
-   3.3 [Leagues](#leagues)
-   3.4 [Match](#match)
-   3.5 [Notifications](#notifications)
-   3.6 [Settings](#settings)
-   3.7 [Team & Teams](#team--teams)
+   3.1 [Home](#home)
+   3.2 [Leagues](#leagues)
+   3.3 [Match](#match)
+   3.4 [Notifications](#notifications)
+   3.5 [Settings](#settings)
+   3.6 [Team & Teams](#team--teams)
 4. [Localization (l10n)](#localization-l10n)
 5. [Bootstrap & Entrypoint](#bootstrap--entrypoint)
 6. [Packages & Data Models](#packages--data-models)
@@ -46,11 +46,16 @@ flowchart TD
       FeatureCubits[Feature Cubits<br>Home, Match, Leagues, Teams]
     end
     
+    subgraph "Repositories Layer"
+      DBRepo[Database Repository]
+      OtherRepos[Other Repositories<br>Notif, Local, Device, etc.]
+    end
+
     subgraph "Services Layer"
       DBSvc[Database Service]
-      DeviceInfoSvc[Device Info Service]
       LocalSvc[Local Storage Service]
       NotifSvc[Notification Service]
+      MiscSvc[Other Services<br>Crash, Analytics, etc.]
     end
     
     subgraph "Local Data"
@@ -77,11 +82,15 @@ flowchart TD
   UI <-->|Events & States| FeatureCubits
   UI <-->|App Settings| AppCubit
   
-  FeatureCubits --> DBSvc
-  FeatureCubits --> NotifSvc
+  FeatureCubits --> DBRepo
+  FeatureCubits --> OtherRepos
   
-  AppCubit --> LocalSvc
-  AppCubit --> DeviceInfoSvc
+  AppCubit --> OtherRepos
+  
+  DBRepo --> DBSvc
+  OtherRepos --> LocalSvc
+  OtherRepos --> NotifSvc
+  OtherRepos --> MiscSvc
   
   LocalSvc <-->|Read/Write Prefs| SharedPrefs
   
@@ -96,10 +105,11 @@ flowchart TD
   FirebaseFunctions -->|If Changes Detected<br>Sends Push Notifications| FirebaseMessaging
 ```
 
-- **UI (Flutter Interface)**: Standardized presentation layer designed for WearOS that sends events to the State and interacts with the Services.
-- **State (Bloc/Cubit)**: Manages the application logic, handles read/write operations with the Local DB, and interacts with external services.
+- **UI (Flutter Interface)**: Standardized presentation layer designed for WearOS that sends events to the State and interacts with the Repositories/Services.
+- **State (Bloc/Cubit)**: Manages the application logic, holding application variables and communicating with Repositories.
+- **Repositories**: Abstraction layer that accesses the underlying Services. Provides clean, structured data tailored for Cubit consumptions.
+- **Services (Firebase & Local)**: Direct integration gateway for plugins, native APIs, localized capabilities, notifications, and Firestore.
 - **Store (Local DB - SharedPreferences)**: Handles local data persistence on the smartwatch for quick access and preferences.
-- **Services (Firebase & Local)**: Main communication gateway managing device info, notifications via Firebase Messaging, local storage, and real-time database updates from Firestore.
 - **Backend**: Firebase provides the core backend infrastructure. A scheduled **Firebase Function** runs every minute to fetch real-time match data from an **External Football API**. If changes are detected compared to the current **Firestore** data, the function updates Firestore and triggers **Firebase Messaging** to deliver notifications directly to the WearOS device.
 
 ---
@@ -134,18 +144,35 @@ flowchart TD
 
 ---
 
-### 4. Services
+### 4. Repositories
 
-| File                                            | Role                                                                                |
-|-------------------------------------------------|-------------------------------------------------------------------------------------|
-| **lib/app/services/database_service.dart**      | Handles data retrieval operations for leagues, matches, and teams via Cloud Firestore. |
-| **lib/app/services/device_info_service.dart**   | Acquires specific hardware or OS information from the WearOS smartwatch. |
-| **lib/app/services/local_storage_service.dart** | Singleton managing local database persistence using `SharedPreferences`. |
-| **lib/app/services/notification_service.dart**  | Manages push notifications and real-time alerts. |
+| File                                                  | Role                                                                                 |
+|-------------------------------------------------------|--------------------------------------------------------------------------------------|
+| **lib/app/repositories/analytics_repository.dart**    | Abstraction for analytics tracking logic.                                            |
+| **lib/app/repositories/crash_repository.dart**        | Abstraction for crash reporting and tracking.                                        |
+| **lib/app/repositories/database_repository.dart**     | Interprets data streams and operations related to leagues, matches, and teams.       |
+| **lib/app/repositories/device_info_repository.dart**  | Formats and exposes device information to the application.                           |
+| **lib/app/repositories/local_storage_repository.dart**| Exposes structured preferences configurations and overrides.                         |
+| **lib/app/repositories/notification_repository.dart** | Exposes notification streams and handles permissions requests.                       |
+| **lib/app/repositories/performance_repository.dart**  | Handles performance metrics abstraction logic.                                       |
 
 ---
 
-### 5. UI Layer (View & Widgets)
+### 5. Services
+
+| File                                            | Role                                                                                |
+|-------------------------------------------------|-------------------------------------------------------------------------------------|
+| **lib/app/services/analytics_service.dart**     | Direct connection to analytics SDK (e.g., Firebase Analytics).                      |
+| **lib/app/services/crash_service.dart**         | Direct connection to crash reporter plugin (e.g., Firebase Crashlytics).            |
+| **lib/app/services/database_service.dart**      | Handles data retrieval operations via Cloud Firestore plugins.                      |
+| **lib/app/services/device_info_service.dart**   | Acquires specific hardware or OS information from native APIs.                      |
+| **lib/app/services/local_storage_service.dart** | Singleton managing local database persistence using `SharedPreferences`.            |
+| **lib/app/services/notification_service.dart**  | Manages push notifications and real-time alerts via Firebase Messaging.             |
+| **lib/app/services/performance_service.dart**   | Connects to performance tracking plugins (e.g., Firebase Performance).              |
+
+---
+
+### 6. UI Layer (View & Widgets)
 
 #### View
 
@@ -168,15 +195,6 @@ Each feature follows a standard architecture pattern structure suited for WearOS
 1. **barrel** file exporting components.
 2. **Cubit**: Specific logic management (`cubit` folder).
 3. **View**: UI implementation relying on the emitted states (`view` folder).
-
----
-
-### Ambient Mode
-
-- **lib/ambient_mode/***  
-
-**Features:**  
-Handles the smartwatch's always-on display mode, providing an optimized, low-power interface while the app is inactive but visible.
 
 ---
 
