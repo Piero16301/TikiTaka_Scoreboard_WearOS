@@ -3,6 +3,7 @@ export 'app_filled_button.dart';
 export 'app_linear_progress_bar.dart';
 export 'app_scaffold.dart';
 export 'app_shimmer.dart';
+export 'app_title_text.dart';
 export 'crest_image.dart';
 export 'scroll_text.dart';
 export 'waving_flag_background.dart';

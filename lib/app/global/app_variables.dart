@@ -14,10 +14,12 @@ class AppVariables {
   static const EdgeInsetsGeometry scaffoldPadding = EdgeInsets.symmetric(
     horizontal: 15,
   );
-  static const double topScaffoldSpacing = 10;
+  static const double topScaffoldSpacing = 20;
   static const double bottomScaffoldSpacing = 40;
   static const double scaffoldSpacing = 10;
-  static const double horizontalPaddingTitle = 30;
+  static const double horizontalPaddingTitle = 20;
+  static const double titlePaddingBottom = 10;
+  static const double bottomScaffoldSpacingButton = 8;
   static const double titleTextHeight = 0.8;
   static const double verticalPaddingBackButton = 10;
   static const double cardSpacing = 5;

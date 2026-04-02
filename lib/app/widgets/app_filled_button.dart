@@ -40,7 +40,6 @@ class AppFilledButton extends StatelessWidget {
               label ?? '',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
                   ),
             )
           : icon!,
