@@ -448,11 +448,9 @@ class SettingsHome extends StatelessWidget {
               onPressed: () async {
                 getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
                 final homeCubit = context.read<HomeCubit>();
-                
                 final reload = (await Navigator.of(context)
                         .pushNamed(SettingsPage.routeName)) as bool? ??
                     true;
-                    
                 if (reload) {
                   homeCubit.reload();
                 }
