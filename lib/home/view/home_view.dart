@@ -447,13 +447,14 @@ class SettingsHome extends StatelessWidget {
             child: AppFilledButton(
               onPressed: () async {
                 getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
+                final homeCubit = context.read<HomeCubit>();
+                
                 final reload = (await Navigator.of(context)
                         .pushNamed(SettingsPage.routeName)) as bool? ??
                     true;
+                    
                 if (reload) {
-                  if (context.mounted) {
-                    context.read<HomeCubit>().reload();
-                  }
+                  homeCubit.reload();
                 }
               },
               label: l10n.titleSettings,

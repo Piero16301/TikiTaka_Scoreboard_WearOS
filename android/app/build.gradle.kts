@@ -110,4 +110,11 @@ dependencies {
     implementation("androidx.wear:wear:1.4.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    
+    // Fix for profileinstaller NoSuchMethodError on Crashlytics
+    implementation("androidx.profileinstaller:profileinstaller:1.4.1")
+    
+    // Fix for OnBackAnimationCallback ClassNotFoundException on API 33
+    implementation("androidx.core:core-ktx:1.18.0")
+    implementation("androidx.activity:activity-ktx:1.13.0")
 }
