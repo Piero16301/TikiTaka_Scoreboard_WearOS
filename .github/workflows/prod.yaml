@@ -80,9 +80,8 @@ jobs:
         run: |
           flutter test --coverage
       - name: ✅ Check Coverage
-        uses: VeryGoodOpenSource/very_good_coverage@v3
+        uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
         with:
-          path: coverage/lcov.info
           min_coverage: 80
       - name: 📊 Codecov Badge
         uses: codecov/codecov-action@v6
