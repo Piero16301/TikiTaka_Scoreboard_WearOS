@@ -106,8 +106,6 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
-            final performance = getIt<PerformanceService>();
-            final trace = performance.startTrace('home_matches_sorting');
             final nowDate = DateTime.now();
             final matches = snapshot.data!.map((match) => match).toList()
               ..sort((a, b) {
@@ -126,7 +124,6 @@ class _HomeViewState extends State<HomeView> {
                 }
                 return aStatus.compareTo(bStatus);
               });
-            performance.stopTrace(trace);
 
             return AppScaffold.scrollable(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
