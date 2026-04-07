@@ -14,6 +14,14 @@ class TeamView extends StatefulWidget {
 
 class _TeamViewState extends State<TeamView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
+  late final Stream<Team> _teamStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final teamId = context.read<TeamCubit>().state.teamId;
+    _teamStream = getIt<DatabaseService>().getTeamStream(teamId: teamId);
+  }
 
   @override
   void dispose() {
@@ -24,11 +32,9 @@ class _TeamViewState extends State<TeamView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final teamId = context.read<TeamCubit>().state.teamId;
-    final database = getIt<DatabaseService>();
 
     return StreamBuilder<Team>(
-      stream: database.getTeamStream(teamId: teamId),
+      stream: _teamStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(

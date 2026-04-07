@@ -170,6 +170,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     with WidgetsBindingObserver {
   late StreamSubscription<void> _nowSubscription;
   final DatabaseService database = getIt<DatabaseService>();
+  Stream<Config>? _configStream;
 
   @override
   void initState() {
@@ -177,6 +178,8 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     _nowSubscription = Stream<void>.periodic(
       const Duration(seconds: 1),
     ).listen((_) => setState(() {}));
+    _configStream =
+        database.getConfigStream(id: AppVariables.matchesCollection);
     super.initState();
   }
 
@@ -202,7 +205,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     }
 
     return StreamBuilder<Config>(
-      stream: database.getConfigStream(id: AppVariables.matchesCollection),
+      stream: _configStream,
       builder: (context, snapshot) {
         final config = snapshot.data ??
             Config(
