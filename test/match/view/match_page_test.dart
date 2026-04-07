@@ -72,9 +72,9 @@ void main() {
       // Add default stubs to avoid Null errors
       when(() => mockDatabase.getConfigStream(id: any(named: 'id')))
           .thenAnswer((_) => const Stream.empty());
-      when(() =>
-              mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')))
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')),
+      ).thenAnswer((_) => const Stream.empty());
     });
 
     testWidgets('renders MatchPage properly and shows shimmers when loading',
