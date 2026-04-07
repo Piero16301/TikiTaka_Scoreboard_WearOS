@@ -72,7 +72,8 @@ void main() {
       // Add default stubs to avoid Null errors
       when(() => mockDatabase.getConfigStream(id: any(named: 'id')))
           .thenAnswer((_) => const Stream.empty());
-      when(() => mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')))
+      when(() =>
+              mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')))
           .thenAnswer((_) => const Stream.empty());
     });
 
