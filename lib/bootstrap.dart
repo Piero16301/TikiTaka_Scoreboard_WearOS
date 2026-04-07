@@ -27,8 +27,24 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+bool _isNetworkError(dynamic error) {
+  final errorString = error.toString().toLowerCase();
+  return errorString.contains('socketexception') ||
+      errorString.contains('handshakeexception') ||
+      errorString.contains('httpexception') ||
+      errorString.contains('timeoutexception') ||
+      errorString.contains('clientexception') ||
+      errorString.contains('networkimageloadexception');
+}
+
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
+    if (_isNetworkError(details.exception)) {
+      log('Network error suppressed from Crashlytics: '
+          '${details.exceptionAsString()}');
+      return;
+    }
+
     log(details.exceptionAsString(), stackTrace: details.stack);
     getIt<CrashService>().recordError(
       details.exception,
@@ -39,6 +55,11 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
+    if (_isNetworkError(error)) {
+      log('Network error suppressed from Crashlytics: $error');
+      return true;
+    }
+
     log(error.toString(), stackTrace: stack);
     getIt<CrashService>().recordError(error, stack, fatal: true);
     return true;

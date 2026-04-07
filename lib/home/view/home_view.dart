@@ -106,8 +106,6 @@ class _HomeViewState extends State<HomeView> {
               );
             }
 
-            final performance = getIt<PerformanceService>();
-            final trace = performance.startTrace('home_matches_sorting');
             final nowDate = DateTime.now();
             final matches = snapshot.data!.map((match) => match).toList()
               ..sort((a, b) {
@@ -126,7 +124,6 @@ class _HomeViewState extends State<HomeView> {
                 }
                 return aStatus.compareTo(bStatus);
               });
-            performance.stopTrace(trace);
 
             return AppScaffold.scrollable(
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
@@ -447,13 +444,12 @@ class SettingsHome extends StatelessWidget {
             child: AppFilledButton(
               onPressed: () async {
                 getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
+                final homeCubit = context.read<HomeCubit>();
                 final reload = (await Navigator.of(context)
                         .pushNamed(SettingsPage.routeName)) as bool? ??
                     true;
                 if (reload) {
-                  if (context.mounted) {
-                    context.read<HomeCubit>().reload();
-                  }
+                  homeCubit.reload();
                 }
               },
               label: l10n.titleSettings,
