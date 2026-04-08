@@ -28,23 +28,26 @@ class AppScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isScrollable && controller != null) {
-      return WearOsScrollbar(
+      return _RouteAwareScrollReset(
         controller: controller!,
-        child: Scaffold(
-          body: SizedBox.expand(
-            child: Stack(
-              children: [
-                if (background != null) background!,
-                Padding(
-                  padding: disablePadding
-                      ? EdgeInsetsGeometry.zero
-                      : AppVariables.scaffoldPadding,
-                  child: SingleChildScrollView(
-                    controller: controller,
-                    child: child,
+        child: WearOsScrollbar(
+          controller: controller!,
+          child: Scaffold(
+            body: SizedBox.expand(
+              child: Stack(
+                children: [
+                  if (background != null) background!,
+                  Padding(
+                    padding: disablePadding
+                        ? EdgeInsetsGeometry.zero
+                        : AppVariables.scaffoldPadding,
+                    child: SingleChildScrollView(
+                      controller: controller,
+                      child: child,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -67,4 +70,54 @@ class AppScaffold extends StatelessWidget {
       ),
     );
   }
+}
+
+class _RouteAwareScrollReset extends StatefulWidget {
+  const _RouteAwareScrollReset({
+    required this.controller,
+    required this.child,
+  });
+
+  final ScrollController controller;
+  final Widget child;
+
+  @override
+  State<_RouteAwareScrollReset> createState() => _RouteAwareScrollResetState();
+}
+
+class _RouteAwareScrollResetState extends State<_RouteAwareScrollReset>
+    with RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      AppVariables.routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void dispose() {
+    AppVariables.routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    if (widget.controller.hasClients) {
+      widget.controller.jumpTo(0);
+    }
+  }
+
+  @override
+  void didPush() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.controller.hasClients) {
+        widget.controller.jumpTo(0);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

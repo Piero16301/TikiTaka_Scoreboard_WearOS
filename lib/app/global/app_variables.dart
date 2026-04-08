@@ -6,6 +6,8 @@ class AppVariables {
   static const String defaultFontFamily = 'Poppins';
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+  static final RouteObserver<PageRoute<dynamic>> routeObserver =
+      RouteObserver<PageRoute<dynamic>>();
   static const String appOS = 'WEAROS';
 
   static const int numberOfShimmers = 5;
