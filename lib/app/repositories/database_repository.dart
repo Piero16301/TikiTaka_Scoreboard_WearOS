@@ -387,7 +387,6 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         'token': token,
         'lastOpenAt': FieldValue.serverTimestamp(),
         'wearOSInfo': deviceInfo.toJson(),
-        'enabledTeams': FieldValue.arrayUnion(<String>[]),
       },
       if (language != null) 'language': language.toShortString,
     };
@@ -397,7 +396,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         _firestore
             .collection(AppVariables.devicesCollection)
             .doc(token)
-            .set(data, SetOptions(merge: true)),
+            .set(data, SetOptions(mergeFields: data.keys.toList())),
       );
     }
 

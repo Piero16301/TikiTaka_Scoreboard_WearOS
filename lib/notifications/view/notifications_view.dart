@@ -12,6 +12,13 @@ class NotificationsView extends StatefulWidget {
 
 class _NotificationsViewState extends State<NotificationsView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
+  late final Stream<List<League>> _leaguesStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _leaguesStream = getIt<DatabaseService>().getLeaguesStream();
+  }
 
   @override
   void dispose() {
@@ -22,10 +29,9 @@ class _NotificationsViewState extends State<NotificationsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final database = getIt<DatabaseService>();
 
     return StreamBuilder<List<League>>(
-      stream: database.getLeaguesStream(),
+      stream: _leaguesStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(

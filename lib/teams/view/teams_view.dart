@@ -13,6 +13,19 @@ class TeamsView extends StatefulWidget {
 
 class _TeamsViewState extends State<TeamsView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
+  late final Stream<List<Team>> _teamsStream;
+  late final Stream<Device> _deviceStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final leagueId = context.read<TeamsCubit>().state.leagueId;
+    final database = getIt<DatabaseService>();
+    final notification = getIt<NotificationService>();
+
+    _teamsStream = database.getTeamsStream(leagueId: leagueId);
+    _deviceStream = database.getDeviceStream(token: notification.token);
+  }
 
   @override
   void dispose() {
@@ -23,12 +36,9 @@ class _TeamsViewState extends State<TeamsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final leagueId = context.read<TeamsCubit>().state.leagueId;
-    final database = getIt<DatabaseService>();
-    final notification = getIt<NotificationService>();
 
     return StreamBuilder<List<Team>>(
-      stream: database.getTeamsStream(leagueId: leagueId),
+      stream: _teamsStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -97,7 +107,7 @@ class _TeamsViewState extends State<TeamsView> {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleTeams.toUpperCase()),
               StreamBuilder<Device>(
-                stream: database.getDeviceStream(token: notification.token),
+                stream: _deviceStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return const SizedBox.shrink();

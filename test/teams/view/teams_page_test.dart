@@ -41,6 +41,10 @@ void main() {
       when(() => teamsCubit.state).thenReturn(const TeamsState(leagueId: 1));
       when(() => teamsCubit.initialize(leagueId: 1)).thenAnswer((_) async {});
       when(() => mockNotification.token).thenReturn('mock_token');
+
+      // Add default stubs to avoid Null errors
+      when(() => mockDatabase.getDeviceStream(token: any(named: 'token')))
+          .thenAnswer((_) => const Stream.empty());
     });
 
     testWidgets('renders TeamsPage properly and shows shimmers when loading',
@@ -58,6 +62,8 @@ void main() {
           ),
         ),
       );
+
+      await tester.pump();
 
       expect(find.byType(TeamsPage), findsOneWidget);
       expect(find.byType(TeamsView), findsOneWidget);

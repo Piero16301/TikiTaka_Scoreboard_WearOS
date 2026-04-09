@@ -26,6 +26,7 @@ class AppView extends StatelessWidget {
         routes: AppRoutes.routes,
         navigatorObservers: [
           RouteAnalyticsObserver(analyticsService: getIt<AnalyticsService>()),
+          AppVariables.routeObserver,
         ],
       ),
     );

@@ -17,6 +17,15 @@ class MatchView extends StatefulWidget {
 
 class _MatchViewState extends State<MatchView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
+  late final Stream<Match> _matchStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final matchId = context.read<MatchCubit>().state.matchId;
+    final database = getIt<DatabaseService>();
+    _matchStream = database.getMatchStream(matchId: matchId);
+  }
 
   @override
   void dispose() {
@@ -27,11 +36,9 @@ class _MatchViewState extends State<MatchView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final matchId = context.read<MatchCubit>().state.matchId;
-    final database = getIt<DatabaseService>();
 
     return StreamBuilder<Match>(
-      stream: database.getMatchStream(matchId: matchId),
+      stream: _matchStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
@@ -138,6 +145,7 @@ class LastUpdateMatch extends StatefulWidget {
 class _LastUpdateMatchState extends State<LastUpdateMatch>
     with WidgetsBindingObserver {
   late StreamSubscription<void> _nowSubscription;
+  late final Stream<Config> _configStream;
 
   @override
   void initState() {
@@ -145,6 +153,9 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
     _nowSubscription = Stream<void>.periodic(
       const Duration(seconds: 1),
     ).listen((_) => setState(() {}));
+    _configStream = getIt<DatabaseService>().getConfigStream(
+      id: AppVariables.matchesCollection,
+    );
     super.initState();
   }
 
@@ -158,7 +169,6 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final database = getIt<DatabaseService>();
 
     if (widget.isLoading) {
       return Text(
@@ -171,7 +181,7 @@ class _LastUpdateMatchState extends State<LastUpdateMatch>
     }
 
     return StreamBuilder<Config>(
-      stream: database.getConfigStream(id: AppVariables.matchesCollection),
+      stream: _configStream,
       builder: (context, snapshot) {
         final config = snapshot.data ??
             Config(
@@ -744,7 +754,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
   }
 }
 
-class StandingsMatch extends StatelessWidget {
+class StandingsMatch extends StatefulWidget {
   const StandingsMatch({
     required this.match,
     super.key,
@@ -753,14 +763,26 @@ class StandingsMatch extends StatelessWidget {
   final Match match;
 
   @override
+  State<StandingsMatch> createState() => _StandingsMatchState();
+}
+
+class _StandingsMatchState extends State<StandingsMatch> {
+  late final Stream<LeagueStandings> _standingsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _standingsStream = getIt<DatabaseService>().getStandingsStream(
+      leagueId: widget.match.competition.id.toString(),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final database = getIt<DatabaseService>();
 
     return StreamBuilder<LeagueStandings>(
-      stream: database.getStandingsStream(
-        leagueId: match.competition.id.toString(),
-      ),
+      stream: _standingsStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const SizedBox.shrink();
@@ -835,7 +857,7 @@ class StandingsMatch extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: getRowStandingColor(row, match),
+                      color: getRowStandingColor(row, widget.match),
                     ),
                     child: Row(
                       spacing: 5,
@@ -956,7 +978,7 @@ class StandingsMatch extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
-                              color: getRowStandingColor(row, match),
+                              color: getRowStandingColor(row, widget.match),
                             ),
                             child: Row(
                               spacing: 5,

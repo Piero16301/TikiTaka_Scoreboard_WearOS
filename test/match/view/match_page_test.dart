@@ -68,6 +68,13 @@ void main() {
           parameters: any(named: 'parameters'),
         ),
       ).thenAnswer((_) async {});
+
+      // Add default stubs to avoid Null errors
+      when(() => mockDatabase.getConfigStream(id: any(named: 'id')))
+          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')),
+      ).thenAnswer((_) => const Stream.empty());
     });
 
     testWidgets('renders MatchPage properly and shows shimmers when loading',
@@ -106,6 +113,7 @@ void main() {
       );
 
       await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Error loading match'), findsOneWidget);
     });
