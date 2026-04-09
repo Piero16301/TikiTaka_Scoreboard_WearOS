@@ -295,6 +295,72 @@ These classes interact seamlessly as the main underlying format populating the a
 - Adapted specifically for the WearOS environment constraints and form factor.
 - Includes code quality lint rules via `very_good_analysis` and incorporates solid architectural practices for testing and mocking.
 
----
+## Enabled Leagues (Competitions)
 
-> **Enjoy exploring football matches straight from your wrist with Tiki Taka WearOS!**
+| ID  | Name (International Nations)           |
+|-----|----------------------------------------|
+| 1   | World Cup                              |
+| 4   | Euro Championship                      |
+| 9   | Copa America                           |
+
+| ID  | Name (International Clubs)             |
+|-----|----------------------------------------|
+| 2   | UEFA Champions League                  |
+| 3   | UEFA Europa League                     |
+| 848 | UEFA Europa Conference League          |
+| 13  | CONMEBOL Libertadores                  |
+| 11  | CONMEBOL Sudamericana                  |
+
+| ID  | Name (England)                         |
+|-----|----------------------------------------|
+| 39  | Premier League                         |
+| 45  | FA Cup                                 |
+| 48  | League Cup                             |
+| 528 | Community Shield                       |
+
+| ID  | Name (Spain)                           |
+|-----|----------------------------------------|
+| 140 | La Liga                                |
+| 143 | Copa del Rey                           |
+| 556 | Super Cup                              |
+
+| ID  | Name (France)                          |
+|-----|----------------------------------------|
+| 61  | Ligue 1                                |
+| 66  | Coupe de France                        |
+| 526 | Trophée des Champions                  |
+
+| ID  | Name (Italy)                           |
+|-----|----------------------------------------|
+| 135 | Serie A                                |
+| 137 | Coppa Italia                           |
+| 547 | Super Cup                              |
+
+| ID  | Name (Germany)                         |
+|-----|----------------------------------------|
+| 78  | Bundesliga                             |
+| 81  | DFB Pokal                              |
+| 529 | Super Cup                              |
+
+| ID  | Name (Netherlands)                     |
+|-----|----------------------------------------|
+| 88  | Eredivisie                             |
+| 90  | KNVB Beker                             |
+| 543 | Super Cup                              |
+
+| ID  | Name (Portugal)                        |
+|-----|----------------------------------------|
+| 94  | Primeira Liga                          |
+| 96  | Taça de Portugal                       |
+| 550 | Super Cup                              |
+
+| ID  | Name (South America)                   |
+|-----|----------------------------------------|
+| 71  | Serie A (Brazil)                       |
+| 128 | Liga Profesional Argentina (Argentina) |
+| 281 | Primera División (Peru)                |
+| 239 | Primera A (Colombia)                   |
+| 242 | Liga Pro (Ecuador)                     |
+| 265 | Primera División (Chile)               |
+| 268 | Primera División - Apertura (Uruguay)  |
+| 270 | Primera División - Clausura (Uruguay)  |

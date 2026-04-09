@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
-import 'package:vector_graphics/vector_graphics.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CrestImage extends StatelessWidget {
   const CrestImage({
@@ -25,28 +24,21 @@ class CrestImage extends StatelessWidget {
     final background = Theme.of(context).colorScheme.inverseSurface;
 
     if (crest.isEmpty || hideCrest) {
-      return SizedBox(
-        height: dimension,
-        width: dimension,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadius),
-          child: Stack(
-            children: [
-              Container(
-                color: background.withValues(alpha: 0.3),
-                width: dimension,
-                height: dimension,
-              ),
-              SizedBox(
-                width: dimension - (margin * 2),
-                height: dimension - (margin * 2),
-                child: Icon(
-                  Icons.image,
-                  size: dimension - (margin * 2),
-                ),
-              ),
-            ],
-          ),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              color: background.withValues(alpha: 0.3),
+              width: dimension,
+              height: dimension,
+            ),
+            Icon(
+              Icons.image,
+              size: dimension,
+            ),
+          ],
         ),
       );
     }
@@ -58,6 +50,7 @@ class CrestImage extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius),
           child: Stack(
+            alignment: Alignment.center,
             children: [
               Container(
                 color: background.withValues(alpha: 0.3),
@@ -67,12 +60,16 @@ class CrestImage extends StatelessWidget {
               SizedBox(
                 width: dimension - (margin * 2),
                 height: dimension - (margin * 2),
-                child: VectorGraphic(
-                  loader: NetworkSvgLoader(crest),
-                  fit: fit,
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.image,
-                    size: dimension - (margin * 2),
+                child: RepaintBoundary(
+                  child: SvgPicture.network(
+                    crest,
+                    fit: fit,
+                    width: dimension - (margin * 2),
+                    height: dimension - (margin * 2),
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      Icons.image,
+                      size: dimension,
+                    ),
                   ),
                 ),
               ),
@@ -84,6 +81,7 @@ class CrestImage extends StatelessWidget {
       return ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
         child: Stack(
+          alignment: Alignment.center,
           children: [
             Container(
               color: background.withValues(alpha: 0.3),
@@ -99,7 +97,7 @@ class CrestImage extends StatelessWidget {
                 fit: fit,
                 errorBuilder: (context, error, stackTrace) => Icon(
                   Icons.image,
-                  size: dimension - (margin * 2),
+                  size: dimension,
                 ),
               ),
             ),

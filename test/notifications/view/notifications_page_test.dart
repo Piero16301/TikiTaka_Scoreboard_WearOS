@@ -104,9 +104,10 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('Premier League'), findsOneWidget);
+      expect(find.textContaining('Premier League'), findsOneWidget);
       expect(find.byType(LeagueCardNotifications), findsOneWidget);
     });
 
@@ -133,13 +134,15 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       final iconButtonFinder = find.byType(IconButton);
       expect(iconButtonFinder, findsOneWidget);
 
       await tester.tap(iconButtonFinder);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));
     });

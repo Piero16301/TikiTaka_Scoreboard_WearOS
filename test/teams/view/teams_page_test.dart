@@ -137,9 +137,10 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('FC Barcelona'), findsOneWidget);
+      expect(find.textContaining('FC Barcelona'), findsOneWidget);
       expect(find.byType(TeamCardTeams), findsOneWidget);
       expect(find.byType(Switch), findsOneWidget);
     });

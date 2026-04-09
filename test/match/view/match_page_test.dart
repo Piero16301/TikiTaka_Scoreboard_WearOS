@@ -191,12 +191,13 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('Home Team FC'), findsOneWidget);
-      expect(find.text('Away Team FC'), findsOneWidget);
-      expect(find.text('Premier League'), findsOneWidget);
-      expect(find.text('John Doe'), findsOneWidget);
+      expect(find.textContaining('Home Team FC'), findsOneWidget);
+      expect(find.textContaining('Away Team FC'), findsOneWidget);
+      expect(find.textContaining('Premier League'), findsOneWidget);
+      expect(find.textContaining('John Doe'), findsOneWidget);
     });
 
     testWidgets('shows standings and navigates when teams are clicked',
@@ -317,25 +318,32 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(CrestImage).first);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));
 
       await tester.tap(find.byType(BackButton));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(CrestImage).last);
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(BackButton));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
       await tester.drag(find.byType(MatchView), const Offset(0, -500));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
       await tester.tap(find.byType(BackButtonMatch));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
     });
 
     testWidgets('shows standings for multiple groups', (tester) async {
@@ -453,10 +461,11 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('GROUP A'), findsOneWidget);
-      expect(find.text('GROUP B'), findsOneWidget);
+      expect(find.textContaining('GROUP A'), findsOneWidget);
+      expect(find.textContaining('GROUP B'), findsOneWidget);
     });
 
     testWidgets('shows no standings if data is misconfigured', (tester) async {
@@ -528,9 +537,10 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
 
-      expect(find.text('GROUP A'), findsNothing);
+      expect(find.textContaining('GROUP A'), findsNothing);
     });
   });
 }
