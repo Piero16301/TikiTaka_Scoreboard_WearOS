@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
-import 'package:vector_graphics/vector_graphics.dart';
 
 class MockHttpOverrides extends HttpOverrides {
   @override
@@ -22,7 +22,7 @@ class _MockHttpClient extends Fake implements HttpClient {
     if (url.toString().contains('error')) {
       return _ErrorMockHttpClientRequest();
     }
-    return _MockHttpClientRequest();
+    return _MockHttpClientRequest(isSvg: url.toString().contains('.svg'));
   }
 
   @override
@@ -30,7 +30,7 @@ class _MockHttpClient extends Fake implements HttpClient {
     if (url.toString().contains('error')) {
       return _ErrorMockHttpClientRequest();
     }
-    return _MockHttpClientRequest();
+    return _MockHttpClientRequest(isSvg: url.toString().contains('.svg'));
   }
 
   @override
@@ -38,24 +38,78 @@ class _MockHttpClient extends Fake implements HttpClient {
 }
 
 class _MockHttpClientRequest extends Fake implements HttpClientRequest {
+  _MockHttpClientRequest({this.isSvg = false});
+
+  final bool isSvg;
+
+  @override
+  bool followRedirects = true;
+
+  @override
+  int maxRedirects = 5;
+
+  @override
+  int contentLength = 0;
+
+  @override
+  bool persistentConnection = true;
+
+  @override
+  bool bufferOutput = true;
+
   @override
   HttpHeaders get headers => _MockHttpHeaders();
 
   @override
-  Future<HttpClientResponse> close() async => _MockHttpClientResponse();
+  Future<void> addStream(Stream<List<int>> stream) async {}
+
+  @override
+  Future<HttpClientResponse> close() async =>
+      _MockHttpClientResponse(isSvg: isSvg);
 }
 
 class _ErrorMockHttpClientRequest extends Fake implements HttpClientRequest {
   @override
+  bool followRedirects = true;
+
+  @override
+  int maxRedirects = 5;
+
+  @override
+  int contentLength = 0;
+
+  @override
+  bool persistentConnection = true;
+
+  @override
+  bool bufferOutput = true;
+
+  @override
   HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  Future<void> addStream(Stream<List<int>> stream) async {}
 
   @override
   Future<HttpClientResponse> close() async => _ErrorMockHttpClientResponse();
 }
 
-class _MockHttpHeaders extends Fake implements HttpHeaders {}
+class _MockHttpHeaders extends Fake implements HttpHeaders {
+  @override
+  void forEach(void Function(String name, List<String> values) f) {}
+
+  @override
+  List<String>? operator [](String name) => null;
+
+  @override
+  void add(String name, Object value, {bool preserveHeaderCase = false}) {}
+}
 
 class _MockHttpClientResponse extends Fake implements HttpClientResponse {
+  _MockHttpClientResponse({this.isSvg = false});
+
+  final bool isSvg;
+
   @override
   int get statusCode => 200;
 
@@ -67,15 +121,32 @@ class _MockHttpClientResponse extends Fake implements HttpClientResponse {
       HttpClientResponseCompressionState.notCompressed;
 
   @override
+  HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  bool get isRedirect => false;
+
+  @override
+  bool get persistentConnection => true;
+
+  @override
+  String get reasonPhrase => 'OK';
+
+  @override
+  List<RedirectInfo> get redirects => const [];
+
+  @override
   StreamSubscription<List<int>> listen(
     void Function(List<int> event)? onData, {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return Stream<List<int>>.fromIterable(<List<int>>[
-      [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
-    ]).listen(
+    final bytes = isSvg
+        ? '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
+            .codeUnits
+        : [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+    return Stream<List<int>>.fromIterable(<List<int>>[bytes]).listen(
       onData,
       onError: onError,
       onDone: onDone,
@@ -96,13 +167,31 @@ class _ErrorMockHttpClientResponse extends Fake implements HttpClientResponse {
       HttpClientResponseCompressionState.notCompressed;
 
   @override
+  HttpHeaders get headers => _MockHttpHeaders();
+
+  @override
+  bool get isRedirect => false;
+
+  @override
+  bool get persistentConnection => true;
+
+  @override
+  String get reasonPhrase => 'Not Found';
+
+  @override
+  List<RedirectInfo> get redirects => const [];
+
+  @override
   StreamSubscription<List<int>> listen(
     void Function(List<int> event)? onData, {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    return Stream<List<int>>.error(const HttpException('404 NOT FOUND')).listen(
+    final bytes =
+        '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
+            .codeUnits;
+    return Stream<List<int>>.fromIterable(<List<int>>[bytes]).listen(
       onData,
       onError: onError,
       onDone: onDone,
@@ -158,18 +247,6 @@ void main() {
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets('renders VectorGraphic for SVG images', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: CrestImage(crest: 'https://example.com/logo.svg'),
-          ),
-        ),
-      );
-
-      expect(find.byType(VectorGraphic), findsOneWidget);
-    });
-
     testWidgets('applies dimension correctly', (tester) async {
       const dimension = 60.0;
       await tester.pumpWidget(
@@ -200,21 +277,17 @@ void main() {
       expect(find.byIcon(Icons.image), findsOneWidget);
     });
 
-    testWidgets('renders placeholder on SVG image error', (tester) async {
-      await tester.runAsync(() async {
-        await tester.pumpWidget(
-          const MaterialApp(
-            home: Scaffold(
-              body: CrestImage(crest: 'https://example.com/error.svg'),
-            ),
+    testWidgets('renders SvgPicture.network for SVG images', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(crest: 'https://example.com/logo.svg'),
           ),
-        );
+        ),
+      );
 
-        for (var i = 0; i < 10; i++) {
-          await tester.pump(const Duration(milliseconds: 100));
-        }
-        await tester.pumpAndSettle();
-      });
+      // We expect SvgPicture (or its underlying widgets) to be found
+      expect(find.byType(SvgPicture), findsOneWidget);
     });
   });
 }

@@ -123,7 +123,6 @@ class _TeamsViewState extends State<TeamsView> {
 
                   final device = snapshot.data!;
                   final enabledTeams = device.enabledTeams;
-                  final noShowCrestTeams = [779, 828];
 
                   return Column(
                     spacing: AppVariables.scaffoldSpacing,
@@ -132,7 +131,6 @@ class _TeamsViewState extends State<TeamsView> {
                           (team) => TeamCardTeams(
                             enabledTeams: enabledTeams,
                             team: team,
-                            hideCrest: noShowCrestTeams.contains(team.id),
                           ),
                         )
                         .toList(),
@@ -181,18 +179,17 @@ class TeamCardTeams extends StatelessWidget {
   const TeamCardTeams({
     required this.enabledTeams,
     required this.team,
-    required this.hideCrest,
     super.key,
   });
 
   final List<String> enabledTeams;
   final Team team;
-  final bool hideCrest;
 
   @override
   Widget build(BuildContext context) {
     final notification = getIt<NotificationService>();
     final database = getIt<DatabaseService>();
+    final leagueId = context.read<TeamsCubit>().state.leagueId;
 
     return AppCardData(
       content: Row(
@@ -218,7 +215,10 @@ class TeamCardTeams extends StatelessWidget {
               );
             },
           ),
-          CrestImage(crest: team.crest, hideCrest: hideCrest, margin: 2.5),
+          CrestImage(
+            crest: team.crest,
+            margin: leagueId == 2000 ? 0 : 2.5,
+          ),
           Expanded(child: ScrollText(text: team.name)),
         ],
       ),
