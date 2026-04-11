@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +33,8 @@ Future<void> main() async {
     getIt<LocalStorageService>().initialize(),
   ]);
 
-  // Inicio notificaciones al final por dependencia de DeviceInfo y LocalStorage
-  await getIt<NotificationService>().initialize();
+  // Inicio notificaciones en segundo plano para no bloquear el inicio de la app
+  unawaited(getIt<NotificationService>().initialize());
 
   performance.stopTrace(trace);
 
