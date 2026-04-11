@@ -49,7 +49,7 @@ class _MatchViewState extends State<MatchView> {
                   Text(
                     l10n.errorMatch,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -91,7 +91,7 @@ class _MatchViewState extends State<MatchView> {
                   Text(
                     l10n.notFoundMatch,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -223,7 +223,7 @@ class ShimmerTeamsCardMatch extends StatelessWidget {
                     l10n.halfTimeAbbr,
                     style: const TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -236,7 +236,7 @@ class ShimmerTeamsCardMatch extends StatelessWidget {
                     l10n.fullTimeAbbr,
                     style: const TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -315,7 +315,7 @@ class TeamsCardMatch extends StatelessWidget {
                     l10n.halfTimeAbbr,
                     style: const TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -328,7 +328,7 @@ class TeamsCardMatch extends StatelessWidget {
                     l10n.fullTimeAbbr,
                     style: const TextStyle(
                       fontSize: 9,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -371,7 +371,7 @@ class TeamsCardMatch extends StatelessWidget {
                     match.score.halfTime.home.toString(),
                     style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -384,7 +384,7 @@ class TeamsCardMatch extends StatelessWidget {
                     match.score.fullTime.home.toString(),
                     style: const TextStyle(
                       fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -428,7 +428,7 @@ class TeamsCardMatch extends StatelessWidget {
                     match.score.halfTime.away.toString(),
                     style: const TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -441,7 +441,7 @@ class TeamsCardMatch extends StatelessWidget {
                     match.score.fullTime.away.toString(),
                     style: const TextStyle(
                       fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -524,7 +524,7 @@ class RefereeCardMatch extends StatelessWidget {
                         text: referee.name,
                         style: const TextStyle(
                           fontSize: 11,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
@@ -634,7 +634,7 @@ class CompetitionCardMatch extends StatelessWidget {
             '-${match.season.endDate!.year}',
             style: const TextStyle(
               fontSize: 11,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Text(
@@ -671,7 +671,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
                         l10n.playedGamesAbbr,
                         style: const TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -684,7 +684,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
                         l10n.goalDifferenceAbbr,
                         style: const TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -697,7 +697,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
                         l10n.pointsAbbr,
                         style: const TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -723,7 +723,7 @@ class ShimmerStandingsMatch extends StatelessWidget {
                             (index + 1).toString(),
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -817,7 +817,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                           l10n.playedGamesAbbr,
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -830,7 +830,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                           l10n.goalDifferenceAbbr,
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -843,7 +843,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                           l10n.pointsAbbr,
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
@@ -869,7 +869,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               row.position.toString(),
                               style: const TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
@@ -898,7 +898,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                             row.team.tla,
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),
@@ -938,7 +938,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                   l10n.playedGamesAbbr,
                                   style: const TextStyle(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -951,7 +951,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                   l10n.goalDifferenceAbbr,
                                   style: const TextStyle(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -964,7 +964,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                   l10n.pointsAbbr,
                                   style: const TextStyle(
                                     fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -990,7 +990,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                       row.position.toString(),
                                       style: const TextStyle(
                                         fontSize: 12,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
@@ -1021,7 +1021,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                     row.team.tla,
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
@@ -1076,7 +1076,7 @@ class PointTextMatch extends StatelessWidget {
           value.toString(),
           style: const TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

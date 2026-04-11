@@ -44,7 +44,7 @@ class _LeaguesViewState extends State<LeaguesView> {
                   Text(
                     l10n.errorLeagues,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -82,7 +82,7 @@ class _LeaguesViewState extends State<LeaguesView> {
                   Text(
                     l10n.emptyLeagues,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),

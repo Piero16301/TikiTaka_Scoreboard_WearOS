@@ -45,7 +45,7 @@ class _TeamViewState extends State<TeamView> {
                   Text(
                     l10n.errorTeam,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -84,7 +84,7 @@ class _TeamViewState extends State<TeamView> {
                   Text(
                     l10n.notFoundTeam,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -207,7 +207,7 @@ class MainInfoTeam extends StatelessWidget {
         const SizedBox(height: 5),
         ScrollText(
           text: team.name,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         ScrollText(
           text: '${team.shortName} (${team.tla})',
@@ -289,14 +289,14 @@ class CoachCardTeam extends StatelessWidget {
                     ScrollText(
                       text: coach.name,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         fontSize: 11,
                       ),
                     ),
                     Text(
                       coach.nationality,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),
                     ),
@@ -317,7 +317,7 @@ class CoachCardTeam extends StatelessWidget {
                   Text(
                     getUntilContract(coach.contract.until),
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 11,
                     ),
                   ),
@@ -408,7 +408,7 @@ class CompetitionsCardTeam extends StatelessWidget {
                           ).toUpperCase(),
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -460,7 +460,7 @@ class SquadCardTeam extends StatelessWidget {
                           player.nationality,
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
@@ -489,7 +489,7 @@ class SquadCardTeam extends StatelessWidget {
                       AppFunctions.getStaffPosition(player.position, l10n),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),
                     ),
@@ -555,7 +555,7 @@ class StaffCardTeam extends StatelessWidget {
                           personal.nationality,
                           style: const TextStyle(
                             fontSize: 10,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                         Text(
@@ -584,7 +584,7 @@ class StaffCardTeam extends StatelessWidget {
                       AppFunctions.getStaffPosition(personal.position, l10n),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),
                     ),
@@ -682,7 +682,7 @@ class AdditionalInfoTeam extends StatelessWidget {
                 text: title,
                 style: const TextStyle(
                   fontSize: 10,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],

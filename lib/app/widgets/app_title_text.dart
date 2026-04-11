@@ -24,7 +24,7 @@ class AppTitleText extends StatelessWidget {
         style: const TextStyle(
           fontSize: AppVariables.titleSize,
           height: AppVariables.titleTextHeight,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
