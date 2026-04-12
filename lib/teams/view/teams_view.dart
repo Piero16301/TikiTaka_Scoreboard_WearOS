@@ -49,7 +49,7 @@ class _TeamsViewState extends State<TeamsView> {
                   Text(
                     l10n.errorTeams,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -87,7 +87,7 @@ class _TeamsViewState extends State<TeamsView> {
                   Text(
                     l10n.emptyTeams,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),

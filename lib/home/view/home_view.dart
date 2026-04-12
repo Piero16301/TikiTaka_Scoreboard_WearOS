@@ -315,7 +315,7 @@ class MatchCardHome extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     match.homeTeam.tla,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -338,7 +338,7 @@ class MatchCardHome extends StatelessWidget {
                   const SizedBox(height: 5),
                   Text(
                     match.awayTeam.tla,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ],
               ),
@@ -365,7 +365,7 @@ class MatchCardHome extends StatelessWidget {
                 state,
                 style: const TextStyle(
                   fontSize: 60,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -383,7 +383,7 @@ class MatchCardHome extends StatelessWidget {
                 '${match.score.fullTime.away}',
                 style: const TextStyle(
                   fontSize: 60,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -391,7 +391,7 @@ class MatchCardHome extends StatelessWidget {
               text: state,
               style: const TextStyle(
                 fontSize: 9,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 5),
@@ -413,7 +413,7 @@ class MatchCardHome extends StatelessWidget {
                 '${match.score.fullTime.away}',
                 style: const TextStyle(
                   fontSize: 60,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),

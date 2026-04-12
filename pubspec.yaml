@@ -10,7 +10,7 @@ environment:
 dependencies:
   bloc: ^9.2.0
   cloud_firestore: ^6.2.0
-  device_info_plus: ^12.4.0
+  device_info_plus: ^13.0.0
   equatable: ^2.0.8
   firebase_analytics: ^12.2.0
   firebase_core: ^4.6.0
@@ -27,7 +27,7 @@ dependencies:
   get_it: ^9.2.1
   hugeicons: ^1.1.6
   intl: ^0.20.2
-  package_info_plus: ^9.0.1
+  package_info_plus: ^10.0.0
   shared_preferences: ^2.5.5
   shimmer_animation: ^2.2.2
   text_scroll: ^0.2.1
@@ -41,7 +41,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^5.6.4
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   test_coverage_badge: ^0.3.2
   very_good_analysis: ^10.2.0
 
@@ -63,26 +63,46 @@ flutter:
     - family: Merriweather
       fonts:
         - asset: assets/fonts/Merriweather-Regular.ttf
+        - asset: assets/fonts/Merriweather-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Merriweather-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Merriweather-Bold.ttf
           weight: 700
     - family: Montserrat
       fonts:
         - asset: assets/fonts/Montserrat-Regular.ttf
+        - asset: assets/fonts/Montserrat-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Montserrat-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Montserrat-Bold.ttf
           weight: 700
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Nunito-Bold.ttf
           weight: 700
     - family: Open Sans
       fonts:
         - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/OpenSans-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/OpenSans-Bold.ttf
           weight: 700
     - family: Orbitron
       fonts:
         - asset: assets/fonts/Orbitron-Regular.ttf
+        - asset: assets/fonts/Orbitron-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Orbitron-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Orbitron-Bold.ttf
           weight: 700
     - family: Pacifico
@@ -91,21 +111,37 @@ flutter:
     - family: Playfair Display
       fonts:
         - asset: assets/fonts/PlayfairDisplay-Regular.ttf
+        - asset: assets/fonts/PlayfairDisplay-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/PlayfairDisplay-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/PlayfairDisplay-Bold.ttf
           weight: 700
     - family: Poppins
       fonts:
         - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Poppins-Bold.ttf
           weight: 700
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Roboto-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/Roboto-Bold.ttf
           weight: 700
     - family: Source Code Pro
       fonts:
         - asset: assets/fonts/SourceCodePro-Regular.ttf
+        - asset: assets/fonts/SourceCodePro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SourceCodePro-SemiBold.ttf
+          weight: 600
         - asset: assets/fonts/SourceCodePro-Bold.ttf
           weight: 700
 

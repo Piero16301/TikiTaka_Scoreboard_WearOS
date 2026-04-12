@@ -42,7 +42,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                   Text(
                     l10n.errorNotifications,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),
@@ -80,7 +80,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                   Text(
                     l10n.emptyNotifications,
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                     ),
                   ),

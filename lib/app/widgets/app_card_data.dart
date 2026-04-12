@@ -28,7 +28,7 @@ class AppCardData extends StatelessWidget {
             title!,
             style: TextStyle(
               color: theme.colorScheme.primary,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               fontSize: 11,
             ),
           ),
