@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class CrestImage extends StatelessWidget {
   const CrestImage({
@@ -61,8 +62,8 @@ class CrestImage extends StatelessWidget {
                 width: dimension - (margin * 2),
                 height: dimension - (margin * 2),
                 child: RepaintBoundary(
-                  child: SvgPicture.network(
-                    crest,
+                  child: CachedSvgImage(
+                    imageUrl: crest,
                     fit: fit,
                     width: dimension - (margin * 2),
                     height: dimension - (margin * 2),
@@ -90,12 +91,12 @@ class CrestImage extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.all(margin),
-              child: Image.network(
+              child: CachedNetworkImage(
                 width: dimension - (margin * 2),
                 height: dimension - (margin * 2),
-                crest,
+                imageUrl: crest,
                 fit: fit,
-                errorBuilder: (context, error, stackTrace) => Icon(
+                errorWidget: (context, url, error) => Icon(
                   Icons.image,
                   size: dimension,
                 ),
