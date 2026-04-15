@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class CrestImage extends StatelessWidget {
@@ -10,6 +11,7 @@ class CrestImage extends StatelessWidget {
     this.hideCrest = false,
     this.margin = 0,
     this.borderRadius = 10,
+    this.cacheManager,
     super.key,
   });
 
@@ -19,6 +21,7 @@ class CrestImage extends StatelessWidget {
   final bool hideCrest;
   final double margin;
   final double borderRadius;
+  final BaseCacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +67,7 @@ class CrestImage extends StatelessWidget {
                 child: RepaintBoundary(
                   child: CachedSvgImage(
                     imageUrl: crest,
+                    cacheManager: cacheManager,
                     fit: fit,
                     width: dimension - (margin * 2),
                     height: dimension - (margin * 2),
@@ -95,6 +99,7 @@ class CrestImage extends StatelessWidget {
                 width: dimension - (margin * 2),
                 height: dimension - (margin * 2),
                 imageUrl: crest,
+                cacheManager: cacheManager,
                 fit: fit,
                 errorWidget: (context, url, error) => Icon(
                   Icons.image,

@@ -11,6 +11,7 @@ class CachedSvgImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.contain,
     this.errorBuilder,
+    this.cacheManager,
     super.key,
   });
 
@@ -19,11 +20,12 @@ class CachedSvgImage extends StatelessWidget {
   final double? height;
   final BoxFit fit;
   final Widget Function(BuildContext, Object, StackTrace)? errorBuilder;
+  final BaseCacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<File>(
-      future: DefaultCacheManager().getSingleFile(imageUrl),
+      future: (cacheManager ?? DefaultCacheManager()).getSingleFile(imageUrl),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return SizedBox(
