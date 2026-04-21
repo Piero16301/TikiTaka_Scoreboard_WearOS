@@ -1,10 +1,18 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file/file.dart' as pkg_file;
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+
+class MockCacheManager extends Mock implements BaseCacheManager {}
+
+class MockFile extends Mock implements pkg_file.File {}
 
 class MockHttpOverrides extends HttpOverrides {
   @override
@@ -58,7 +66,7 @@ class _MockHttpClientRequest extends Fake implements HttpClientRequest {
   bool bufferOutput = true;
 
   @override
-  HttpHeaders get headers => _MockHttpHeaders();
+  HttpHeaders get headers => _MockHttpHeaders(isSvg: isSvg);
 
   @override
   Future<void> addStream(Stream<List<int>> stream) async {}
@@ -95,11 +103,22 @@ class _ErrorMockHttpClientRequest extends Fake implements HttpClientRequest {
 }
 
 class _MockHttpHeaders extends Fake implements HttpHeaders {
-  @override
-  void forEach(void Function(String name, List<String> values) f) {}
+  _MockHttpHeaders({bool isSvg = false}) {
+    if (isSvg) {
+      _headers['content-type'] = ['image/svg+xml'];
+    }
+  }
+  final Map<String, List<String>> _headers = {
+    'content-type': ['image/png'],
+  };
 
   @override
-  List<String>? operator [](String name) => null;
+  List<String>? operator [](String name) => _headers[name.toLowerCase()];
+
+  @override
+  void forEach(void Function(String name, List<String> values) f) {
+    _headers.forEach(f);
+  }
 
   @override
   void add(String name, Object value, {bool preserveHeaderCase = false}) {}
@@ -114,14 +133,14 @@ class _MockHttpClientResponse extends Fake implements HttpClientResponse {
   int get statusCode => 200;
 
   @override
-  int get contentLength => 0;
+  int get contentLength => -1;
 
   @override
   HttpClientResponseCompressionState get compressionState =>
       HttpClientResponseCompressionState.notCompressed;
 
   @override
-  HttpHeaders get headers => _MockHttpHeaders();
+  HttpHeaders get headers => _MockHttpHeaders(isSvg: isSvg);
 
   @override
   bool get isRedirect => false;
@@ -146,12 +165,15 @@ class _MockHttpClientResponse extends Fake implements HttpClientResponse {
         ? '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
             .codeUnits
         : [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
-    return Stream<List<int>>.fromIterable(<List<int>>[bytes]).listen(
-      onData,
-      onError: onError,
-      onDone: onDone,
-      cancelOnError: cancelOnError,
-    );
+    return Stream<List<int>>.periodic(
+      const Duration(milliseconds: 10),
+      (_) => bytes,
+    ).take(1).listen(
+          onData,
+          onError: onError,
+          onDone: onDone,
+          cancelOnError: cancelOnError,
+        );
   }
 }
 
@@ -188,10 +210,7 @@ class _ErrorMockHttpClientResponse extends Fake implements HttpClientResponse {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    final bytes =
-        '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
-            .codeUnits;
-    return Stream<List<int>>.fromIterable(<List<int>>[bytes]).listen(
+    return const Stream<List<int>>.empty().listen(
       onData,
       onError: onError,
       onDone: onDone,
@@ -206,6 +225,12 @@ void main() {
   });
 
   group('CrestImage', () {
+    late MockCacheManager mockCacheManager;
+
+    setUp(() {
+      mockCacheManager = MockCacheManager();
+      registerFallbackValue(Uri.parse('https://example.com'));
+    });
     testWidgets('renders placeholder when crest is empty', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
@@ -263,10 +288,22 @@ void main() {
     });
 
     testWidgets('renders placeholder on regular image error', (tester) async {
+      when(
+        () => mockCacheManager.getFileStream(
+          any(),
+          key: any(named: 'key'),
+          headers: any(named: 'headers'),
+          withProgress: any(named: 'withProgress'),
+        ),
+      ).thenAnswer((_) => Stream.error(Exception('Failed to load')));
+
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
-            body: CrestImage(crest: 'https://example.com/error.png'),
+            body: CrestImage(
+              crest: 'https://example.com/error.png',
+              cacheManager: mockCacheManager,
+            ),
           ),
         ),
       );
@@ -278,16 +315,54 @@ void main() {
     });
 
     testWidgets('renders SvgPicture.network for SVG images', (tester) async {
+      final mockFile = MockFile();
+      when(() => mockFile.path).thenReturn('test.svg');
+      when(mockFile.readAsBytesSync).thenReturn(
+        Uint8List.fromList(
+          '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
+              .codeUnits,
+        ),
+      );
+
+      when(() => mockCacheManager.getSingleFile(any()))
+          .thenAnswer((_) async => mockFile);
+
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
-            body: CrestImage(crest: 'https://example.com/logo.svg'),
+            body: CrestImage(
+              crest: 'https://example.com/logo.svg',
+              cacheManager: mockCacheManager,
+            ),
           ),
         ),
       );
 
-      // We expect SvgPicture (or its underlying widgets) to be found
+      await tester.pump();
+      await tester.pumpAndSettle();
+
       expect(find.byType(SvgPicture), findsOneWidget);
+    });
+
+    testWidgets('renders placeholder on SVG image error', (tester) async {
+      when(() => mockCacheManager.getSingleFile(any()))
+          .thenAnswer((_) async => throw Exception('Failed to load'));
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CrestImage(
+              crest: 'https://example.com/error.svg',
+              cacheManager: mockCacheManager,
+            ),
+          ),
+        ),
+      );
+
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.image), findsOneWidget);
     });
   });
 }
