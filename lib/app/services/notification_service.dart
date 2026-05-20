@@ -5,8 +5,13 @@ class NotificationService {
       : _notificationRepository = notificationRepository;
 
   final NotificationRepository _notificationRepository;
+  Future<void>? _initializeFuture;
 
-  Future<void> initialize() async {
+  Future<void> initialize() {
+    return _initializeFuture ??= _initialize();
+  }
+
+  Future<void> _initialize() async {
     final performance = getIt<PerformanceService>();
     final trace = performance.startTrace('notification_service_initialization');
     await _notificationRepository.initialize();

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
@@ -48,60 +49,23 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return AppScaffold.basic(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: AppVariables.scaffoldSpacing,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: ScrollText(text: l10n.errorMatches),
-                      ),
-                    ],
-                  ),
+                child: AppError(
+                  text: l10n.errorMatches,
                 ),
               );
             }
 
             if (!snapshot.hasData) {
-              return AppScaffold.scrollable(
-                controller: _scrollController,
-                child: Column(
-                  spacing: AppVariables.scaffoldSpacing,
-                  children: [
-                    const SizedBox(height: AppVariables.topScaffoldSpacing),
-                    AppTitleText(
-                      title: l10n.titleMatches.toUpperCase(),
-                      hasBottomSpacing: false,
-                    ),
-                    const LastUpdateHome(isLoading: true),
-                    ...List.generate(
-                      AppVariables.numberOfShimmers,
-                      (index) => const ShimmerMatchCardHome(),
-                    ),
-                    const SettingsHome(),
-                    const SizedBox(
-                      height: AppVariables.bottomScaffoldSpacing,
-                    ),
-                  ],
-                ),
+              return const AppScaffold.basic(
+                child: AppLoader(),
               );
             }
 
             if (snapshot.data!.isEmpty) {
               return AppScaffold.basic(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: AppVariables.scaffoldSpacing,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: ScrollText(text: l10n.emptyMatches),
-                      ),
-                      const SettingsHome(),
-                    ],
-                  ),
+                child: AppEmpty(
+                  text: l10n.emptyMatches,
+                  onPressedSettings: () => _onTapSettings(context),
                 ),
               );
             }
@@ -129,21 +93,26 @@ class _HomeViewState extends State<HomeView> {
               key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
               controller: _scrollController,
               child: Column(
-                spacing: AppVariables.scaffoldSpacing,
                 children: [
                   const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  AppTitleText(
-                    title: l10n.titleMatches.toUpperCase(),
-                    hasBottomSpacing: false,
+                  AppTitleText(title: l10n.titleMatches),
+                  for (final (index, match) in matches.indexed) ...[
+                    MatchCardHome(match: match),
+                    if (index < matches.length - 1)
+                      const SizedBox(height: AppVariables.listSpacing),
+                  ],
+                  const SizedBox(
+                    height: AppVariables.bottomScaffoldSpacingButton,
                   ),
                   const LastUpdateHome(),
-                  ...matches.map(
-                    (match) => MatchCardHome(match: match),
-                  ),
-                  const SettingsHome(),
                   const SizedBox(
-                    height: AppVariables.bottomScaffoldSpacing,
+                    height: AppVariables.bottomScaffoldSpacingButton,
                   ),
+                  AppIconButton(
+                    icon: HugeIcons.strokeRoundedSettings01,
+                    onPressed: () => _onTapSettings(context),
+                  ),
+                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
                 ],
               ),
             );
@@ -151,6 +120,17 @@ class _HomeViewState extends State<HomeView> {
         );
       },
     );
+  }
+
+  Future<void> _onTapSettings(BuildContext context) async {
+    getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
+    final homeCubit = context.read<HomeCubit>();
+    final reload = (await Navigator.of(context)
+            .pushNamed(SettingsPage.routeName)) as bool? ??
+        true;
+    if (reload) {
+      homeCubit.reload();
+    }
   }
 }
 
@@ -197,8 +177,9 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     if (widget.isLoading) {
       return Text(
         l10n.updatingMatches,
+        textAlign: TextAlign.center,
         style: const TextStyle(
-          height: 0.8,
+          height: 1,
           fontSize: 10,
         ),
       );
@@ -217,53 +198,13 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
 
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
+          textAlign: TextAlign.center,
           style: const TextStyle(
-            height: 0.8,
+            height: 1,
             fontSize: 10,
           ),
         );
       },
-    );
-  }
-}
-
-class ShimmerMatchCardHome extends StatelessWidget {
-  const ShimmerMatchCardHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppCardData(
-      content: Column(
-        children: [
-          AppSchimmer(width: 100),
-          SizedBox(height: 5),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppSchimmer(height: 40, width: 40),
-                    SizedBox(height: 5),
-                    AppSchimmer(width: 40),
-                  ],
-                ),
-              ),
-              Expanded(child: AppSchimmer(height: 30)),
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppSchimmer(height: 40, width: 40),
-                    SizedBox(height: 5),
-                    AppSchimmer(width: 40),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
@@ -285,66 +226,64 @@ class MatchCardHome extends StatelessWidget {
       l10n,
     );
 
-    return AppCardData(
+    return AppCardAction(
+      onPressed: () {
+        getIt<AnalyticsService>().logEvent(
+          name: 'match_clicked',
+          parameters: {'match_id': match.id.toString()},
+        );
+        unawaited(
+          Navigator.of(context).pushNamed(
+            MatchPage.routeName,
+            arguments: match.id,
+          ),
+        );
+      },
       title: match.competition.name,
-      content: GestureDetector(
-        onTap: () {
-          getIt<AnalyticsService>().logEvent(
-            name: 'match_clicked',
-            parameters: {'match_id': match.id.toString()},
-          );
-          unawaited(
-            Navigator.of(context).pushNamed(
-              MatchPage.routeName,
-              arguments: match.id,
+      content: Row(
+        spacing: 5,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 5,
+              children: [
+                CrestImage(
+                  crest: match.homeTeam.crest,
+                  height: 50,
+                  width: 50,
+                ),
+                Text(
+                  match.homeTeam.tla,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
-          );
-        },
-        child: Row(
-          spacing: 5,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CrestImage(
-                    crest: match.homeTeam.crest,
-                    dimension: 50,
-                    margin: 2.5,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    match.homeTeam.tla,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+          ),
+          getMatchStatus(
+            context: context,
+            status: match.status,
+            state: state,
+            match: match,
+          ),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 5,
+              children: [
+                CrestImage(
+                  crest: match.awayTeam.crest,
+                  height: 50,
+                  width: 50,
+                ),
+                Text(
+                  match.awayTeam.tla,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ],
             ),
-            getMatchStatus(
-              context: context,
-              status: match.status,
-              state: state,
-              match: match,
-            ),
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CrestImage(
-                    crest: match.awayTeam.crest,
-                    dimension: 50,
-                    margin: 2.5,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    match.awayTeam.tla,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -383,15 +322,18 @@ class MatchCardHome extends StatelessWidget {
                 '${match.score.fullTime.away}',
                 style: const TextStyle(
                   fontSize: 60,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ScrollText(
-              text: state,
-              style: const TextStyle(
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                state,
+                style: const TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(height: 5),
@@ -413,53 +355,22 @@ class MatchCardHome extends StatelessWidget {
                 '${match.score.fullTime.away}',
                 style: const TextStyle(
                   fontSize: 60,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ScrollText(
-              text: state,
-              style: const TextStyle(
-                fontSize: 10,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                state,
+                style: const TextStyle(
+                  fontSize: 10,
+                ),
               ),
             ),
           ],
         ),
       );
     }
-  }
-}
-
-class SettingsHome extends StatelessWidget {
-  const SettingsHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () async {
-                getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
-                final homeCubit = context.read<HomeCubit>();
-                final reload = (await Navigator.of(context)
-                        .pushNamed(SettingsPage.routeName)) as bool? ??
-                    true;
-                if (reload) {
-                  homeCubit.reload();
-                }
-              },
-              label: l10n.titleSettings,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

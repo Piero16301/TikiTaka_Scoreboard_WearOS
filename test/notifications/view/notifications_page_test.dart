@@ -111,8 +111,7 @@ void main() {
       expect(find.byType(LeagueCardNotifications), findsOneWidget);
     });
 
-    testWidgets('navigates to TeamsPage when icon button is pressed',
-        (tester) async {
+    testWidgets('navigates to TeamsPage when card is pressed', (tester) async {
       final mockLeague = MockLeague();
       when(() => mockLeague.id).thenReturn(99);
       when(() => mockLeague.code).thenReturn('PL');
@@ -137,10 +136,10 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      final iconButtonFinder = find.byType(IconButton);
-      expect(iconButtonFinder, findsOneWidget);
+      final cardFinder = find.byType(LeagueCardNotifications);
+      expect(cardFinder, findsOneWidget);
 
-      await tester.tap(iconButtonFinder);
+      await tester.tap(cardFinder);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 

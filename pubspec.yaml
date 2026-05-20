@@ -8,16 +8,16 @@ environment:
   flutter: ">=3.35.6"
 
 dependencies:
-  bloc: ^9.2.0
+  bloc: ^9.2.1
   cached_network_image: ^3.4.1
-  cloud_firestore: ^6.3.0
-  device_info_plus: ^13.0.0
+  cloud_firestore: ^6.4.1
+  device_info_plus: ^13.1.0
   equatable: ^2.0.8
-  firebase_analytics: ^12.3.0
-  firebase_core: ^4.7.0
-  firebase_crashlytics: ^5.2.0
-  firebase_messaging: ^16.2.0
-  firebase_performance: ^0.11.3
+  firebase_analytics: ^12.4.1
+  firebase_core: ^4.9.0
+  firebase_crashlytics: ^5.2.2
+  firebase_messaging: ^16.2.2
+  firebase_performance: ^0.11.4+1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
@@ -25,20 +25,18 @@ dependencies:
   flutter_local_notifications: ^21.0.0
   flutter_localizations:
     sdk: flutter
-  flutter_svg: ^2.2.4
+  flutter_svg: ^2.3.0
   get_it: ^9.2.1
-  hugeicons: ^1.1.6
+  hugeicons: ^1.1.7
   intl: ^0.20.2
-  package_info_plus: ^10.0.0
+  package_info_plus: ^10.1.0
   shared_preferences: ^2.5.5
-  shimmer_animation: ^2.2.2
-  text_scroll: ^0.2.1
-  wear_os_scrollbar: ^0.0.3
+  wear_os_scrollbar: ^0.1.0
 
 dev_dependencies:
   bloc_test: ^10.0.0
-  build_runner: ^2.13.1
-  fake_cloud_firestore: ^4.1.0+1
+  build_runner: ^2.15.0
+  fake_cloud_firestore: ^4.1.1
   file: ^7.0.1
   flutter_launcher_icons: ^0.14.4
   flutter_test:

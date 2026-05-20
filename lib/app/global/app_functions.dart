@@ -16,21 +16,21 @@ class AppFunctions {
       case 'TIMED':
         return DateFormat('HH:mm').format(date);
       case 'IN_PLAY':
-        return l10n.inPlayMatch.toUpperCase();
+        return l10n.inPlayMatch;
       case 'PAUSED':
-        return l10n.pausedMatch.toUpperCase();
+        return l10n.pausedMatch;
       case 'FINISHED':
-        return l10n.finishedMatch.toUpperCase();
+        return l10n.finishedMatch;
       case 'POSTPONED':
-        return l10n.postponedMatch.toUpperCase();
+        return l10n.postponedMatch;
       case 'SUSPENDED':
-        return l10n.suspendMatch.toUpperCase();
+        return l10n.suspendMatch;
       case 'CANCELED':
-        return l10n.cancelledMatch.toUpperCase();
+        return l10n.cancelledMatch;
       case 'AWARDED':
-        return l10n.awardedMatch.toUpperCase();
+        return l10n.awardedMatch;
       default:
-        return l10n.unknownMatch.toUpperCase();
+        return l10n.unknownMatch;
     }
   }
 

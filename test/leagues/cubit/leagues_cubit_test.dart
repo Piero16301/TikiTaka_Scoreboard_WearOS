@@ -50,7 +50,7 @@ void main() {
           ),
         ).thenReturn(null);
       },
-      act: (cubit) => cubit.toggleLeague(league: 'LL', enabled: true),
+      act: (cubit) => cubit.toggleLeague(league: 'LL'),
       expect: () => [
         const LeaguesState(enabledLeagues: {'PL': true, 'LL': true}),
       ],
@@ -68,7 +68,7 @@ void main() {
           ),
         ).thenThrow(Exception('Error'));
       },
-      act: (cubit) => cubit.toggleLeague(league: 'LL', enabled: true),
+      act: (cubit) => cubit.toggleLeague(league: 'LL'),
       expect: () => [
         const LeaguesState(enabledLeagues: {'PL': true, 'LL': false}),
       ],

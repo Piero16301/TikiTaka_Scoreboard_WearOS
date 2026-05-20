@@ -277,7 +277,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: CrestImage(crest: '', dimension: dimension),
+            body: CrestImage(crest: '', height: dimension, width: dimension),
           ),
         ),
       );

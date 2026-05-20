@@ -20,10 +20,8 @@ class LeaguesCubit extends Cubit<LeaguesState> {
     );
   }
 
-  void toggleLeague({
-    required String league,
-    required bool enabled,
-  }) {
+  void toggleLeague({required String league}) {
+    final enabled = !(state.enabledLeagues[league] ?? false);
     try {
       localStorage.saveEnabledLeague(league: league, enabled: enabled);
       emit(

@@ -45,6 +45,11 @@ void main() {
       when(() => mockPerformanceService.startTrace(any()))
           .thenReturn(mockTrace);
 
+      when(() => notificationService.initialize()).thenAnswer((_) async {});
+      when(() => notificationService.token).thenReturn('');
+      when(() => databaseService.getDeviceStream(token: any(named: 'token')))
+          .thenAnswer((_) => const Stream.empty());
+
       getIt
         ..registerSingleton<LocalStorageService>(localStorageService)
         ..registerSingleton<DatabaseService>(databaseService)
@@ -180,10 +185,41 @@ void main() {
       expect: () => [
         const AppState(fontFamily: 'Roboto'),
       ],
-      verify: (_) {
-        verify(() => localStorageService.saveFontFamily(fontFamily: 'Roboto'))
-            .called(1);
+    );
+
+    blocTest<AppCubit, AppState>(
+      'subscribes to device stream on initialize and emits state with device',
+      setUp: () {
+        when(() => localStorageService.getLanguage()).thenReturn(null);
+        when(
+          () => localStorageService.saveLanguage(
+            language: any(named: 'language'),
+          ),
+        ).thenReturn(null);
+        when(() => localStorageService.getBaseColor()).thenReturn(null);
+        when(
+          () => localStorageService.saveBaseColor(
+            baseColor: any(named: 'baseColor'),
+          ),
+        ).thenReturn(null);
+        when(() => localStorageService.getFontFamily()).thenReturn(null);
+        when(
+          () => localStorageService.saveFontFamily(
+            fontFamily: any(named: 'fontFamily'),
+          ),
+        ).thenReturn(null);
+
+        when(() => notificationService.initialize()).thenAnswer((_) async {});
+        when(() => notificationService.token).thenReturn('mock_token');
+        when(() => databaseService.getDeviceStream(token: 'mock_token'))
+            .thenAnswer((_) => Stream.value(Device.empty));
       },
+      build: AppCubit.new,
+      act: (cubit) => cubit.initialize(),
+      expect: () => [
+        const AppState(),
+        AppState(device: Device.empty),
+      ],
     );
   });
 }

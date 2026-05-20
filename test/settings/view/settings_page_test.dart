@@ -71,7 +71,7 @@ void main() {
       expect(find.byType(SettingsPage), findsOneWidget);
       expect(find.byType(SettingsView), findsOneWidget);
       expect(find.text('Tiki Taka Scoreboard'), findsOneWidget);
-      expect(find.textContaining('Version: 1.0.0 (10)'), findsOneWidget);
+      expect(find.textContaining('1.0.0 (10)'), findsOneWidget);
     });
 
     testWidgets('taps on ConfigurationSetting to navigate', (tester) async {
@@ -94,10 +94,10 @@ void main() {
         ),
       );
 
-      final iconButtons = find.byType(IconButton);
-      expect(iconButtons, findsWidgets);
+      final settings = find.byType(ConfigurationSetting);
+      expect(settings, findsWidgets);
 
-      await tester.tap(iconButtons.first);
+      await tester.tap(settings.first);
       await tester.pumpAndSettle();
 
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));

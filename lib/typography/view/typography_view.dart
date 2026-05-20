@@ -23,27 +23,26 @@ class _TypographyViewState extends State<TypographyView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final fonts = AppVariables.availableFonts.entries;
 
     return AppScaffold.scrollable(
       controller: _scrollController,
       child: BlocBuilder<AppCubit, AppState>(
         builder: (context, state) => RadioGroup<String>(
           groupValue: state.fontFamily,
-          onChanged: (value) => context.read<AppCubit>().changeFontFamily(
-                fontFamily: value ?? AppVariables.defaultFontFamily,
-              ),
+          onChanged: (v) {},
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleFont.toUpperCase()),
-              ...AppVariables.availableFonts.entries.map(
-                (entry) => CardFonts(
-                  label: entry.key,
-                  value: entry.value,
+              AppTitleText(title: l10n.titleFont),
+              for (final (index, font) in fonts.indexed) ...[
+                CardFonts(
+                  value: font.value,
+                  label: font.key,
                 ),
-              ),
-              const BackButtonFonts(),
+                if (index < fonts.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
@@ -65,44 +64,26 @@ class CardFonts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCardData(
-      content: Row(
-        children: [
-          Radio<String>(value: value),
-          Expanded(
-            child: ScrollText(
-              text: label,
-              style: TextStyle(
-                fontFamily: value,
+    return AppCardAction(
+      onPressed: () =>
+          context.read<AppCubit>().changeFontFamily(fontFamily: value),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+        child: Row(
+          spacing: 5,
+          children: [
+            SizedBox.square(
+              dimension: 20,
+              child: Radio<String>(value: value),
+            ),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(fontFamily: value),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonFonts extends StatelessWidget {
-  const BackButtonFonts({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

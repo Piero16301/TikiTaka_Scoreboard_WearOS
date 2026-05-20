@@ -37,58 +37,19 @@ class _LeaguesViewState extends State<LeaguesView> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorLeagues,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppError(text: l10n.errorLeagues),
           );
         }
 
         if (!snapshot.hasData) {
-          return AppScaffold.scrollable(
-            controller: _scrollController,
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                AppTitleText(title: l10n.titleLeagues.toUpperCase()),
-                ...List.generate(
-                  AppVariables.numberOfShimmers,
-                  (index) => const ShimmerCardLeagues(),
-                ),
-                const BackButtonCompetitions(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+          return const AppScaffold.basic(
+            child: AppLoader(),
           );
         }
 
         if (snapshot.data!.isEmpty) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.emptyLeagues,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppEmpty(text: l10n.emptyLeagues),
           );
         }
 
@@ -97,48 +58,19 @@ class _LeaguesViewState extends State<LeaguesView> {
         return AppScaffold.scrollable(
           controller: _scrollController,
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleLeagues.toUpperCase()),
-              ...leagues.map(
-                (league) => LeagueCardCompetitions(league: league),
-              ),
-              const BackButtonCompetitions(),
+              AppTitleText(title: l10n.titleLeagues),
+              for (final (index, league) in leagues.indexed) ...[
+                LeagueCardCompetitions(league: league),
+                if (index < leagues.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class ShimmerCardLeagues extends StatelessWidget {
-  const ShimmerCardLeagues({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppCardData(
-      content: Row(
-        children: [
-          SizedBox(
-            width: 40,
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Switch(
-                padding: EdgeInsets.zero,
-                value: false,
-                onChanged: null,
-              ),
-            ),
-          ),
-          SizedBox(width: 5),
-          AppSchimmer(height: 40, width: 40),
-          SizedBox(width: 5),
-          Expanded(child: AppSchimmer()),
-        ],
-      ),
     );
   }
 }
@@ -153,66 +85,67 @@ class LeagueCardCompetitions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCardData(
-      content: Row(
-        spacing: 5,
-        children: [
-          BlocBuilder<LeaguesCubit, LeaguesState>(
-            builder: (context, state) {
-              final enabled = state.enabledLeagues[league.code] ?? false;
-              return SizedBox(
-                width: 40,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Switch(
-                    padding: EdgeInsets.zero,
-                    value: enabled,
-                    onChanged: (value) {
-                      getIt<AnalyticsService>().logEvent(
-                        name: 'league_toggled',
-                        parameters: {
-                          'league': league.code,
-                          'enabled': value.toString(),
-                        },
-                      );
-                      context.read<LeaguesCubit>().toggleLeague(
-                            league: league.code,
-                            enabled: value,
-                          );
-                    },
-                  ),
+    return AppCardAction(
+      innerPadding: EdgeInsets.zero,
+      onPressed: () {
+        getIt<AnalyticsService>().logEvent(
+          name: 'league_toggled',
+          parameters: {'league': league.code},
+        );
+        context.read<LeaguesCubit>().toggleLeague(league: league.code);
+      },
+      content: SizedBox(
+        height: 48,
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  spacing: 5,
+                  children: [
+                    BlocBuilder<LeaguesCubit, LeaguesState>(
+                      builder: (context, state) {
+                        final enabled =
+                            state.enabledLeagues[league.code] ?? false;
+                        return SizedBox(
+                          width: 34,
+                          child: FittedBox(
+                            fit: BoxFit.fill,
+                            child: IgnorePointer(
+                              child: Switch(
+                                padding: EdgeInsets.zero,
+                                value: enabled,
+                                onChanged: (v) {},
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        league.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
-          CrestImage(crest: league.emblem, margin: 2.5),
-          Expanded(child: ScrollText(text: league.name)),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonCompetitions extends StatelessWidget {
-  const BackButtonCompetitions({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
+              ),
             ),
-          ),
-        ],
+            CrestImage(
+              crest: league.emblem,
+              margin: 2.5,
+              fit: BoxFit.contain,
+              height: double.infinity,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

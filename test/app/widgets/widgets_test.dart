@@ -8,7 +8,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: AppCardData(
+            body: AppCardAction(
               content: Text('Test Card'),
             ),
           ),
@@ -44,17 +44,6 @@ void main() {
       expect(find.text('Test Scaffold'), findsOneWidget);
     });
 
-    testWidgets('AppSchimmer renders without error', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: AppSchimmer(),
-          ),
-        ),
-      );
-      expect(find.byType(AppSchimmer), findsOneWidget);
-    });
-
     testWidgets('CrestImage renders with empty string', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
@@ -66,17 +55,6 @@ void main() {
       expect(find.byType(CrestImage), findsOneWidget);
 
       await tester.pumpAndSettle();
-    });
-
-    testWidgets('ScrollText renders without error', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: ScrollText(text: 'Scrolling...'),
-          ),
-        ),
-      );
-      expect(find.text('Scrolling...'), findsOneWidget);
     });
 
     testWidgets('WavingFlagBackground and Painter render without error',

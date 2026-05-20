@@ -11,20 +11,21 @@ class AppVariables {
   static const String appOS = 'WEAROS';
 
   static const int numberOfShimmers = 5;
-  static const double titleSize = 22;
+  static const double titleSize = 16;
   static const Color defaultColor = Colors.transparent;
   static const EdgeInsetsGeometry scaffoldPadding = EdgeInsets.symmetric(
     horizontal: 15,
   );
-  static const double topScaffoldSpacing = 20;
-  static const double bottomScaffoldSpacing = 40;
+  static const double topScaffoldSpacing = 42;
+  static const double bottomScaffoldSpacing = 90;
   static const double scaffoldSpacing = 10;
-  static const double horizontalPaddingTitle = 20;
-  static const double titlePaddingBottom = 10;
-  static const double bottomScaffoldSpacingButton = 8;
+  static const double horizontalPaddingTitle = 10;
+  static const double titlePaddingBottom = 22;
+  static const double bottomScaffoldSpacingButton = 16;
   static const double titleTextHeight = 0.8;
-  static const double verticalPaddingBackButton = 10;
   static const double cardSpacing = 5;
+  static const double listSpacing = 4;
+  static const double listFooterSpacing = 12;
 
   static const teamColorsMap = <String, Color>{
     'Black': Colors.black,

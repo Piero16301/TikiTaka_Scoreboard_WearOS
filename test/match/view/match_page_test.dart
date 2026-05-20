@@ -321,6 +321,20 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
+      for (final element in find.byType(CrestImage).evaluate()) {
+        final renderBox = element.findRenderObject() as RenderBox?;
+        if (renderBox != null) {
+          renderBox.localToGlobal(Offset.zero);
+        }
+      }
+      await tester.ensureVisible(find.byType(CrestImage).first);
+      await tester.pumpAndSettle();
+      for (final element in find.byType(CrestImage).evaluate()) {
+        final renderBox = element.findRenderObject() as RenderBox?;
+        if (renderBox != null) {
+          renderBox.localToGlobal(Offset.zero);
+        }
+      }
       await tester.tap(find.byType(CrestImage).first);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
@@ -330,6 +344,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
+      await tester.ensureVisible(find.byType(CrestImage).last);
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(CrestImage).last);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
@@ -339,9 +355,6 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       await tester.drag(find.byType(MatchView), const Offset(0, -500));
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
-      await tester.tap(find.byType(BackButtonMatch));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
     });

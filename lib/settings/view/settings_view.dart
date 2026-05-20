@@ -34,36 +34,39 @@ class _SettingsViewState extends State<SettingsView> {
     return AppScaffold.scrollable(
       controller: _scrollController,
       child: Column(
-        spacing: AppVariables.scaffoldSpacing,
         children: [
           const SizedBox(height: AppVariables.topScaffoldSpacing),
-          AppTitleText(title: l10n.titleSettings.toUpperCase()),
+          AppTitleText(title: l10n.titleSettings),
           ConfigurationSetting(
             title: l10n.titleLeagues,
             icon: HugeIcons.strokeRoundedFootball,
             route: LeaguesPage.routeName,
           ),
+          const SizedBox(height: AppVariables.listSpacing),
           ConfigurationSetting(
             title: l10n.titleNotifications,
             icon: HugeIcons.strokeRoundedNotification01,
             route: NotificationsPage.routeName,
           ),
+          const SizedBox(height: AppVariables.listSpacing),
           ConfigurationSetting(
             title: l10n.titleLanguage,
             icon: HugeIcons.strokeRoundedLanguageSkill,
             route: LanguagesPage.routeName,
           ),
+          const SizedBox(height: AppVariables.listSpacing),
           ConfigurationSetting(
             title: l10n.titleTheme,
             icon: HugeIcons.strokeRoundedPaintBoard,
             route: ThemesPage.routeName,
           ),
+          const SizedBox(height: AppVariables.listSpacing),
           ConfigurationSetting(
             title: l10n.titleFont,
             icon: HugeIcons.strokeRoundedTextFont,
             route: TypographyPage.routeName,
           ),
-          const BackButtonSettings(),
+          const SizedBox(height: AppVariables.listFooterSpacing),
           const AppInfoSettings(),
           const SizedBox(height: AppVariables.bottomScaffoldSpacing),
         ],
@@ -86,57 +89,26 @@ class ConfigurationSetting extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCardData(
-      content: Row(
-        spacing: 5,
-        children: [
-          HugeIcon(
-            icon: icon,
-            size: 30,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Expanded(child: ScrollText(text: title)),
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: IconButton(
-              onPressed: () {
-                getIt<AnalyticsService>().logEvent(
-                  name: 'setting_option_clicked',
-                  parameters: {'route': route},
-                );
-                unawaited(Navigator.of(context).pushNamed(route));
-              },
-              icon: const Icon(Icons.arrow_forward_ios),
-              padding: EdgeInsets.zero,
+    return AppCardAction(
+      onPressed: () {
+        getIt<AnalyticsService>().logEvent(
+          name: 'setting_option_clicked',
+          parameters: {'route': route},
+        );
+        unawaited(Navigator.of(context).pushNamed(route));
+      },
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Row(
+          spacing: 5,
+          children: [
+            HugeIcon(
+              icon: icon,
+              color: Theme.of(context).colorScheme.primary,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonSettings extends StatelessWidget {
-  const BackButtonSettings({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
-            ),
-          ),
-        ],
+            Expanded(child: Text(title)),
+          ],
+        ),
       ),
     );
   }
@@ -157,13 +129,14 @@ class AppInfoSettings extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         ),
         Text(
-          'Version: ${deviceInfo.packageInfo.version} '
-          '(${deviceInfo.packageInfo.buildNumber})',
+          l10n.versionText(
+            deviceInfo.packageInfo.version,
+            deviceInfo.packageInfo.buildNumber,
+          ),
           style: const TextStyle(fontSize: 10),
         ),
         Text(
-          '${l10n.updatedOn}: '
-          '${getDateOn(l10n, deviceInfo.packageInfo.updateTime)}',
+          l10n.updatedOn(getDateOn(l10n, deviceInfo.packageInfo.updateTime)),
           style: const TextStyle(fontSize: 10),
         ),
       ],
@@ -177,14 +150,11 @@ class AppInfoSettings extends StatelessWidget {
 
     final now = DateTime.now().toLocal();
 
-    // Check if the date is today
     if (date.year == now.year &&
         date.month == now.month &&
         date.day == now.day) {
       return DateFormat('HH:mm:ss').format(date);
-    }
-    // Otherwise return date as dd-MM-yyyy
-    else {
+    } else {
       return DateFormat('dd-MM-yyyy').format(date);
     }
   }
