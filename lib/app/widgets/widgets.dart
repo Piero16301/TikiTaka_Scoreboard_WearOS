@@ -10,5 +10,6 @@ export 'app_scaffold.dart';
 export 'app_title_text.dart';
 export 'cached_svg_image.dart';
 export 'crest_image.dart';
+export 'top_curved_time.dart';
 export 'waving_flag_background.dart';
 export 'waving_flag_painter.dart';

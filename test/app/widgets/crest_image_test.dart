@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file/file.dart' as pkg_file;
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -363,6 +364,67 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.image), findsOneWidget);
+    });
+
+    testWidgets('renders with background and margin', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: CrestImage(
+              crest: '',
+              showBackground: true,
+              margin: 4,
+            ),
+          ),
+        ),
+      );
+      expect(find.byType(Container), findsWidgets);
+      expect(find.byType(Icon), findsOneWidget);
+
+      final mockFile = MockFile();
+      when(() => mockFile.path).thenReturn('test.svg');
+      when(mockFile.readAsBytesSync).thenReturn(
+        Uint8List.fromList(
+          '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
+              .codeUnits,
+        ),
+      );
+      when(() => mockCacheManager.getSingleFile(any()))
+          .thenAnswer((_) async => mockFile);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CrestImage(
+              crest: 'https://example.com/logo.svg',
+              cacheManager: mockCacheManager,
+              showBackground: true,
+              margin: 4,
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(find.byType(Container), findsWidgets);
+      expect(find.byType(SvgPicture), findsOneWidget);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CrestImage(
+              crest: 'https://example.com/logo.png',
+              cacheManager: mockCacheManager,
+              showBackground: true,
+              margin: 4,
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pumpAndSettle();
+      expect(find.byType(Container), findsWidgets);
+      expect(find.byType(CachedNetworkImage), findsOneWidget);
     });
   });
 }

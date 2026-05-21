@@ -28,6 +28,11 @@ class AppView extends StatelessWidget {
           RouteAnalyticsObserver(analyticsService: getIt<AnalyticsService>()),
           AppVariables.routeObserver,
         ],
+        builder: (context, child) {
+          return TopCurvedTime(
+            child: child ?? const SizedBox.shrink(),
+          );
+        },
       ),
     );
   }
