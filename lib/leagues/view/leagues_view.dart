@@ -137,6 +137,7 @@ class LeagueCardCompetitions extends StatelessWidget {
             CrestImage(
               crest: league.emblem,
               margin: 2.5,
+              showBackground: true,
               fit: BoxFit.contain,
               height: double.infinity,
               borderRadius: const BorderRadius.only(

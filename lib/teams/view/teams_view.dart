@@ -150,6 +150,7 @@ class TeamCardTeams extends StatelessWidget {
             CrestImage(
               crest: team.crest,
               margin: 2.5,
+              showBackground: true,
               fit: BoxFit.contain,
               height: double.infinity,
               borderRadius: const BorderRadius.only(

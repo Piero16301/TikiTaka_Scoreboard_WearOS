@@ -437,7 +437,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     required List<String> enabledLeagues,
   }) {
     final nowDate = DateTime.now();
-    // final nowDate = DateTime(2026, 06, 11);
+    // final nowDate = DateTime(2026, 05, 10);
 
     return _firestore
         .collection(AppVariables.matchesCollection)
