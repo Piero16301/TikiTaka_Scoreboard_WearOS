@@ -35,58 +35,19 @@ class _NotificationsViewState extends State<NotificationsView> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorNotifications,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppError(text: l10n.errorNotifications),
           );
         }
 
         if (!snapshot.hasData) {
-          return AppScaffold.scrollable(
-            controller: _scrollController,
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                AppTitleText(title: l10n.titleNotifications.toUpperCase()),
-                ...List.generate(
-                  AppVariables.numberOfShimmers,
-                  (index) => const ShimmerCardNotifications(),
-                ),
-                const BackButtonNotifications(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+          return const AppScaffold.basic(
+            child: AppLoader(),
           );
         }
 
         if (snapshot.data!.isEmpty) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.emptyNotifications,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppEmpty(text: l10n.emptyNotifications),
           );
         }
 
@@ -95,47 +56,19 @@ class _NotificationsViewState extends State<NotificationsView> {
         return AppScaffold.scrollable(
           controller: _scrollController,
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleNotifications.toUpperCase()),
-              ...leagues.map(
-                (league) => LeagueCardNotifications(league: league),
-              ),
-              const BackButtonNotifications(),
+              AppTitleText(title: l10n.titleNotifications),
+              for (final (index, league) in leagues.indexed) ...[
+                LeagueCardNotifications(league: league),
+                if (index < leagues.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class ShimmerCardNotifications extends StatelessWidget {
-  const ShimmerCardNotifications({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppCardData(
-      content: Row(
-        children: [
-          SizedBox(width: 10),
-          AppSchimmer(height: 40, width: 40),
-          SizedBox(width: 10),
-          Expanded(child: AppSchimmer()),
-          SizedBox(width: 10),
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: IconButton(
-              onPressed: null,
-              icon: Icon(Icons.arrow_forward_ios),
-              padding: EdgeInsets.zero,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -150,50 +83,49 @@ class LeagueCardNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCardData(
-      content: Row(
-        spacing: 5,
-        children: [
-          CrestImage(crest: league.emblem, margin: 2.5),
-          Expanded(child: ScrollText(text: league.name)),
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: IconButton(
-              onPressed: () => Navigator.of(context).pushNamed(
-                TeamsPage.routeName,
-                arguments: league.id,
+    return AppCardAction(
+      innerPadding: EdgeInsets.zero,
+      onPressed: () => Navigator.of(context).pushNamed(
+        TeamsPage.routeName,
+        arguments: league.id,
+      ),
+      content: SizedBox(
+        height: 48,
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 10,
+                ),
+                child: Row(
+                  spacing: 5,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        league.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              icon: const Icon(Icons.arrow_forward_ios),
-              padding: EdgeInsets.zero,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonNotifications extends StatelessWidget {
-  const BackButtonNotifications({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
+            CrestImage(
+              crest: league.emblem,
+              margin: 2.5,
+              showBackground: true,
+              fit: BoxFit.contain,
+              height: double.infinity,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

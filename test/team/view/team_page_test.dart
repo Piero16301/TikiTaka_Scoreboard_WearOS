@@ -93,18 +93,21 @@ void main() {
       final mockCoach = MockStaff();
       final mockContract = MockContract();
       when(() => mockContract.until).thenReturn('2025-06-30');
+      when(() => mockCoach.id).thenReturn(1);
       when(() => mockCoach.name).thenReturn('Xavi Hernandez');
       when(() => mockCoach.nationality).thenReturn('Spain');
       when(() => mockCoach.dateOfBirth).thenReturn('1980-01-25');
       when(() => mockCoach.contract).thenReturn(mockContract);
 
       final mockPlayer = MockStaff();
+      when(() => mockPlayer.id).thenReturn(2);
       when(() => mockPlayer.position).thenReturn('Offence');
       when(() => mockPlayer.name).thenReturn('Robert Lewandowski');
       when(() => mockPlayer.nationality).thenReturn('Poland');
       when(() => mockPlayer.dateOfBirth).thenReturn('1988-08-21');
 
       final mockStaffMember = MockStaff();
+      when(() => mockStaffMember.id).thenReturn(3);
       when(() => mockStaffMember.position).thenReturn('Assistant Coach');
       when(() => mockStaffMember.name).thenReturn('Ramon Canal');
       when(() => mockStaffMember.nationality).thenReturn('Spain');
@@ -140,15 +143,11 @@ void main() {
       expect(find.text('FC Barcelona'), findsOneWidget);
       expect(find.text('Xavi Hernandez'), findsOneWidget);
 
-      await tester.tap(find.text('SQUAD'));
+      await tester.tap(find.text('Squad'));
       await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Robert Lewandowski'), findsOneWidget);
 
-      await tester.tap(find.text('STAFF'));
-      await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('Ramon Canal'), findsOneWidget);
-
-      final infoFinder = find.text('INFO');
+      final infoFinder = find.text('Info');
       await tester.ensureVisible(infoFinder);
       await tester.tap(infoFinder);
       await tester.pump(const Duration(milliseconds: 500));

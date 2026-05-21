@@ -63,14 +63,14 @@ void main() {
       final date = DateTime(2023, 1, 1, 15, 30);
       expect(AppFunctions.getMatchState('SCHEDULED', date, l10n), '15:30');
       expect(AppFunctions.getMatchState('TIMED', date, l10n), '15:30');
-      expect(AppFunctions.getMatchState('IN_PLAY', date, l10n), 'IN PLAY');
-      expect(AppFunctions.getMatchState('PAUSED', date, l10n), 'PAUSED');
-      expect(AppFunctions.getMatchState('FINISHED', date, l10n), 'FINISHED');
-      expect(AppFunctions.getMatchState('POSTPONED', date, l10n), 'POSTPONED');
-      expect(AppFunctions.getMatchState('SUSPENDED', date, l10n), 'SUSPENDED');
-      expect(AppFunctions.getMatchState('CANCELED', date, l10n), 'CANCELLED');
-      expect(AppFunctions.getMatchState('AWARDED', date, l10n), 'AWARDED');
-      expect(AppFunctions.getMatchState('BLAH', date, l10n), 'UNKNOWN');
+      expect(AppFunctions.getMatchState('IN_PLAY', date, l10n), 'in play');
+      expect(AppFunctions.getMatchState('PAUSED', date, l10n), 'paused');
+      expect(AppFunctions.getMatchState('FINISHED', date, l10n), 'finished');
+      expect(AppFunctions.getMatchState('POSTPONED', date, l10n), 'postponed');
+      expect(AppFunctions.getMatchState('SUSPENDED', date, l10n), 'suspended');
+      expect(AppFunctions.getMatchState('CANCELED', date, l10n), 'cancelled');
+      expect(AppFunctions.getMatchState('AWARDED', date, l10n), 'awarded');
+      expect(AppFunctions.getMatchState('BLAH', date, l10n), 'unknown');
     });
 
     test('getLanguageLabel returns correct language name', () {

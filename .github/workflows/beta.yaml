@@ -46,8 +46,6 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           flutter pub get
-      - name: 📄 Create dummy .env file
-        run: touch .env
       - name: ✨ Format Check
         run: |
           dart format --set-exit-if-changed .
@@ -96,11 +94,19 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           flutter pub get
-      - name: 📄 Create dummy .env file
-        run: touch .env
-      - name: 🔨 Build the application (AAB)
+      - name: 🔢 Compute build name
+        id: build_name
         run: |
-          flutter build appbundle --flavor production -t lib/main.dart --build-name="2.3.${{ github.run_number }}" --build-number="${{ github.run_number }}"
+          RUN=${{ github.run_number }}
+          PADDED=$(printf "%03d" $RUN)
+          MAJOR=${PADDED:0:${#PADDED}-2}
+          MINOR=${PADDED: -2:1}
+          PATCH=${PADDED: -1:1}
+          echo "value=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+      - name: 🛠️ Build the application (AAB)
+        run: |
+          flutter build appbundle --flavor production -t lib/main.dart --build-name="${{ steps.build_name.outputs.value }}" --build-number="${{ github.run_number }}"
 
       - name: ⬇️ Upload AAB to Artifacts
         uses: actions/upload-artifact@master

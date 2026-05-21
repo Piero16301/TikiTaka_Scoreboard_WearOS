@@ -19,12 +19,13 @@ class AppTitleText extends StatelessWidget {
         right: AppVariables.horizontalPaddingTitle,
         bottom: hasBottomSpacing ? AppVariables.titlePaddingBottom : 0,
       ),
-      child: ScrollText(
-        text: title,
-        style: const TextStyle(
+      child: Text(
+        title,
+        style: TextStyle(
           fontSize: AppVariables.titleSize,
           height: AppVariables.titleTextHeight,
           fontWeight: FontWeight.w600,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );

@@ -19,6 +19,7 @@ class _TeamViewState extends State<TeamView> {
   @override
   void initState() {
     super.initState();
+
     final teamId = context.read<TeamCubit>().state.teamId;
     _teamStream = getIt<DatabaseService>().getTeamStream(teamId: teamId);
   }
@@ -38,60 +39,19 @@ class _TeamViewState extends State<TeamView> {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorTeam,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppError(text: l10n.errorTeam),
           );
         }
 
         if (!snapshot.hasData) {
-          return AppScaffold.scrollable(
-            controller: _scrollController,
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                const ShimmerMainInfoTeam(),
-                const ShimmerCoachCardTeam(),
-                ShimmerCardTeam(title: l10n.competitionsTeam),
-                ShimmerCardTeam(title: l10n.squadTeam),
-                ShimmerCardTeam(title: l10n.staffTeam),
-                ShimmerCardTeam(title: l10n.infoTeam),
-                const BackButtonTeam(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+          return const AppScaffold.basic(
+            child: AppLoader(),
           );
         }
 
         if (snapshot.data == null) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.notFoundTeam,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const BackButtonTeam(),
-                ],
-              ),
-            ),
+            child: AppEmpty(text: l10n.notFoundTeam),
           );
         }
 
@@ -103,16 +63,22 @@ class _TeamViewState extends State<TeamView> {
             colors: AppFunctions.getTeamColors(team.clubColors ?? ''),
           ),
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               MainInfoTeam(team: team),
-              CoachCardTeam(coach: team.coach ?? Staff.empty),
-              if (team.runningCompetitions?.isNotEmpty ?? false)
+              if (team.coach != null && team.coach?.id != 0) ...[
+                const SizedBox(height: AppVariables.listSpacing),
+                CoachCardTeam(coach: team.coach!),
+              ],
+              if (team.runningCompetitions != null &&
+                  team.runningCompetitions!.isNotEmpty) ...[
+                const SizedBox(height: AppVariables.listSpacing),
                 CompetitionsCardTeam(
-                  competitions: team.runningCompetitions ?? [],
+                  competitions: team.runningCompetitions!,
                 ),
-              if (team.squad?.isNotEmpty ?? false)
+              ],
+              if (team.squad?.isNotEmpty ?? false) ...[
+                const SizedBox(height: AppVariables.listSpacing),
                 SquadCardTeam(
                   squad: team.squad!
                     ..sort(
@@ -125,55 +91,14 @@ class _TeamViewState extends State<TeamView> {
                       ),
                     ),
                 ),
-              if (team.staff?.isNotEmpty ?? false)
-                StaffCardTeam(
-                  staff: team.staff!
-                    ..sort(
-                      (a, b) => AppFunctions.getStaffPositionOrder(
-                        a.position,
-                      ).compareTo(
-                        AppFunctions.getStaffPositionOrder(
-                          b.position,
-                        ),
-                      ),
-                    ),
-                ),
+              ],
+              const SizedBox(height: AppVariables.listSpacing),
               AdditionalInfoTeam(team: team),
-              const BackButtonTeam(),
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class ShimmerMainInfoTeam extends StatelessWidget {
-  const ShimmerMainInfoTeam({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withValues(alpha: 0.6),
-                blurRadius: 12,
-                spreadRadius: 3,
-              ),
-            ],
-          ),
-          child: const AppSchimmer(height: 60, width: 60),
-        ),
-        const SizedBox(height: 7.5),
-        const AppSchimmer(height: 20, width: 100),
-        const SizedBox(height: 7.5),
-        const AppSchimmer(width: 50),
-      ],
     );
   }
 }
@@ -192,70 +117,30 @@ class MainInfoTeam extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withValues(alpha: 0.6),
-                blurRadius: 12,
-                spreadRadius: 3,
+                color: Colors.white.withValues(alpha: 0.7),
+                blurRadius: 16,
+                spreadRadius: 2,
               ),
             ],
           ),
           child: CrestImage(
             crest: team.crest,
-            fit: BoxFit.cover,
-            dimension: 60,
+            height: 64,
+            width: 64,
           ),
         ),
         const SizedBox(height: 5),
-        ScrollText(
-          text: team.name,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        Text(
+          team.name,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
         ),
-        ScrollText(
-          text: '${team.shortName} (${team.tla})',
-          style: const TextStyle(fontSize: 11),
+        Text(
+          '${team.shortName} (${team.tla})',
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
-    );
-  }
-}
-
-class ShimmerCoachCardTeam extends StatelessWidget {
-  const ShimmerCoachCardTeam({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCardData(
-      content: Column(
-        children: [
-          const AppSchimmer(width: 100),
-          const SizedBox(height: 5),
-          Row(
-            children: [
-              HugeIcon(
-                icon: HugeIcons.strokeRoundedMentoring,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 5,
-                  children: [
-                    AppSchimmer(width: 80),
-                    AppSchimmer(width: 70),
-                    AppSchimmer(width: 60),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Column(
-                spacing: 5,
-                children: [AppSchimmer(width: 30), AppSchimmer(width: 30)],
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
@@ -269,45 +154,39 @@ class CoachCardTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppCardData(
-      title: l10n.coachTeam.toUpperCase(),
+    return AppCardAction(
+      title: l10n.coachTeam,
       content: Column(
         spacing: 5,
         children: [
           Row(
+            spacing: 8,
             children: [
               HugeIcon(
                 icon: HugeIcons.strokeRoundedMentoring,
                 color: Theme.of(context).colorScheme.primary,
-                size: 20,
               ),
-              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ScrollText(
-                      text: coach.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 11,
-                      ),
+                    Text(
+                      coach.name,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     Text(
                       coach.nationality,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 10,
-                      ),
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                     Text(
                       l10n.ageTeam(getAge(coach.dateOfBirth)),
-                      style: const TextStyle(fontSize: 10),
+                      style: Theme.of(context).textTheme.labelSmall,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
               Column(
                 children: [
                   Text(
@@ -316,10 +195,9 @@ class CoachCardTeam extends StatelessWidget {
                   ),
                   Text(
                     getUntilContract(coach.contract.until),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 11,
-                    ),
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                 ],
               ),
@@ -349,27 +227,6 @@ class CoachCardTeam extends StatelessWidget {
   }
 }
 
-class ShimmerCardTeam extends StatelessWidget {
-  const ShimmerCardTeam({required this.title, super.key});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return AppCardData(
-      title: title.toUpperCase(),
-      content: const Column(
-        spacing: 5,
-        children: [
-          AppSchimmer(width: 100),
-          AppSchimmer(width: 80),
-          AppSchimmer(width: 60),
-        ],
-      ),
-    );
-  }
-}
-
 class CompetitionsCardTeam extends StatelessWidget {
   const CompetitionsCardTeam({required this.competitions, super.key});
 
@@ -379,37 +236,38 @@ class CompetitionsCardTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppCardData(
-      title: l10n.competitionsTeam.toUpperCase(),
+    return AppCardAction(
+      title: l10n.competitionsTeam,
       content: Column(
-        spacing: 7.5,
+        spacing: 8,
         children: competitions
             .map(
               (competition) => Row(
+                spacing: 8,
                 children: [
                   CrestImage(
                     crest: competition.emblem,
-                    fit: BoxFit.cover,
-                    dimension: 30,
+                    height: 30,
+                    width: 30,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ScrollText(
-                          text: competition.name,
-                          style: Theme.of(context).textTheme.labelLarge,
+                        Text(
+                          competition.name,
+                          style:
+                              Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                         Text(
                           AppFunctions.getCompetitionType(
                             competition.type,
                             l10n,
-                          ).toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
                           ),
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],
                     ),
@@ -432,49 +290,43 @@ class SquadCardTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppCardData(
-      title: l10n.squadTeam.toUpperCase(),
+    return AppCardAction(
+      title: l10n.squadTeam,
       content: Column(
-        spacing: 7.5,
+        spacing: 8,
         children: squad
             .map(
               (player) => Row(
+                spacing: 8,
                 children: [
                   HugeIcon(
                     icon: AppFunctions.getStaffPositionIcon(player.position),
                     color: Theme.of(context).colorScheme.primary,
-                    size: 20,
                   ),
-                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ScrollText(
-                          text: player.name,
-                          style: const TextStyle(
-                            fontSize: 11,
-                          ),
+                        Text(
+                          player.name,
+                          style:
+                              Theme.of(context).textTheme.labelMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                         Text(
                           player.nationality,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                         Text(
                           l10n.ageTeam(getAge(player.dateOfBirth)),
-                          style: const TextStyle(
-                            fontSize: 9,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(width: 10),
                   Container(
-                    width: 30,
+                    width: 36,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
                       vertical: 3,
@@ -488,105 +340,10 @@ class SquadCardTeam extends StatelessWidget {
                     child: Text(
                       AppFunctions.getStaffPosition(player.position, l10n),
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 10,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-
-  int getAge(String dateOfBirth) {
-    if (dateOfBirth.isEmpty) return 0;
-
-    final birthDate = DateTime.parse(dateOfBirth);
-    final today = DateTime.now();
-    var age = today.year - birthDate.year;
-    if (today.month < birthDate.month ||
-        (today.month == birthDate.month && today.day < birthDate.day)) {
-      age--;
-    }
-    return age;
-  }
-}
-
-class StaffCardTeam extends StatelessWidget {
-  const StaffCardTeam({required this.staff, super.key});
-
-  final List<Staff> staff;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return AppCardData(
-      title: l10n.staffTeam.toUpperCase(),
-      content: Column(
-        spacing: 7.5,
-        children: staff
-            .map(
-              (personal) => Row(
-                children: [
-                  HugeIcon(
-                    icon: AppFunctions.getStaffPositionIcon(
-                      personal.position,
-                    ),
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ScrollText(
-                          text: personal.name,
-                          style: const TextStyle(
-                            fontSize: 11,
-                          ),
-                        ),
-                        Text(
-                          personal.nationality,
-                          style: const TextStyle(
-                            fontSize: 10,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onPrimaryFixed,
                           ),
-                        ),
-                        Text(
-                          l10n.ageTeam(getAge(personal.dateOfBirth)),
-                          style: const TextStyle(
-                            fontSize: 9,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 30,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 3,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppFunctions.getStaffPositionColor(
-                        personal.position,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      AppFunctions.getStaffPosition(personal.position, l10n),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 10,
-                      ),
                     ),
                   ),
                 ],
@@ -620,10 +377,10 @@ class AdditionalInfoTeam extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return AppCardData(
-      title: l10n.infoTeam.toUpperCase(),
+    return AppCardAction(
+      title: l10n.infoTeam,
       content: Column(
-        spacing: 7.5,
+        spacing: 8,
         children: [
           buildInfoRow(
             icon: HugeIcons.strokeRoundedColosseum,
@@ -661,59 +418,30 @@ class AdditionalInfoTeam extends StatelessWidget {
     required BuildContext context,
   }) {
     return Row(
-      spacing: 10,
+      spacing: 8,
       children: [
         HugeIcon(
           icon: icon,
           color: Theme.of(context).colorScheme.primary,
-          size: 20,
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ScrollText(
-                text: value,
-                style: const TextStyle(
-                  fontSize: 11,
-                ),
+              Text(
+                value,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
-              ScrollText(
-                text: title,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                ),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.labelSmall,
               ),
             ],
           ),
         ),
       ],
-    );
-  }
-}
-
-class BackButtonTeam extends StatelessWidget {
-  const BackButtonTeam({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

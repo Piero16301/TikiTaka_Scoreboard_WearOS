@@ -23,27 +23,26 @@ class _LanguagesViewState extends State<LanguagesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    const locales = AppVariables.supportedLocales;
 
     return AppScaffold.scrollable(
       controller: _scrollController,
       child: BlocBuilder<AppCubit, AppState>(
         builder: (context, state) => RadioGroup<Locale>(
           groupValue: state.language,
-          onChanged: (value) => context.read<AppCubit>().changeLanguage(
-                language: value ?? AppVariables.supportedLocales.first,
-              ),
+          onChanged: (v) {},
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleLanguage.toUpperCase()),
-              ...AppVariables.supportedLocales.map(
-                (locale) => CardLanguages(
+              AppTitleText(title: l10n.titleLanguage),
+              for (final (index, locale) in locales.indexed) ...[
+                CardLanguages(
                   value: locale,
                   label: AppFunctions.getLanguageLabel(l10n, locale),
                 ),
-              ),
-              const BackButtonLanguages(),
+                if (index < locales.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
@@ -65,37 +64,22 @@ class CardLanguages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppCardData(
-      content: Row(
-        children: [
-          Radio<Locale>(value: value),
-          Expanded(child: ScrollText(text: label)),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonLanguages extends StatelessWidget {
-  const BackButtonLanguages({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
+    return AppCardAction(
+      onPressed: () => context.read<AppCubit>().changeLanguage(language: value),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+        child: Row(
+          spacing: 5,
+          children: [
+            SizedBox.square(
+              dimension: 20,
+              child: IgnorePointer(
+                child: Radio<Locale>(value: value),
+              ),
             ),
-          ),
-        ],
+            Expanded(child: Text(label)),
+          ],
+        ),
       ),
     );
   }

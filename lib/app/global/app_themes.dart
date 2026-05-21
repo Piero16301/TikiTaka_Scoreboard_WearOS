@@ -5,6 +5,11 @@ class AppThemes {
     required Color baseColor,
     required String fontFamily,
   }) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: baseColor,
+      brightness: Brightness.dark,
+    );
+
     return ThemeData(
       fontFamily: fontFamily,
       useMaterial3: true,
@@ -15,6 +20,13 @@ class AppThemes {
       colorScheme: ColorScheme.fromSeed(
         seedColor: baseColor,
         brightness: Brightness.dark,
+      ),
+      cardTheme: CardThemeData(
+        color: colorScheme.surfaceContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        margin: EdgeInsets.zero,
       ),
     );
   }

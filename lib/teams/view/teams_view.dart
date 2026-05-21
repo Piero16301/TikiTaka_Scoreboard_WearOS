@@ -14,17 +14,13 @@ class TeamsView extends StatefulWidget {
 class _TeamsViewState extends State<TeamsView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
   late final Stream<List<Team>> _teamsStream;
-  late final Stream<Device> _deviceStream;
 
   @override
   void initState() {
     super.initState();
-    final leagueId = context.read<TeamsCubit>().state.leagueId;
-    final database = getIt<DatabaseService>();
-    final notification = getIt<NotificationService>();
 
-    _teamsStream = database.getTeamsStream(leagueId: leagueId);
-    _deviceStream = database.getDeviceStream(token: notification.token);
+    final leagueId = context.read<TeamsCubit>().state.leagueId;
+    _teamsStream = getIt<DatabaseService>().getTeamsStream(leagueId: leagueId);
   }
 
   @override
@@ -36,64 +32,28 @@ class _TeamsViewState extends State<TeamsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final enabledTeams = context.select<AppCubit, List<String>>(
+      (cubit) => cubit.state.device?.enabledTeams ?? [],
+    );
 
     return StreamBuilder<List<Team>>(
       stream: _teamsStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.errorTeams,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppError(text: l10n.errorTeams),
           );
         }
 
         if (!snapshot.hasData) {
-          return AppScaffold.scrollable(
-            controller: _scrollController,
-            child: Column(
-              spacing: AppVariables.scaffoldSpacing,
-              children: [
-                const SizedBox(height: AppVariables.topScaffoldSpacing),
-                AppTitleText(title: l10n.titleTeams.toUpperCase()),
-                ...List.generate(
-                  AppVariables.numberOfShimmers,
-                  (index) => const ShimmerCardTeams(),
-                ),
-                const BackButtonTeams(),
-                const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-              ],
-            ),
+          return const AppScaffold.basic(
+            child: AppLoader(),
           );
         }
 
         if (snapshot.data!.isEmpty) {
           return AppScaffold.basic(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    l10n.emptyTeams,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: AppEmpty(text: l10n.emptyTeams),
           );
         }
 
@@ -102,75 +62,19 @@ class _TeamsViewState extends State<TeamsView> {
         return AppScaffold.scrollable(
           controller: _scrollController,
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleTeams.toUpperCase()),
-              StreamBuilder<Device>(
-                stream: _deviceStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const SizedBox.shrink();
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const SizedBox.shrink();
-                  }
-
-                  if (snapshot.data == null) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final device = snapshot.data!;
-                  final enabledTeams = device.enabledTeams;
-
-                  return Column(
-                    spacing: AppVariables.scaffoldSpacing,
-                    children: teams
-                        .map(
-                          (team) => TeamCardTeams(
-                            enabledTeams: enabledTeams,
-                            team: team,
-                          ),
-                        )
-                        .toList(),
-                  );
-                },
-              ),
-              const BackButtonTeams(),
+              AppTitleText(title: l10n.titleTeams),
+              for (final (index, team) in teams.indexed) ...[
+                TeamCardTeams(enabledTeams: enabledTeams, team: team),
+                if (index < teams.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class ShimmerCardTeams extends StatelessWidget {
-  const ShimmerCardTeams({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const AppCardData(
-      content: Row(
-        spacing: 5,
-        children: [
-          SizedBox(
-            width: 40,
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Switch(
-                padding: EdgeInsets.zero,
-                value: false,
-                onChanged: null,
-              ),
-            ),
-          ),
-          AppSchimmer(height: 40, width: 40),
-          Expanded(child: AppSchimmer()),
-        ],
-      ),
     );
   }
 }
@@ -189,63 +93,73 @@ class TeamCardTeams extends StatelessWidget {
   Widget build(BuildContext context) {
     final notification = getIt<NotificationService>();
     final database = getIt<DatabaseService>();
-    final leagueId = context.read<TeamsCubit>().state.leagueId;
 
-    return AppCardData(
-      content: Row(
-        spacing: 5,
-        children: [
-          BlocBuilder<TeamsCubit, TeamsState>(
-            builder: (context, state) {
-              final enabled = enabledTeams.contains(team.id.toString());
-              return SizedBox(
-                width: 40,
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: Switch(
-                    padding: EdgeInsets.zero,
-                    value: enabled,
-                    onChanged: (value) => database.updateDeviceSettings(
-                      token: notification.token,
-                      teamToModify: team.id,
-                      enabledTeams: enabledTeams,
+    return AppCardAction(
+      innerPadding: EdgeInsets.zero,
+      onPressed: () {
+        getIt<AnalyticsService>().logEvent(
+          name: 'team_toggled',
+          parameters: {'team': team.id},
+        );
+        database.updateDeviceSettings(
+          token: notification.token,
+          teamToModify: team.id,
+          enabledTeams: enabledTeams,
+        );
+      },
+      content: SizedBox(
+        height: 48,
+        child: Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  spacing: 5,
+                  children: [
+                    BlocBuilder<TeamsCubit, TeamsState>(
+                      builder: (context, state) {
+                        final enabled =
+                            enabledTeams.contains(team.id.toString());
+                        return SizedBox(
+                          width: 34,
+                          child: FittedBox(
+                            fit: BoxFit.fill,
+                            child: IgnorePointer(
+                              child: Switch(
+                                padding: EdgeInsets.zero,
+                                value: enabled,
+                                onChanged: (v) {},
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  ),
+                    Expanded(
+                      child: Text(
+                        team.name,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
-          CrestImage(
-            crest: team.crest,
-            margin: leagueId == 2000 ? 0 : 2.5,
-          ),
-          Expanded(child: ScrollText(text: team.name)),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonTeams extends StatelessWidget {
-  const BackButtonTeams({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
+              ),
             ),
-          ),
-        ],
+            CrestImage(
+              crest: team.crest,
+              margin: 2.5,
+              showBackground: true,
+              fit: BoxFit.contain,
+              height: double.infinity,
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

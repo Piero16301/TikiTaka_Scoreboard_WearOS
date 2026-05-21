@@ -148,8 +148,25 @@
     "@emptyTeams": {},
     "backText": "Back",
     "@backText": {},
-    "updatedOn": "Updated",
-    "@updatedOn": {},
+    "versionText": "Version {version} ({build})",
+    "@versionText": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "build": {
+                "type": "String"
+            }
+        }
+    },
+    "updatedOn": "Updated on {date}",
+    "@updatedOn": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
     "todayText": "Today",
     "@todayText": {},
     "leagueCompetition": "League",

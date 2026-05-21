@@ -171,14 +171,13 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      final switchFinder = find.byType(Switch);
-      expect(switchFinder, findsOneWidget);
+      final cardFinder = find.byType(LeagueCardCompetitions);
+      expect(cardFinder, findsOneWidget);
 
-      await tester.tap(switchFinder);
+      await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
-      verify(() => leaguesCubit.toggleLeague(league: 'PL', enabled: true))
-          .called(1);
+      verify(() => leaguesCubit.toggleLeague(league: 'PL')).called(1);
     });
   });
 }

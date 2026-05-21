@@ -148,8 +148,25 @@
     "@emptyTeams": {},
     "backText": "Indietro",
     "@backText": {},
-    "updatedOn": "Aggiornato",
-    "@updatedOn": {},
+    "versionText": "Versione {version} ({build})",
+    "@versionText": {
+        "placeholders": {
+            "version": {
+                "type": "String"
+            },
+            "build": {
+                "type": "String"
+            }
+        }
+    },
+    "updatedOn": "Aggiornato il {date}",
+    "@updatedOn": {
+        "placeholders": {
+            "date": {
+                "type": "String"
+            }
+        }
+    },
     "todayText": "Oggi",
     "@todayText": {},
     "leagueCompetition": "Lega",

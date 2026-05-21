@@ -52,6 +52,12 @@ void main() {
       when(() => mockDatabase.getConfigStream(id: any(named: 'id'))).thenAnswer(
         (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
       );
+      when(() => mockDatabase.getDeviceStream(token: any(named: 'token')))
+          .thenAnswer((_) => const Stream.empty());
+
+      final mockNotification = getIt<NotificationService>();
+      when(mockNotification.initialize).thenAnswer((_) async {});
+      when(() => mockNotification.token).thenReturn('');
     });
 
     testWidgets('renders AppView properly', (tester) async {

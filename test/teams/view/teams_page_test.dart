@@ -9,21 +9,28 @@ import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
 
 class MockTeamsCubit extends MockCubit<TeamsState> implements TeamsCubit {}
 
+class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
+
 class MockDatabaseService extends Mock implements DatabaseService {}
 
 class MockNotificationService extends Mock implements NotificationService {}
 
 class MockTeam extends Mock implements Team {}
 
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 void main() {
   group('TeamsPage and TeamsView', () {
     late MockTeamsCubit teamsCubit;
+    late MockAppCubit appCubit;
     late MockDatabaseService mockDatabase;
     late MockNotificationService mockNotification;
+    late MockAnalyticsService mockAnalytics;
 
     setUpAll(() async {
       mockDatabase = MockDatabaseService();
       mockNotification = MockNotificationService();
+      mockAnalytics = MockAnalyticsService();
 
       if (getIt.isRegistered<DatabaseService>()) {
         await getIt.unregister<DatabaseService>();
@@ -34,13 +41,26 @@ void main() {
         getIt.unregister<NotificationService>();
       }
       getIt.registerSingleton<NotificationService>(mockNotification);
+
+      if (getIt.isRegistered<AnalyticsService>()) {
+        await getIt.unregister<AnalyticsService>();
+      }
+      getIt.registerSingleton<AnalyticsService>(mockAnalytics);
     });
 
     setUp(() {
       teamsCubit = MockTeamsCubit();
+      appCubit = MockAppCubit();
       when(() => teamsCubit.state).thenReturn(const TeamsState(leagueId: 1));
       when(() => teamsCubit.initialize(leagueId: 1)).thenAnswer((_) async {});
+      when(() => appCubit.state).thenReturn(AppState(device: Device.empty));
       when(() => mockNotification.token).thenReturn('mock_token');
+      when(
+        () => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenAnswer((_) async {});
 
       // Add default stubs to avoid Null errors
       when(() => mockDatabase.getDeviceStream(token: any(named: 'token')))
@@ -56,9 +76,12 @@ void main() {
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<TeamsCubit>.value(
-            value: teamsCubit,
-            child: const TeamsPage(leagueId: 1),
+          home: BlocProvider<AppCubit>.value(
+            value: appCubit,
+            child: BlocProvider<TeamsCubit>.value(
+              value: teamsCubit,
+              child: const TeamsPage(leagueId: 1),
+            ),
           ),
         ),
       );
@@ -77,9 +100,12 @@ void main() {
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<TeamsCubit>.value(
-            value: teamsCubit,
-            child: const TeamsView(),
+          home: BlocProvider<AppCubit>.value(
+            value: appCubit,
+            child: BlocProvider<TeamsCubit>.value(
+              value: teamsCubit,
+              child: const TeamsView(),
+            ),
           ),
         ),
       );
@@ -98,9 +124,12 @@ void main() {
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<TeamsCubit>.value(
-            value: teamsCubit,
-            child: const TeamsView(),
+          home: BlocProvider<AppCubit>.value(
+            value: appCubit,
+            child: BlocProvider<TeamsCubit>.value(
+              value: teamsCubit,
+              child: const TeamsView(),
+            ),
           ),
         ),
       );
@@ -118,9 +147,9 @@ void main() {
 
       when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.value([mockTeam]));
-      when(() => mockDatabase.getDeviceStream(token: 'mock_token')).thenAnswer(
-        (_) => Stream.value(
-          Device.fromJson(const {
+      when(() => appCubit.state).thenReturn(
+        AppState(
+          device: Device.fromJson(const {
             'enabledTeams': ['99'],
           }),
         ),
@@ -130,9 +159,12 @@ void main() {
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<TeamsCubit>.value(
-            value: teamsCubit,
-            child: const TeamsView(),
+          home: BlocProvider<AppCubit>.value(
+            value: appCubit,
+            child: BlocProvider<TeamsCubit>.value(
+              value: teamsCubit,
+              child: const TeamsView(),
+            ),
           ),
         ),
       );
@@ -153,9 +185,9 @@ void main() {
 
       when(() => mockDatabase.getTeamsStream(leagueId: 1))
           .thenAnswer((_) => Stream.value([mockTeam]));
-      when(() => mockDatabase.getDeviceStream(token: 'mock_token')).thenAnswer(
-        (_) => Stream.value(
-          Device.fromJson(const {
+      when(() => appCubit.state).thenReturn(
+        AppState(
+          device: Device.fromJson(const {
             'enabledTeams': ['99'],
           }),
         ),
@@ -172,9 +204,12 @@ void main() {
         MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<TeamsCubit>.value(
-            value: teamsCubit,
-            child: const TeamsView(),
+          home: BlocProvider<AppCubit>.value(
+            value: appCubit,
+            child: BlocProvider<TeamsCubit>.value(
+              value: teamsCubit,
+              child: const TeamsView(),
+            ),
           ),
         ),
       );

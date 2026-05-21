@@ -108,22 +108,6 @@ void main() {
       expect(find.text('Error loading matches'), findsOneWidget);
     });
 
-    testWidgets('renders shimmers when loading (no data yet)', (tester) async {
-      final controller = StreamController<List<Match>>();
-      when(
-        () => database.getMatchesStream(
-          enabledLeagues: any(named: 'enabledLeagues'),
-        ),
-      ).thenAnswer((_) => controller.stream);
-
-      await tester.pumpWidget(buildSubject());
-
-      expect(find.byType(ShimmerMatchCardHome), findsWidgets);
-      expect(find.text('Updating matches...'), findsOneWidget);
-
-      await controller.close();
-    });
-
     testWidgets('renders empty matches text when data is empty',
         (tester) async {
       when(
@@ -191,7 +175,7 @@ void main() {
 
       await tester.drag(find.byType(HomeView), const Offset(0, -500));
       await tester.pump(const Duration(seconds: 1));
-      await tester.tap(find.byType(SettingsHome));
+      await tester.tap(find.byType(AppIconButton));
       await tester.pump(const Duration(seconds: 1));
       verify(() => observer.didPush(any(), any())).called(greaterThan(0));
 

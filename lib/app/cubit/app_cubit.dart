@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +13,8 @@ class AppCubit extends Cubit<AppState> {
   final LocalStorageService localStorage = getIt<LocalStorageService>();
   final DatabaseService database = getIt<DatabaseService>();
   final NotificationService notification = getIt<NotificationService>();
+
+  StreamSubscription<Device>? _deviceSubscription;
 
   void initialize() {
     final performance = getIt<PerformanceService>();
@@ -50,6 +54,33 @@ class AppCubit extends Cubit<AppState> {
       ),
     );
     performance.stopTrace(trace);
+    unawaited(_initDeviceStream());
+  }
+
+  Future<void> _initDeviceStream() async {
+    await notification.initialize();
+    final token = notification.token;
+    if (token.isNotEmpty) {
+      await _deviceSubscription?.cancel();
+      _deviceSubscription = database.getDeviceStream(token: token).listen(
+        (device) {
+          emit(state.copyWith(device: device));
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          getIt<CrashService>().recordError(
+            error,
+            stackTrace,
+            reason: 'AppCubit deviceStream error',
+          );
+        },
+      );
+    }
+  }
+
+  @override
+  Future<void> close() async {
+    await _deviceSubscription?.cancel();
+    return super.close();
   }
 
   void changeLanguage({required Locale language}) {

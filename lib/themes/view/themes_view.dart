@@ -23,27 +23,26 @@ class _ThemesViewState extends State<ThemesView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final colors = ColorHelper.colorMap.entries;
 
     return AppScaffold.scrollable(
       controller: _scrollController,
       child: BlocBuilder<AppCubit, AppState>(
         builder: (context, state) => RadioGroup<Color>(
           groupValue: state.baseColor,
-          onChanged: (value) => context.read<AppCubit>().changeBaseColor(
-                baseColor: value ?? AppVariables.defaultBaseColor,
-              ),
+          onChanged: (v) {},
           child: Column(
-            spacing: AppVariables.scaffoldSpacing,
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              AppTitleText(title: l10n.titleTheme.toUpperCase()),
-              ...ColorHelper.colorMap.entries.map(
-                (entry) => CardColorThemes(
-                  text: entry.key,
-                  color: entry.value,
+              AppTitleText(title: l10n.titleTheme),
+              for (final (index, color) in colors.indexed) ...[
+                CardThemes(
+                  value: color.value,
+                  label: color.key,
                 ),
-              ),
-              const BackButtonThemes(),
+                if (index < colors.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
@@ -53,61 +52,46 @@ class _ThemesViewState extends State<ThemesView> {
   }
 }
 
-class CardColorThemes extends StatelessWidget {
-  const CardColorThemes({
-    required this.text,
-    required this.color,
+class CardThemes extends StatelessWidget {
+  const CardThemes({
+    required this.value,
+    required this.label,
     super.key,
   });
 
-  final String text;
-  final Color color;
+  final Color value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final colorName = AppFunctions.getColorName(text, l10n);
+    final colorName = AppFunctions.getColorName(label, l10n);
 
-    return AppCardData(
-      content: Row(
-        children: [
-          Radio<Color>(value: color),
-          Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(20),
+    return AppCardAction(
+      onPressed: () =>
+          context.read<AppCubit>().changeBaseColor(baseColor: value),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+        child: Row(
+          spacing: 5,
+          children: [
+            SizedBox.square(
+              dimension: 20,
+              child: IgnorePointer(
+                child: Radio<Color>(value: value),
+              ),
             ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(child: ScrollText(text: colorName)),
-        ],
-      ),
-    );
-  }
-}
-
-class BackButtonThemes extends StatelessWidget {
-  const BackButtonThemes({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: AppVariables.bottomScaffoldSpacingButton,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AppFilledButton(
-              onPressed: () => Navigator.of(context).pop(),
-              label: l10n.backText,
+            Container(
+              width: 20,
+              height: 20,
+              decoration: BoxDecoration(
+                color: value,
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
-          ),
-        ],
+            Expanded(child: Text(colorName)),
+          ],
+        ),
       ),
     );
   }
