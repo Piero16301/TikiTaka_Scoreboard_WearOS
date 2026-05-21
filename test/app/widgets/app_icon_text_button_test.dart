@@ -22,7 +22,7 @@ void main() {
 
       expect(find.text('Test Label'), findsOneWidget);
       expect(find.byIcon(Icons.star), findsOneWidget);
-      
+
       await tester.tap(find.byType(InkWell));
       expect(pressed, isTrue);
     });
