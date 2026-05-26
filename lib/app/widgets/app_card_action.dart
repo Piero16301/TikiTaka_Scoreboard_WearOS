@@ -4,7 +4,7 @@ class AppCardAction extends StatelessWidget {
   const AppCardAction({
     required this.content,
     this.title,
-    this.innerPadding = const EdgeInsets.all(4),
+    this.innerPadding = const EdgeInsets.all(7),
     this.onPressed,
     super.key,
   });

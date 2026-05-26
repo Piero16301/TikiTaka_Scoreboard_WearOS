@@ -12,7 +12,7 @@ class AppLoader extends StatelessWidget {
       child: BallLoader(
         primary: theme.colorScheme.primary,
         secondary: theme.colorScheme.secondary,
-        size: 60,
+        size: 48,
       ),
     );
   }

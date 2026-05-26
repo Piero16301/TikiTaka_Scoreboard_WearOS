@@ -1,15 +1,10 @@
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
-
-class MockSettingsCubit extends MockCubit<SettingsState>
-    implements SettingsCubit {}
 
 class MockDeviceInfoService extends Mock implements DeviceInfoService {}
 
@@ -21,7 +16,6 @@ class FakeRoute extends Fake implements Route<dynamic> {}
 
 void main() {
   group('SettingsPage and SettingsView', () {
-    late MockSettingsCubit settingsCubit;
     late MockDeviceInfoService mockDeviceInfo;
     late MockNavigatorObserver mockObserver;
 
@@ -42,9 +36,7 @@ void main() {
     });
 
     setUp(() {
-      settingsCubit = MockSettingsCubit();
       mockObserver = MockNavigatorObserver();
-      when(() => settingsCubit.state).thenReturn(const SettingsState());
 
       final mockPackageInfo = AppPackageInfo(
         appName: 'Tiki Taka Scoreboard',
@@ -58,13 +50,10 @@ void main() {
     testWidgets('renders SettingsPage and SettingsView correctly',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<SettingsCubit>.value(
-            value: settingsCubit,
-            child: const SettingsPage(),
-          ),
+          home: SettingsPage(),
         ),
       );
 
@@ -87,10 +76,7 @@ void main() {
             '/themes': (context) => const SizedBox(),
             '/typography': (context) => const SizedBox(),
           },
-          home: BlocProvider<SettingsCubit>.value(
-            value: settingsCubit,
-            child: const SettingsView(),
-          ),
+          home: const SettingsView(),
         ),
       );
 
@@ -114,13 +100,10 @@ void main() {
       when(() => mockDeviceInfo.packageInfo).thenReturn(mockPackageInfo);
 
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<SettingsCubit>.value(
-            value: settingsCubit,
-            child: const SettingsView(),
-          ),
+          home: SettingsView(),
         ),
       );
 
