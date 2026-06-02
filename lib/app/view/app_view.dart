@@ -29,8 +29,17 @@ class AppView extends StatelessWidget {
           AppVariables.routeObserver,
         ],
         builder: (context, child) {
-          return TopCurvedTime(
-            child: child ?? const SizedBox.shrink(),
+          final mediaQuery = MediaQuery.of(context);
+          return MediaQuery(
+            data: mediaQuery.copyWith(
+              textScaler: mediaQuery.textScaler.clamp(
+                minScaleFactor: 1,
+                maxScaleFactor: 1.1,
+              ),
+            ),
+            child: TopCurvedTime(
+              child: child ?? const SizedBox.shrink(),
+            ),
           );
         },
       ),
