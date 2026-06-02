@@ -146,6 +146,7 @@ jobs:
           packageName: ${{ env.APP_PACKAGE_NAME }}
           releaseFiles: ${{ env.AAB_PATH }}
           tracks: wear:beta
+          changesNotSentForReview: true
           whatsNewDirectory: whatsnew
 
       - name: 🗑️ Delete Artifact
