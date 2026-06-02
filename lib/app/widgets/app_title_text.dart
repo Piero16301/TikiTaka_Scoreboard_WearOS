@@ -21,6 +21,9 @@ class AppTitleText extends StatelessWidget {
       ),
       child: Text(
         title,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: AppVariables.titleSize,
           height: AppVariables.titleTextHeight,
