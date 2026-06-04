@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -124,10 +125,11 @@ class LeagueCardCompetitions extends StatelessWidget {
                       },
                     ),
                     Expanded(
-                      child: Text(
+                      child: AutoSizeText(
                         league.name,
-                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.labelMedium,
                         maxLines: 2,
+                        minFontSize: 8,
                       ),
                     ),
                   ],

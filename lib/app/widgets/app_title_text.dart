@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
@@ -19,11 +20,11 @@ class AppTitleText extends StatelessWidget {
         right: AppVariables.horizontalPaddingTitle,
         bottom: hasBottomSpacing ? AppVariables.titlePaddingBottom : 0,
       ),
-      child: Text(
+      child: AutoSizeText(
         title,
         textAlign: TextAlign.center,
         maxLines: 2,
-        overflow: TextOverflow.ellipsis,
+        minFontSize: 10,
         style: TextStyle(
           fontSize: AppVariables.titleSize,
           height: AppVariables.titleTextHeight,
