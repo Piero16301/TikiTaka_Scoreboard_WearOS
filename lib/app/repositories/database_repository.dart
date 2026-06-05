@@ -381,6 +381,8 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     int? teamToModify,
     List<String>? enabledTeams,
   }) {
+    if (token.isEmpty) return;
+
     final data = <String, dynamic>{
       if (deviceInfo != null) ...{
         'platform': AppVariables.appOS,
@@ -523,6 +525,8 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
 
   @override
   Stream<Device> getDeviceStream({required String token}) {
+    if (token.isEmpty) return const Stream.empty();
+
     return _firestore
         .collection(AppVariables.devicesCollection)
         .doc(token)

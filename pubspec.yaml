@@ -8,15 +8,16 @@ environment:
   flutter: ">=3.35.6"
 
 dependencies:
+  auto_size_text: ^3.0.0
   bloc: ^9.2.1
   cached_network_image: ^3.4.1
-  cloud_firestore: ^6.4.1
+  cloud_firestore: ^6.5.0
   device_info_plus: ^13.1.0
   equatable: ^2.0.8
-  firebase_analytics: ^12.4.1
-  firebase_core: ^4.9.0
-  firebase_crashlytics: ^5.2.2
-  firebase_messaging: ^16.2.2
+  firebase_analytics: ^12.4.2
+  firebase_core: ^4.10.0
+  firebase_crashlytics: ^5.2.3
+  firebase_messaging: ^16.3.0
   firebase_performance: ^0.11.4+1
   flutter:
     sdk: flutter
@@ -31,7 +32,7 @@ dependencies:
   intl: ^0.20.2
   package_info_plus: ^10.1.0
   shared_preferences: ^2.5.5
-  wear_os_scrollbar: ^0.1.0
+  wear_os_scrollbar: ^0.1.1
 
 dev_dependencies:
   bloc_test: ^10.0.0

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -129,20 +130,20 @@ class TeamsCardMatch extends StatelessWidget {
             spacing: 8,
             children: [
               Expanded(
-                child: Text(
+                child: AutoSizeText(
                   match.homeTeam.name,
                   style: Theme.of(context).textTheme.labelMedium,
                   maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                  minFontSize: 8,
                   textAlign: TextAlign.center,
                 ),
               ),
               Expanded(
-                child: Text(
+                child: AutoSizeText(
                   match.awayTeam.name,
                   style: Theme.of(context).textTheme.labelMedium,
                   maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+                  minFontSize: 8,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -467,12 +468,15 @@ class _StandingsMatchState extends State<StandingsMatch> {
                       children: [
                         SizedBox(
                           width: 20,
-                          child: Text(
-                            row.position.toString(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              row.position.toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),
@@ -586,12 +590,15 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               children: [
                                 SizedBox(
                                   width: 20,
-                                  child: Text(
-                                    row.position.toString(),
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      row.position.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -673,12 +680,15 @@ class PointTextMatch extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 25,
-      child: Text(
-        value.toString(),
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          value.toString(),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

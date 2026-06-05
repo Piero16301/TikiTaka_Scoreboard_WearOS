@@ -118,4 +118,8 @@ dependencies {
     // Fix for OnBackAnimationCallback ClassNotFoundException on API 33
     implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
+    
+    // Fix for getAttributionSource NoSuchMethodError on Android 11 for AppMeasurementDynamiteService
+    implementation("com.google.android.gms:play-services-measurement:22.0.2")
+    implementation("com.google.android.gms:play-services-measurement-api:22.0.2")
 }
