@@ -70,6 +70,9 @@ class AppVariables {
     Locale('en', 'US'),
     Locale('es', 'ES'),
     Locale('it', 'IT'),
+    Locale('fr', 'FR'),
+    Locale('de', 'DE'),
+    Locale('pt', 'PT'),
   ];
 
   // Firestore collections

@@ -42,6 +42,12 @@ class AppFunctions {
         return l10n.spanishLanguage;
       case 'it':
         return l10n.italianLanguage;
+      case 'fr':
+        return l10n.frenchLanguage;
+      case 'de':
+        return l10n.germanLanguage;
+      case 'pt':
+        return l10n.portugueseLanguage;
       default:
         return language.languageCode;
     }
@@ -307,6 +313,109 @@ class AppFunctions {
         return HugeIcons.strokeRoundedUser;
       default:
         return HugeIcons.strokeRoundedQuestion;
+    }
+  }
+
+  static String getTeamTranslatedName(String name, AppLocalizations l10n) {
+    switch (name) {
+      case 'Bosnia-Herzegovina':
+        return l10n.teamBosniaHerzegovina;
+      case 'Panama':
+        return l10n.teamPanama;
+      case 'Cape Verde Islands':
+        return l10n.teamCapeVerdeIslands;
+      case 'Congo DR':
+        return l10n.teamCongoDR;
+      case 'Ivory Coast':
+        return l10n.teamIvoryCoast;
+      case 'Uruguay':
+        return l10n.teamUruguay;
+      case 'Germany':
+        return l10n.teamGermany;
+      case 'Spain':
+        return l10n.teamSpain;
+      case 'Paraguay':
+        return l10n.teamParaguay;
+      case 'Argentina':
+        return l10n.teamArgentina;
+      case 'Ghana':
+        return l10n.teamGhana;
+      case 'Brazil':
+        return l10n.teamBrazil;
+      case 'Portugal':
+        return l10n.teamPortugal;
+      case 'Japan':
+        return l10n.teamJapan;
+      case 'Mexico':
+        return l10n.teamMexico;
+      case 'England':
+        return l10n.teamEngland;
+      case 'United States':
+        return l10n.teamUnitedStates;
+      case 'South Korea':
+        return l10n.teamSouthKorea;
+      case 'France':
+        return l10n.teamFrance;
+      case 'South Africa':
+        return l10n.teamSouthAfrica;
+      case 'Algeria':
+        return l10n.teamAlgeria;
+      case 'Australia':
+        return l10n.teamAustralia;
+      case 'New Zealand':
+        return l10n.teamNewZealand;
+      case 'Switzerland':
+        return l10n.teamSwitzerland;
+      case 'Ecuador':
+        return l10n.teamEcuador;
+      case 'Sweden':
+        return l10n.teamSweden;
+      case 'Czechia':
+        return l10n.teamCzechia;
+      case 'Croatia':
+        return l10n.teamCroatia;
+      case 'Saudi Arabia':
+        return l10n.teamSaudiArabia;
+      case 'Tunisia':
+        return l10n.teamTunisia;
+      case 'Turkey':
+        return l10n.teamTurkey;
+      case 'Qatar':
+        return l10n.teamQatar;
+      case 'Senegal':
+        return l10n.teamSenegal;
+      case 'Jordan':
+        return l10n.teamJordan;
+      case 'Belgium':
+        return l10n.teamBelgium;
+      case 'Iraq':
+        return l10n.teamIraq;
+      case 'Uzbekistan':
+        return l10n.teamUzbekistan;
+      case 'Morocco':
+        return l10n.teamMorocco;
+      case 'Austria':
+        return l10n.teamAustria;
+      case 'Colombia':
+        return l10n.teamColombia;
+      case 'Egypt':
+        return l10n.teamEgypt;
+      case 'Canada':
+        return l10n.teamCanada;
+      case 'Haiti':
+        return l10n.teamHaiti;
+      case 'Iran':
+        return l10n.teamIran;
+      case 'Netherlands':
+        return l10n.teamNetherlands;
+      case 'Norway':
+        return l10n.teamNorway;
+      case 'Scotland':
+        return l10n.teamScotland;
+      case 'Curaçao':
+        return l10n.teamCuracao;
+      default:
+        return name;
     }
   }
 }

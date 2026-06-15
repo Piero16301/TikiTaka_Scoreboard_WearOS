@@ -106,7 +106,13 @@ class ConfigurationSetting extends StatelessWidget {
               icon: icon,
               color: Theme.of(context).colorScheme.primary,
             ),
-            Expanded(child: Text(title)),
+            Expanded(
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ),
