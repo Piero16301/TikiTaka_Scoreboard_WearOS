@@ -1,10 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
-import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
@@ -17,9 +15,21 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  Stream<List<Match>>? _matchesStream;
+  late Stream<List<Match>> _matchesStream;
   final ScrollController _scrollController =
       ScrollController(keepScrollOffset: false);
+
+  @override
+  void initState() {
+    super.initState();
+    _reloadStream();
+  }
+
+  void _reloadStream() {
+    _matchesStream = getIt<DatabaseService>().getMatchesStream(
+      enabledLeagues: getIt<LocalStorageService>().getEnabledLeagues() ?? [],
+    );
+  }
 
   @override
   void dispose() {
@@ -30,93 +40,78 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final database = getIt<DatabaseService>();
-    final localStorage = getIt<LocalStorageService>();
 
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (context, state) {
-        if (state.reload || _matchesStream == null) {
-          _matchesStream = database.getMatchesStream(
-            enabledLeagues: localStorage.getEnabledLeagues() ?? [],
+    return StreamBuilder<List<Match>>(
+      stream: _matchesStream,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return AppScaffold.basic(
+            child: AppError(
+              text: l10n.errorMatches,
+            ),
           );
         }
 
-        context.read<HomeCubit>().reload(value: false);
+        if (!snapshot.hasData) {
+          return const AppScaffold.basic(
+            child: AppLoader(),
+          );
+        }
 
-        return StreamBuilder<List<Match>>(
-          key: state.reload ? UniqueKey() : null,
-          stream: _matchesStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return AppScaffold.basic(
-                child: AppError(
-                  text: l10n.errorMatches,
-                ),
-              );
+        if (snapshot.data!.isEmpty) {
+          return AppScaffold.basic(
+            child: AppEmpty(
+              text: l10n.emptyMatches,
+              onPressedSettings: () => _onTapSettings(context),
+            ),
+          );
+        }
+
+        final nowDate = DateTime.now();
+        final matches = snapshot.data!.map((match) => match).toList()
+          ..sort((a, b) {
+            final statusOrder = {
+              'IN_PLAY': 0,
+              'PAUSED': 1,
+              'SCHEDULED': 2,
+              'TIMED': 3,
+            };
+            final aStatus = a.status;
+            final bStatus = b.status;
+            final aOrder = statusOrder[aStatus] ?? 4;
+            final bOrder = statusOrder[bStatus] ?? 4;
+            if (aOrder != bOrder) {
+              return aOrder - bOrder;
             }
+            return aStatus.compareTo(bStatus);
+          });
 
-            if (!snapshot.hasData) {
-              return const AppScaffold.basic(
-                child: AppLoader(),
-              );
-            }
-
-            if (snapshot.data!.isEmpty) {
-              return AppScaffold.basic(
-                child: AppEmpty(
-                  text: l10n.emptyMatches,
-                  onPressedSettings: () => _onTapSettings(context),
-                ),
-              );
-            }
-
-            final nowDate = DateTime.now();
-            final matches = snapshot.data!.map((match) => match).toList()
-              ..sort((a, b) {
-                final statusOrder = {
-                  'IN_PLAY': 0,
-                  'PAUSED': 1,
-                  'SCHEDULED': 2,
-                  'TIMED': 3,
-                };
-                final aStatus = a.status;
-                final bStatus = b.status;
-                final aOrder = statusOrder[aStatus] ?? 4;
-                final bOrder = statusOrder[bStatus] ?? 4;
-                if (aOrder != bOrder) {
-                  return aOrder - bOrder;
-                }
-                return aStatus.compareTo(bStatus);
-              });
-
-            return AppScaffold.scrollable(
-              key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  const SizedBox(height: AppVariables.topScaffoldSpacing),
-                  AppTitleText(title: l10n.titleMatches),
-                  for (final (index, match) in matches.indexed) ...[
-                    MatchCardHome(match: match),
-                    if (index < matches.length - 1)
-                      const SizedBox(height: AppVariables.listSpacing),
-                  ],
-                  const SizedBox(
-                    height: AppVariables.bottomScaffoldSpacingButton,
-                  ),
-                  const LastUpdateHome(),
-                  const SizedBox(
-                    height: AppVariables.bottomScaffoldSpacingButton,
-                  ),
-                  AppIconButton(
-                    icon: HugeIcons.strokeRoundedSettings01,
-                    onPressed: () => _onTapSettings(context),
-                  ),
-                  const SizedBox(height: AppVariables.bottomScaffoldSpacing),
-                ],
+        return AppScaffold.scrollable(
+          key: Key('${nowDate.year}-${nowDate.month}-${nowDate.day}'),
+          controller: _scrollController,
+          child: Column(
+            children: [
+              const SizedBox(height: AppVariables.topScaffoldSpacing),
+              AppTitleText(title: l10n.titleMatches),
+              for (final (index, match) in matches.indexed) ...[
+                MatchCardHome(match: match),
+                if (index < matches.length - 1)
+                  const SizedBox(height: AppVariables.listSpacing),
+              ],
+              const SizedBox(
+                height: AppVariables.bottomScaffoldSpacingButton,
               ),
-            );
-          },
+              const LastUpdateHome(),
+              const SizedBox(
+                height: AppVariables.bottomScaffoldSpacingButton,
+              ),
+              AppIconButton(
+                icon: HugeIcons.strokeRoundedSettings01,
+                onPressed: () => _onTapSettings(context),
+              ),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacing),
+            ],
+          ),
         );
       },
     );
@@ -124,12 +119,11 @@ class _HomeViewState extends State<HomeView> {
 
   Future<void> _onTapSettings(BuildContext context) async {
     getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
-    final homeCubit = context.read<HomeCubit>();
     final reload = (await Navigator.of(context)
             .pushNamed(SettingsPage.routeName)) as bool? ??
         true;
     if (reload) {
-      homeCubit.reload();
+      setState(_reloadStream);
     }
   }
 }

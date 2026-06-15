@@ -441,6 +441,11 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     final nowDate = DateTime.now();
     // final nowDate = DateTime(2026, 05, 10);
 
+    const maxMatchDuration = Duration(hours: 2);
+    final startOfDay = DateTime(nowDate.year, nowDate.month, nowDate.day);
+    final lowerBound = startOfDay.subtract(maxMatchDuration);
+    final upperBound = DateTime(nowDate.year, nowDate.month, nowDate.day + 1);
+
     return _firestore
         .collection(AppVariables.matchesCollection)
         .where(
@@ -449,14 +454,8 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
               ? [AppVariables.emptyLeague]
               : enabledLeagues),
         )
-        .where(
-          'utcDate',
-          isGreaterThan: DateTime(nowDate.year, nowDate.month, nowDate.day),
-        )
-        .where(
-          'utcDate',
-          isLessThan: DateTime(nowDate.year, nowDate.month, nowDate.day + 1),
-        )
+        .where('utcDate', isGreaterThan: lowerBound)
+        .where('utcDate', isLessThan: upperBound)
         .orderBy('utcDate', descending: false)
         .snapshots()
         .map(

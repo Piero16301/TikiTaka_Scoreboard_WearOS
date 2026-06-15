@@ -9,8 +9,6 @@ import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
 class MockAppCubit extends MockCubit<AppState> implements AppCubit {}
 
-class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
-
 class MockLocalStorageService extends Mock implements LocalStorageService {}
 
 class MockDatabaseService extends Mock implements DatabaseService {}
@@ -22,7 +20,6 @@ class MockDeviceInfoService extends Mock implements DeviceInfoService {}
 void main() {
   group('HomePage', () {
     late MockAppCubit appCubit;
-    late MockHomeCubit homeCubit;
 
     setUpAll(() {
       getIt
@@ -34,9 +31,7 @@ void main() {
 
     setUp(() {
       appCubit = MockAppCubit();
-      homeCubit = MockHomeCubit();
       when(() => appCubit.state).thenReturn(const AppState());
-      when(() => homeCubit.state).thenReturn(const HomeState());
       when(
         () => getIt<DatabaseService>()
             .getMatchesStream(enabledLeagues: any(named: 'enabledLeagues')),
@@ -52,10 +47,7 @@ void main() {
     testWidgets('renders HomePage properly', (tester) async {
       await tester.pumpWidget(
         MultiBlocProvider(
-          providers: [
-            BlocProvider<AppCubit>.value(value: appCubit),
-            BlocProvider<HomeCubit>.value(value: homeCubit),
-          ],
+          providers: [BlocProvider<AppCubit>.value(value: appCubit)],
           child: const MaterialApp(
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

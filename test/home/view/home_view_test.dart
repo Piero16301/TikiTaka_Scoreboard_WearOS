@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc_test/bloc_test.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -11,8 +9,6 @@ import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
-
-class MockHomeCubit extends MockCubit<HomeState> implements HomeCubit {}
 
 class MockLocalStorageService extends Mock implements LocalStorageService {}
 
@@ -44,7 +40,6 @@ class MockLeague extends Mock implements League {}
 
 void main() {
   group('HomeView', () {
-    late MockHomeCubit homeCubit;
     late MockDatabaseService database;
     late MockLocalStorageService localStorage;
 
@@ -60,11 +55,9 @@ void main() {
     });
 
     setUp(() {
-      homeCubit = MockHomeCubit();
       database = getIt<DatabaseService>() as MockDatabaseService;
       localStorage = getIt<LocalStorageService>() as MockLocalStorageService;
 
-      when(() => homeCubit.state).thenReturn(const HomeState());
       when(() => localStorage.getEnabledLeagues()).thenReturn([]);
 
       final mockTrace = MockTrace();
@@ -88,10 +81,7 @@ void main() {
           MatchPage.routeName: (_) =>
               Scaffold(appBar: AppBar(), body: const Text('MatchPage')),
         },
-        home: BlocProvider<HomeCubit>.value(
-          value: homeCubit,
-          child: const HomeView(),
-        ),
+        home: const HomeView(),
       );
     }
 
