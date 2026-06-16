@@ -25,6 +25,9 @@ void main() {
       when(() => l10n.englishLanguage).thenReturn('English');
       when(() => l10n.spanishLanguage).thenReturn('Español');
       when(() => l10n.italianLanguage).thenReturn('Italiano');
+      when(() => l10n.frenchLanguage).thenReturn('French');
+      when(() => l10n.germanLanguage).thenReturn('German');
+      when(() => l10n.portugueseLanguage).thenReturn('Portuguese');
 
       when(() => l10n.leagueCompetition).thenReturn('League');
       when(() => l10n.cupCompetition).thenReturn('Cup');
@@ -88,7 +91,19 @@ void main() {
       );
       expect(
         AppFunctions.getLanguageLabel(l10n, const Locale('fr', 'FR')),
-        'fr',
+        'French',
+      );
+      expect(
+        AppFunctions.getLanguageLabel(l10n, const Locale('de', 'DE')),
+        'German',
+      );
+      expect(
+        AppFunctions.getLanguageLabel(l10n, const Locale('pt', 'BR')),
+        'Portuguese',
+      );
+      expect(
+        AppFunctions.getLanguageLabel(l10n, const Locale('zh', 'CN')),
+        'zh',
       );
     });
 
@@ -157,8 +172,46 @@ void main() {
     });
 
     test('getColorName returns correct localized color', () {
-      expect(AppFunctions.getColorName('RED', l10n), 'Red Color');
-      expect(AppFunctions.getColorName('PINK', l10n), isNotNull);
+      when(() => l10n.colorRed).thenReturn('Red');
+      when(() => l10n.colorPink).thenReturn('Pink');
+      when(() => l10n.colorPurple).thenReturn('Purple');
+      when(() => l10n.colorDeepPurple).thenReturn('Deep Purple');
+      when(() => l10n.colorIndigo).thenReturn('Indigo');
+      when(() => l10n.colorBlue).thenReturn('Blue');
+      when(() => l10n.colorLightBlue).thenReturn('Light Blue');
+      when(() => l10n.colorCyan).thenReturn('Cyan');
+      when(() => l10n.colorTeal).thenReturn('Teal');
+      when(() => l10n.colorGreen).thenReturn('Green');
+      when(() => l10n.colorLightGreen).thenReturn('Light Green');
+      when(() => l10n.colorLime).thenReturn('Lime');
+      when(() => l10n.colorYellow).thenReturn('Yellow');
+      when(() => l10n.colorAmber).thenReturn('Amber');
+      when(() => l10n.colorOrange).thenReturn('Orange');
+      when(() => l10n.colorDeepOrange).thenReturn('Deep Orange');
+      when(() => l10n.colorBrown).thenReturn('Brown');
+      when(() => l10n.colorGrey).thenReturn('Grey');
+      when(() => l10n.colorBlueGrey).thenReturn('Blue Grey');
+
+      expect(AppFunctions.getColorName('RED', l10n), 'Red');
+      expect(AppFunctions.getColorName('PINK', l10n), 'Pink');
+      expect(AppFunctions.getColorName('PURPLE', l10n), 'Purple');
+      expect(AppFunctions.getColorName('DEEP_PURPLE', l10n), 'Deep Purple');
+      expect(AppFunctions.getColorName('INDIGO', l10n), 'Indigo');
+      expect(AppFunctions.getColorName('BLUE', l10n), 'Blue');
+      expect(AppFunctions.getColorName('LIGHT_BLUE', l10n), 'Light Blue');
+      expect(AppFunctions.getColorName('CYAN', l10n), 'Cyan');
+      expect(AppFunctions.getColorName('TEAL', l10n), 'Teal');
+      expect(AppFunctions.getColorName('GREEN', l10n), 'Green');
+      expect(AppFunctions.getColorName('LIGHT_GREEN', l10n), 'Light Green');
+      expect(AppFunctions.getColorName('LIME', l10n), 'Lime');
+      expect(AppFunctions.getColorName('YELLOW', l10n), 'Yellow');
+      expect(AppFunctions.getColorName('AMBER', l10n), 'Amber');
+      expect(AppFunctions.getColorName('ORANGE', l10n), 'Orange');
+      expect(AppFunctions.getColorName('DEEP_ORANGE', l10n), 'Deep Orange');
+      expect(AppFunctions.getColorName('BROWN', l10n), 'Brown');
+      expect(AppFunctions.getColorName('GREY', l10n), 'Grey');
+      expect(AppFunctions.getColorName('BLUE_GREY', l10n), 'Blue Grey');
+
       expect(AppFunctions.getColorName('UNKNOWN_COLOR', l10n), 'UNKNOWN_COLOR');
     });
 
@@ -219,6 +272,121 @@ void main() {
       expect(
         AppFunctions.getStaffPositionIcon('BLAH'),
         HugeIcons.strokeRoundedQuestion,
+      );
+    });
+
+    test('getTeamTranslatedName returns correct translated name or original',
+        () {
+      when(() => l10n.teamBosniaHerzegovina).thenReturn('Bosnia-Herzegovina');
+      when(() => l10n.teamPanama).thenReturn('Panama');
+      when(() => l10n.teamCapeVerdeIslands).thenReturn('Cape Verde Islands');
+      when(() => l10n.teamCongoDR).thenReturn('Congo DR');
+      when(() => l10n.teamIvoryCoast).thenReturn('Ivory Coast');
+      when(() => l10n.teamUruguay).thenReturn('Uruguay');
+      when(() => l10n.teamGermany).thenReturn('Germany');
+      when(() => l10n.teamSpain).thenReturn('España');
+      when(() => l10n.teamParaguay).thenReturn('Paraguay');
+      when(() => l10n.teamArgentina).thenReturn('Argentina');
+      when(() => l10n.teamGhana).thenReturn('Ghana');
+      when(() => l10n.teamBrazil).thenReturn('Brasil');
+      when(() => l10n.teamPortugal).thenReturn('Portugal');
+      when(() => l10n.teamJapan).thenReturn('Japan');
+      when(() => l10n.teamMexico).thenReturn('Mexico');
+      when(() => l10n.teamEngland).thenReturn('England');
+      when(() => l10n.teamUnitedStates).thenReturn('United States');
+      when(() => l10n.teamSouthKorea).thenReturn('South Korea');
+      when(() => l10n.teamFrance).thenReturn('France');
+      when(() => l10n.teamSouthAfrica).thenReturn('South Africa');
+      when(() => l10n.teamAlgeria).thenReturn('Algeria');
+      when(() => l10n.teamAustralia).thenReturn('Australia');
+      when(() => l10n.teamNewZealand).thenReturn('New Zealand');
+      when(() => l10n.teamSwitzerland).thenReturn('Switzerland');
+      when(() => l10n.teamEcuador).thenReturn('Ecuador');
+      when(() => l10n.teamSweden).thenReturn('Sweden');
+      when(() => l10n.teamCzechia).thenReturn('Czechia');
+      when(() => l10n.teamCroatia).thenReturn('Croatia');
+      when(() => l10n.teamSaudiArabia).thenReturn('Saudi Arabia');
+      when(() => l10n.teamTunisia).thenReturn('Tunisia');
+      when(() => l10n.teamTurkey).thenReturn('Turkey');
+      when(() => l10n.teamQatar).thenReturn('Qatar');
+      when(() => l10n.teamSenegal).thenReturn('Senegal');
+      when(() => l10n.teamJordan).thenReturn('Jordan');
+      when(() => l10n.teamBelgium).thenReturn('Belgium');
+      when(() => l10n.teamIraq).thenReturn('Iraq');
+      when(() => l10n.teamUzbekistan).thenReturn('Uzbekistan');
+      when(() => l10n.teamMorocco).thenReturn('Morocco');
+      when(() => l10n.teamAustria).thenReturn('Austria');
+      when(() => l10n.teamColombia).thenReturn('Colombia');
+      when(() => l10n.teamEgypt).thenReturn('Egypt');
+      when(() => l10n.teamCanada).thenReturn('Canada');
+      when(() => l10n.teamHaiti).thenReturn('Haiti');
+      when(() => l10n.teamIran).thenReturn('Iran');
+      when(() => l10n.teamNetherlands).thenReturn('Netherlands');
+      when(() => l10n.teamNorway).thenReturn('Norway');
+      when(() => l10n.teamScotland).thenReturn('Scotland');
+      when(() => l10n.teamCuracao).thenReturn('Curaçao');
+
+      final teams = {
+        'Bosnia-Herzegovina': 'Bosnia-Herzegovina',
+        'Panama': 'Panama',
+        'Cape Verde Islands': 'Cape Verde Islands',
+        'Congo DR': 'Congo DR',
+        'Ivory Coast': 'Ivory Coast',
+        'Uruguay': 'Uruguay',
+        'Germany': 'Germany',
+        'Spain': 'España',
+        'Paraguay': 'Paraguay',
+        'Argentina': 'Argentina',
+        'Ghana': 'Ghana',
+        'Brazil': 'Brasil',
+        'Portugal': 'Portugal',
+        'Japan': 'Japan',
+        'Mexico': 'Mexico',
+        'England': 'England',
+        'United States': 'United States',
+        'South Korea': 'South Korea',
+        'France': 'France',
+        'South Africa': 'South Africa',
+        'Algeria': 'Algeria',
+        'Australia': 'Australia',
+        'New Zealand': 'New Zealand',
+        'Switzerland': 'Switzerland',
+        'Ecuador': 'Ecuador',
+        'Sweden': 'Sweden',
+        'Czechia': 'Czechia',
+        'Croatia': 'Croatia',
+        'Saudi Arabia': 'Saudi Arabia',
+        'Tunisia': 'Tunisia',
+        'Turkey': 'Turkey',
+        'Qatar': 'Qatar',
+        'Senegal': 'Senegal',
+        'Jordan': 'Jordan',
+        'Belgium': 'Belgium',
+        'Iraq': 'Iraq',
+        'Uzbekistan': 'Uzbekistan',
+        'Morocco': 'Morocco',
+        'Austria': 'Austria',
+        'Colombia': 'Colombia',
+        'Egypt': 'Egypt',
+        'Canada': 'Canada',
+        'Haiti': 'Haiti',
+        'Iran': 'Iran',
+        'Netherlands': 'Netherlands',
+        'Norway': 'Norway',
+        'Scotland': 'Scotland',
+        'Curaçao': 'Curaçao',
+      };
+
+      for (final entry in teams.entries) {
+        expect(
+          AppFunctions.getTeamTranslatedName(entry.key, l10n),
+          entry.value,
+        );
+      }
+
+      expect(
+        AppFunctions.getTeamTranslatedName('Unknown Team', l10n),
+        'Unknown Team',
       );
     });
   });

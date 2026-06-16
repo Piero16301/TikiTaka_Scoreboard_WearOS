@@ -110,6 +110,8 @@ class MainInfoTeam extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Column(
       children: [
         Container(
@@ -131,7 +133,7 @@ class MainInfoTeam extends StatelessWidget {
         ),
         const SizedBox(height: 5),
         Text(
-          team.name,
+          AppFunctions.getTeamTranslatedName(team.name, l10n),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

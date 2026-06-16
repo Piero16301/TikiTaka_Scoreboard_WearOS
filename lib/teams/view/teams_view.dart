@@ -92,6 +92,7 @@ class TeamCardTeams extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final notification = getIt<NotificationService>();
     final database = getIt<DatabaseService>();
 
@@ -139,7 +140,7 @@ class TeamCardTeams extends StatelessWidget {
                     ),
                     Expanded(
                       child: AutoSizeText(
-                        team.name,
+                        AppFunctions.getTeamTranslatedName(team.name, l10n),
                         style: Theme.of(context).textTheme.labelMedium,
                         maxLines: 2,
                         minFontSize: 8,

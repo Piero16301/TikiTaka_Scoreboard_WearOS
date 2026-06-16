@@ -14,25 +14,46 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   late Stream<List<Match>> _matchesStream;
   final ScrollController _scrollController =
       ScrollController(keepScrollOffset: false);
+  late DateTime _streamDate;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _reloadStream();
   }
 
   void _reloadStream() {
+    _streamDate = DateTime.now();
     _matchesStream = getIt<DatabaseService>().getMatchesStream(
       enabledLeagues: getIt<LocalStorageService>().getEnabledLeagues() ?? [],
     );
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      final now = DateTime.now();
+      final streamDay = DateTime(
+        _streamDate.year,
+        _streamDate.month,
+        _streamDate.day,
+      );
+      final today = DateTime(now.year, now.month, now.day);
+      if (today != streamDay) {
+        setState(_reloadStream);
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     super.dispose();
   }

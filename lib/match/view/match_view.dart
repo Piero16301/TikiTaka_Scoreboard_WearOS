@@ -131,7 +131,7 @@ class TeamsCardMatch extends StatelessWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  match.homeTeam.name,
+                  AppFunctions.getTeamTranslatedName(match.homeTeam.name, l10n),
                   style: Theme.of(context).textTheme.labelMedium,
                   maxLines: 3,
                   minFontSize: 8,
@@ -140,7 +140,7 @@ class TeamsCardMatch extends StatelessWidget {
               ),
               Expanded(
                 child: AutoSizeText(
-                  match.awayTeam.name,
+                  AppFunctions.getTeamTranslatedName(match.awayTeam.name, l10n),
                   style: Theme.of(context).textTheme.labelMedium,
                   maxLines: 3,
                   minFontSize: 8,
