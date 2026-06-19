@@ -42,13 +42,15 @@ void main() {
       final mockTrace = MockTrace();
       when(mockTrace.start).thenAnswer((_) async {});
       when(mockTrace.stop).thenAnswer((_) async {});
-      when(() => mockPerformanceService.startTrace(any()))
-          .thenReturn(mockTrace);
+      when(
+        () => mockPerformanceService.startTrace(any()),
+      ).thenReturn(mockTrace);
 
       when(() => notificationService.initialize()).thenAnswer((_) async {});
       when(() => notificationService.token).thenReturn('');
-      when(() => databaseService.getDeviceStream(token: any(named: 'token')))
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => databaseService.getDeviceStream(token: any(named: 'token')),
+      ).thenAnswer((_) => const Stream.empty());
 
       getIt
         ..registerSingleton<LocalStorageService>(localStorageService)
@@ -211,8 +213,9 @@ void main() {
 
         when(() => notificationService.initialize()).thenAnswer((_) async {});
         when(() => notificationService.token).thenReturn('mock_token');
-        when(() => databaseService.getDeviceStream(token: 'mock_token'))
-            .thenAnswer((_) => Stream.value(Device.empty));
+        when(
+          () => databaseService.getDeviceStream(token: 'mock_token'),
+        ).thenAnswer((_) => Stream.value(Device.empty));
       },
       build: AppCubit.new,
       act: (cubit) => cubit.initialize(),

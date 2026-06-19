@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class DeviceInfoService {
-  DeviceInfoService({required DeviceInfoRepository deviceInfoRepository})
-      : _deviceInfoRepository = deviceInfoRepository;
+  DeviceInfoService({required this._deviceInfoRepository});
 
   final DeviceInfoRepository _deviceInfoRepository;
 

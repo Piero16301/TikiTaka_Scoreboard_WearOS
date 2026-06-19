@@ -49,9 +49,9 @@ class Standing extends Equatable {
 
   @override
   List<Object?> get props => [
-        stage,
-        type,
-        group,
-        table,
-      ];
+    stage,
+    type,
+    group,
+    table,
+  ];
 }

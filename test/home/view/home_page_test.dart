@@ -33,15 +33,18 @@ void main() {
       appCubit = MockAppCubit();
       when(() => appCubit.state).thenReturn(const AppState());
       when(
-        () => getIt<DatabaseService>()
-            .getMatchesStream(enabledLeagues: any(named: 'enabledLeagues')),
+        () => getIt<DatabaseService>().getMatchesStream(
+          enabledLeagues: any(named: 'enabledLeagues'),
+        ),
       ).thenAnswer((_) => Stream.value([]));
-      when(() => getIt<DatabaseService>().getConfigStream(id: any(named: 'id')))
-          .thenAnswer(
+      when(
+        () => getIt<DatabaseService>().getConfigStream(id: any(named: 'id')),
+      ).thenAnswer(
         (_) => Stream.value(Config(id: '1', lastUpdate: DateTime.now())),
       );
-      when(() => getIt<LocalStorageService>().getEnabledLeagues())
-          .thenReturn([]);
+      when(
+        () => getIt<LocalStorageService>().getEnabledLeagues(),
+      ).thenReturn([]);
     });
 
     testWidgets('renders HomePage properly', (tester) async {

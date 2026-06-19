@@ -49,8 +49,15 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontWeight: FontWeight.w600,
-        );
+      fontVariations: <FontVariation>[
+        ...(Theme.of(
+                  context,
+                ).textTheme.labelLarge?.fontVariations ??
+                const <FontVariation>[])
+            .where((v) => v.axis != 'wght'),
+        const FontVariation('wght', 700),
+      ],
+    );
 
     return Stack(
       children: [

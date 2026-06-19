@@ -29,7 +29,7 @@ class Config extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        lastUpdate,
-      ];
+    id,
+    lastUpdate,
+  ];
 }

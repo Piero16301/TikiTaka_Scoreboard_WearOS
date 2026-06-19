@@ -11,8 +11,9 @@ class ThemesView extends StatefulWidget {
 }
 
 class _ThemesViewState extends State<ThemesView> {
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: false);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
 
   @override
   void dispose() {

@@ -57,12 +57,14 @@ void main() {
         buildSignature: 'signature',
       );
 
-      when(() => mockAndroidDeviceInfo.version)
-          .thenReturn(mockAndroidBuildVersion);
+      when(
+        () => mockAndroidDeviceInfo.version,
+      ).thenReturn(mockAndroidBuildVersion);
       when(() => mockAndroidBuildVersion.release).thenReturn('12');
       when(() => mockAndroidBuildVersion.sdkInt).thenReturn(31);
-      when(() => mockAndroidBuildVersion.securityPatch)
-          .thenReturn('2022-01-01');
+      when(
+        () => mockAndroidBuildVersion.securityPatch,
+      ).thenReturn('2022-01-01');
 
       when(() => mockAndroidDeviceInfo.id).thenReturn('device-id');
       when(() => mockAndroidDeviceInfo.model).thenReturn('Pixel 6');
@@ -73,8 +75,9 @@ void main() {
       when(() => mockAndroidDeviceInfo.physicalRamSize).thenReturn(8589934592);
       when(() => mockAndroidDeviceInfo.availableRamSize).thenReturn(4294967296);
 
-      when(() => mockDeviceInfoPlugin.androidInfo)
-          .thenAnswer((_) async => mockAndroidDeviceInfo);
+      when(
+        () => mockDeviceInfoPlugin.androidInfo,
+      ).thenAnswer((_) async => mockAndroidDeviceInfo);
     });
 
     test('initialize populates deviceInfo and packageInfo', () async {

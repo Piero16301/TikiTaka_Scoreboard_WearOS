@@ -17,6 +17,6 @@ class MatchState extends Equatable {
 
   @override
   List<Object> get props => [
-        matchId,
-      ];
+    matchId,
+  ];
 }

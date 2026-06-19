@@ -4,7 +4,7 @@ class AppState extends Equatable {
   const AppState({
     this.language = const Locale('en', 'US'),
     this.baseColor = Colors.green,
-    this.fontFamily = 'Poppins',
+    this.fontFamily = 'GoogleSansFlex',
     this.device,
   });
 
@@ -29,9 +29,9 @@ class AppState extends Equatable {
 
   @override
   List<Object?> get props => [
-        baseColor,
-        language,
-        fontFamily,
-        device,
-      ];
+    baseColor,
+    language,
+    fontFamily,
+    device,
+  ];
 }

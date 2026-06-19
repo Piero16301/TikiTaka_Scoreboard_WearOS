@@ -29,8 +29,15 @@ class AppCardAction extends StatelessWidget {
             title!,
             style: TextStyle(
               color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w600,
               fontSize: 12,
+              fontVariations: <FontVariation>[
+                ...(Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
             ),
           ),
           content,
@@ -44,7 +51,14 @@ class AppCardAction extends StatelessWidget {
         style: TextStyle(
           color: theme.colorScheme.onSurface,
           fontSize: 14,
-          fontWeight: FontWeight.w600,
+          fontVariations: <FontVariation>[
+            ...(Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.fontVariations ??
+                    const <FontVariation>[])
+                .where((v) => v.axis != 'wght'),
+            const FontVariation('wght', 700),
+          ],
         ),
         child: cardContent,
       ),

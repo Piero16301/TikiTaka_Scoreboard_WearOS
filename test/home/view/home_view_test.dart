@@ -63,8 +63,9 @@ void main() {
       final mockTrace = MockTrace();
       when(mockTrace.start).thenAnswer((_) async {});
       when(mockTrace.stop).thenAnswer((_) async {});
-      when(() => getIt<PerformanceService>().startTrace(any()))
-          .thenReturn(mockTrace);
+      when(
+        () => getIt<PerformanceService>().startTrace(any()),
+      ).thenReturn(mockTrace);
       when(() => database.getConfigStream(id: any(named: 'id'))).thenAnswer(
         (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
       );
@@ -98,8 +99,9 @@ void main() {
       expect(find.text('Error loading matches'), findsOneWidget);
     });
 
-    testWidgets('renders empty matches text when data is empty',
-        (tester) async {
+    testWidgets('renders empty matches text when data is empty', (
+      tester,
+    ) async {
       when(
         () => database.getMatchesStream(
           enabledLeagues: any(named: 'enabledLeagues'),
@@ -113,68 +115,69 @@ void main() {
     });
 
     testWidgets(
-        'renders matches with different statuses and navigates to settings/match',
-        (tester) async {
-      final match1 = MockMatch();
-      final match2 = MockMatch();
-      final match3 = MockMatch();
+      'renders matches with different statuses and navigates to settings/match',
+      (tester) async {
+        final match1 = MockMatch();
+        final match2 = MockMatch();
+        final match3 = MockMatch();
 
-      final homeTeam = MockTeam();
-      when(() => homeTeam.crest).thenReturn('');
-      when(() => homeTeam.tla).thenReturn('HOM');
+        final homeTeam = MockTeam();
+        when(() => homeTeam.crest).thenReturn('');
+        when(() => homeTeam.tla).thenReturn('HOM');
 
-      final awayTeam = MockTeam();
-      when(() => awayTeam.crest).thenReturn('');
-      when(() => awayTeam.tla).thenReturn('AWA');
+        final awayTeam = MockTeam();
+        when(() => awayTeam.crest).thenReturn('');
+        when(() => awayTeam.tla).thenReturn('AWA');
 
-      final league = MockLeague();
-      when(() => league.name).thenReturn('Premier League');
+        final league = MockLeague();
+        when(() => league.name).thenReturn('Premier League');
 
-      final time = MockTime();
-      when(() => time.home).thenReturn(1);
-      when(() => time.away).thenReturn(0);
-      final score = MockScore();
-      when(() => score.fullTime).thenReturn(time);
+        final time = MockTime();
+        when(() => time.home).thenReturn(1);
+        when(() => time.away).thenReturn(0);
+        final score = MockScore();
+        when(() => score.fullTime).thenReturn(time);
 
-      void setupMatch(MockMatch m, String status, int matchId) {
-        when(() => m.id).thenReturn(matchId);
-        when(() => m.status).thenReturn(status);
-        when(() => m.homeTeam).thenReturn(homeTeam);
-        when(() => m.awayTeam).thenReturn(awayTeam);
-        when(() => m.competition).thenReturn(league);
-        when(() => m.score).thenReturn(score);
-        when(() => m.utcDate).thenReturn(DateTime.now());
-      }
+        void setupMatch(MockMatch m, String status, int matchId) {
+          when(() => m.id).thenReturn(matchId);
+          when(() => m.status).thenReturn(status);
+          when(() => m.homeTeam).thenReturn(homeTeam);
+          when(() => m.awayTeam).thenReturn(awayTeam);
+          when(() => m.competition).thenReturn(league);
+          when(() => m.score).thenReturn(score);
+          when(() => m.utcDate).thenReturn(DateTime.now());
+        }
 
-      setupMatch(match1, 'SCHEDULED', 1);
-      setupMatch(match2, 'IN_PLAY', 2);
-      setupMatch(match3, 'FINISHED', 3);
+        setupMatch(match1, 'SCHEDULED', 1);
+        setupMatch(match2, 'IN_PLAY', 2);
+        setupMatch(match3, 'FINISHED', 3);
 
-      when(
-        () => database.getMatchesStream(
-          enabledLeagues: any(named: 'enabledLeagues'),
-        ),
-      ).thenAnswer((_) => Stream.value([match1, match2, match3]));
+        when(
+          () => database.getMatchesStream(
+            enabledLeagues: any(named: 'enabledLeagues'),
+          ),
+        ).thenAnswer((_) => Stream.value([match1, match2, match3]));
 
-      final observer = MockNavigatorObserver();
+        final observer = MockNavigatorObserver();
 
-      await tester.pumpWidget(buildSubject(observer: observer));
-      await tester.pump(const Duration(seconds: 1));
+        await tester.pumpWidget(buildSubject(observer: observer));
+        await tester.pump(const Duration(seconds: 1));
 
-      expect(find.byType(MatchCardHome), findsNWidgets(3));
+        expect(find.byType(MatchCardHome), findsNWidgets(3));
 
-      await tester.drag(find.byType(HomeView), const Offset(0, -500));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.tap(find.byType(AppIconButton));
-      await tester.pump(const Duration(seconds: 1));
-      verify(() => observer.didPush(any(), any())).called(greaterThan(0));
+        await tester.drag(find.byType(HomeView), const Offset(0, -500));
+        await tester.pump(const Duration(seconds: 1));
+        await tester.tap(find.byType(AppIconButton));
+        await tester.pump(const Duration(seconds: 1));
+        verify(() => observer.didPush(any(), any())).called(greaterThan(0));
 
-      Navigator.of(tester.element(find.byType(HomeView))).pop();
-      await tester.pump(const Duration(seconds: 1));
+        Navigator.of(tester.element(find.byType(HomeView))).pop();
+        await tester.pump(const Duration(seconds: 1));
 
-      await tester.tap(find.byType(MatchCardHome).first);
-      await tester.pump(const Duration(seconds: 1));
-    });
+        await tester.tap(find.byType(MatchCardHome).first);
+        await tester.pump(const Duration(seconds: 1));
+      },
+    );
 
     testWidgets('renders LastUpdateHome with configs', (tester) async {
       final mockMatch = MockMatch();
@@ -210,8 +213,9 @@ void main() {
         id: 'matches',
         lastUpdate: DateTime.now().subtract(const Duration(seconds: 5)),
       );
-      when(() => database.getConfigStream(id: AppVariables.matchesCollection))
-          .thenAnswer((_) => Stream.value(config));
+      when(
+        () => database.getConfigStream(id: AppVariables.matchesCollection),
+      ).thenAnswer((_) => Stream.value(config));
 
       await tester.pumpWidget(buildSubject());
       await tester.pump(const Duration(seconds: 1));

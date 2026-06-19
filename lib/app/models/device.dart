@@ -75,13 +75,13 @@ class Device extends Equatable {
 
   @override
   List<Object?> get props => [
-        enabledTeams,
-        language,
-        lastOpenAt,
-        platform,
-        token,
-        wearOSInfo,
-      ];
+    enabledTeams,
+    language,
+    lastOpenAt,
+    platform,
+    token,
+    wearOSInfo,
+  ];
 }
 
 enum Platform {

@@ -66,12 +66,12 @@ class Score extends Equatable {
 
   @override
   List<Object?> get props => [
-        winner,
-        duration,
-        halfTime,
-        fullTime,
-        regularTime,
-        extraTime,
-        penalties,
-      ];
+    winner,
+    duration,
+    halfTime,
+    fullTime,
+    regularTime,
+    extraTime,
+    penalties,
+  ];
 }

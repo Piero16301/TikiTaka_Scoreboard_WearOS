@@ -1,8 +1,7 @@
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class NotificationService {
-  NotificationService({required NotificationRepository notificationRepository})
-      : _notificationRepository = notificationRepository;
+  NotificationService({required this._notificationRepository});
 
   final NotificationRepository _notificationRepository;
   Future<void>? _initializeFuture;

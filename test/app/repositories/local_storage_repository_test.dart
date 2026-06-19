@@ -18,8 +18,9 @@ void main() {
 
     group('Leagues', () {
       test('saveEnabledLeague adds league if not present', () async {
-        when(() => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues))
-            .thenReturn(['CL']);
+        when(
+          () => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues),
+        ).thenReturn(['CL']);
         when(
           () => mockPrefs.setStringList(
             LocalStorageRepository.kUserLeagues,
@@ -38,8 +39,9 @@ void main() {
       });
 
       test('saveEnabledLeague removes league if disabled', () async {
-        when(() => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues))
-            .thenReturn(['CL', 'PL']);
+        when(
+          () => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues),
+        ).thenReturn(['CL', 'PL']);
         when(
           () => mockPrefs.setStringList(
             LocalStorageRepository.kUserLeagues,
@@ -58,8 +60,9 @@ void main() {
       });
 
       test('getEnabledLeagues returns list', () {
-        when(() => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues))
-            .thenReturn(['PL']);
+        when(
+          () => mockPrefs.getStringList(LocalStorageRepository.kUserLeagues),
+        ).thenReturn(['PL']);
 
         final result = repository.getEnabledLeagues();
 
@@ -87,8 +90,9 @@ void main() {
       });
 
       test('getLanguage parses correctly', () {
-        when(() => mockPrefs.getString(LocalStorageRepository.kUserLanguage))
-            .thenReturn('es_ES');
+        when(
+          () => mockPrefs.getString(LocalStorageRepository.kUserLanguage),
+        ).thenReturn('es_ES');
 
         final result = repository.getLanguage();
 
@@ -96,8 +100,9 @@ void main() {
       });
 
       test('getLanguage returns null if not set', () {
-        when(() => mockPrefs.getString(LocalStorageRepository.kUserLanguage))
-            .thenReturn(null);
+        when(
+          () => mockPrefs.getString(LocalStorageRepository.kUserLanguage),
+        ).thenReturn(null);
 
         final result = repository.getLanguage();
 
@@ -125,8 +130,9 @@ void main() {
       });
 
       test('getBaseColor returns color from helper', () {
-        when(() => mockPrefs.getString(LocalStorageRepository.kUserBaseColor))
-            .thenReturn('RED');
+        when(
+          () => mockPrefs.getString(LocalStorageRepository.kUserBaseColor),
+        ).thenReturn('RED');
 
         final result = repository.getBaseColor();
 
@@ -134,8 +140,9 @@ void main() {
       });
 
       test('getBaseColor returns null if not set', () {
-        when(() => mockPrefs.getString(LocalStorageRepository.kUserBaseColor))
-            .thenReturn(null);
+        when(
+          () => mockPrefs.getString(LocalStorageRepository.kUserBaseColor),
+        ).thenReturn(null);
 
         final result = repository.getBaseColor();
 
@@ -163,8 +170,9 @@ void main() {
       });
 
       test('getFontFamily returns string', () {
-        when(() => mockPrefs.getString(LocalStorageRepository.kUserFontFamily))
-            .thenReturn('Roboto');
+        when(
+          () => mockPrefs.getString(LocalStorageRepository.kUserFontFamily),
+        ).thenReturn('Roboto');
 
         final result = repository.getFontFamily();
 

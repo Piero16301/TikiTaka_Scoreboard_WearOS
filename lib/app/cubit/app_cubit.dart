@@ -34,13 +34,14 @@ class AppCubit extends Cubit<AppState> {
 
     // Setting the font family to Popping if it's not set
     var fontFamily = localStorage.getFontFamily();
-    final isFontSupported = fontFamily != null &&
+    final isFontSupported =
+        fontFamily != null &&
         AppVariables.availableFonts.containsValue(fontFamily);
 
     if (!isFontSupported) {
       final defaultFont =
           AppVariables.availableFonts[AppVariables.defaultFontFamily] ??
-              AppVariables.defaultFontFamily;
+          AppVariables.defaultFontFamily;
       localStorage.saveFontFamily(fontFamily: defaultFont);
       fontFamily = defaultFont;
     }
@@ -62,18 +63,20 @@ class AppCubit extends Cubit<AppState> {
     final token = notification.token;
     if (token.isNotEmpty) {
       await _deviceSubscription?.cancel();
-      _deviceSubscription = database.getDeviceStream(token: token).listen(
-        (device) {
-          emit(state.copyWith(device: device));
-        },
-        onError: (Object error, StackTrace stackTrace) {
-          getIt<CrashService>().recordError(
-            error,
-            stackTrace,
-            reason: 'AppCubit deviceStream error',
+      _deviceSubscription = database
+          .getDeviceStream(token: token)
+          .listen(
+            (device) {
+              emit(state.copyWith(device: device));
+            },
+            onError: (Object error, StackTrace stackTrace) {
+              getIt<CrashService>().recordError(
+                error,
+                stackTrace,
+                reason: 'AppCubit deviceStream error',
+              );
+            },
           );
-        },
-      );
     }
   }
 

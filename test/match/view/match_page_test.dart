@@ -70,17 +70,20 @@ void main() {
       ).thenAnswer((_) async {});
 
       // Add default stubs to avoid Null errors
-      when(() => mockDatabase.getConfigStream(id: any(named: 'id')))
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockDatabase.getConfigStream(id: any(named: 'id')),
+      ).thenAnswer((_) => const Stream.empty());
       when(
         () => mockDatabase.getStandingsStream(leagueId: any(named: 'leagueId')),
       ).thenAnswer((_) => const Stream.empty());
     });
 
-    testWidgets('renders MatchPage properly and shows shimmers when loading',
-        (tester) async {
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => const Stream.empty());
+    testWidgets('renders MatchPage properly and shows shimmers when loading', (
+      tester,
+    ) async {
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -98,8 +101,9 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => Stream.error('Error'));
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -170,15 +174,17 @@ void main() {
 
       when(() => mockMatch.referees).thenReturn([mockReferee]);
 
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => Stream.value(mockMatch));
       when(
         () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
       ).thenAnswer(
         (_) => Stream.value(Config(id: '', lastUpdate: DateTime.now())),
       );
-      when(() => mockDatabase.getStandingsStream(leagueId: '123'))
-          .thenAnswer((_) => Stream.value(LeagueStandings.empty));
+      when(
+        () => mockDatabase.getStandingsStream(leagueId: '123'),
+      ).thenAnswer((_) => Stream.value(LeagueStandings.empty));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -200,8 +206,9 @@ void main() {
       expect(find.textContaining('John Doe'), findsOneWidget);
     });
 
-    testWidgets('shows standings and navigates when teams are clicked',
-        (tester) async {
+    testWidgets('shows standings and navigates when teams are clicked', (
+      tester,
+    ) async {
       final mockMatch = MockMatch();
       final homeTeam = MockTeam();
       final awayTeam = MockTeam();
@@ -245,8 +252,9 @@ void main() {
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => Stream.value(mockMatch));
       when(
         () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
       ).thenAnswer(
@@ -283,9 +291,9 @@ void main() {
                 'playedGames': 3,
                 'goalDifference': 1,
                 'points': 6,
-              }
+              },
             ],
-          }
+          },
         ],
       };
 
@@ -307,9 +315,9 @@ void main() {
           navigatorObservers: [mockObserver],
           routes: {
             TeamPage.routeName: (context) => Scaffold(
-                  appBar: AppBar(),
-                  body: const Text('TeamPageScreen'),
-                ),
+              appBar: AppBar(),
+              body: const Text('TeamPageScreen'),
+            ),
           },
           home: BlocProvider<MatchCubit>.value(
             value: matchCubit,
@@ -403,8 +411,9 @@ void main() {
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => Stream.value(mockMatch));
       when(
         () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
       ).thenAnswer(
@@ -429,7 +438,7 @@ void main() {
                 'playedGames': 3,
                 'goalDifference': 2,
                 'points': 7,
-              }
+              },
             ],
           },
           {
@@ -448,9 +457,9 @@ void main() {
                 'playedGames': 3,
                 'goalDifference': 4,
                 'points': 9,
-              }
+              },
             ],
-          }
+          },
         ],
       };
 
@@ -525,8 +534,9 @@ void main() {
       when(() => mockMatch.matchday).thenReturn(5);
       when(() => mockMatch.referees).thenReturn([]);
 
-      when(() => mockDatabase.getMatchStream(matchId: 1))
-          .thenAnswer((_) => Stream.value(mockMatch));
+      when(
+        () => mockDatabase.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => Stream.value(mockMatch));
       when(
         () => mockDatabase.getConfigStream(id: AppVariables.matchesCollection),
       ).thenAnswer(

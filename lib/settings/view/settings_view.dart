@@ -132,7 +132,17 @@ class AppInfoSettings extends StatelessWidget {
       children: [
         Text(
           deviceInfo.packageInfo.appName,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          style: TextStyle(
+            fontSize: 16,
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         Text(
           l10n.versionText(

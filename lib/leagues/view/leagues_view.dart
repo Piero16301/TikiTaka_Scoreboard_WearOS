@@ -13,8 +13,9 @@ class LeaguesView extends StatefulWidget {
 }
 
 class _LeaguesViewState extends State<LeaguesView> {
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: false);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
   late final Stream<List<League>> _leaguesStream;
 
   @override
@@ -127,7 +128,20 @@ class LeagueCardCompetitions extends StatelessWidget {
                     Expanded(
                       child: AutoSizeText(
                         league.name,
-                        style: Theme.of(context).textTheme.labelMedium,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              fontVariations: <FontVariation>[
+                                ...(Theme.of(
+                                              context,
+                                            )
+                                            .textTheme
+                                            .labelMedium
+                                            ?.fontVariations ??
+                                        const <FontVariation>[])
+                                    .where((v) => v.axis != 'wght'),
+                                const FontVariation('wght', 700),
+                              ],
+                            ),
                         maxLines: 2,
                         minFontSize: 8,
                       ),

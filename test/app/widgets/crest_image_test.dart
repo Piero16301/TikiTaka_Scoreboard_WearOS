@@ -164,12 +164,14 @@ class _MockHttpClientResponse extends Fake implements HttpClientResponse {
   }) {
     final bytes = isSvg
         ? '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>'
-            .codeUnits
+              .codeUnits
         : [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
     return Stream<List<int>>.periodic(
-      const Duration(milliseconds: 10),
-      (_) => bytes,
-    ).take(1).listen(
+          const Duration(milliseconds: 10),
+          (_) => bytes,
+        )
+        .take(1)
+        .listen(
           onData,
           onError: onError,
           onDone: onDone,
@@ -325,8 +327,9 @@ void main() {
         ),
       );
 
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => mockFile);
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => mockFile);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -346,8 +349,9 @@ void main() {
     });
 
     testWidgets('renders placeholder on SVG image error', (tester) async {
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => throw Exception('Failed to load'));
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => throw Exception('Failed to load'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -389,8 +393,9 @@ void main() {
               .codeUnits,
         ),
       );
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => mockFile);
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => mockFile);
 
       await tester.pumpWidget(
         MaterialApp(

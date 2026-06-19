@@ -29,8 +29,9 @@ void main() {
       expect(AppRoutes.routes.containsKey(TeamsPage.routeName), isTrue);
     });
 
-    testWidgets('Simple routes without arguments create correctly',
-        (tester) async {
+    testWidgets('Simple routes without arguments create correctly', (
+      tester,
+    ) async {
       late BuildContext testContext;
       await tester.pumpWidget(
         MaterialApp(
@@ -71,8 +72,9 @@ void main() {
                 return MaterialPageRoute<void>(
                   settings: const RouteSettings(name: '/', arguments: 42),
                   builder: (context) {
-                    generatedWithArgs =
-                        AppRoutes.routes[MatchPage.routeName]!(context);
+                    generatedWithArgs = AppRoutes.routes[MatchPage.routeName]!(
+                      context,
+                    );
                     return const SizedBox();
                   },
                 );
@@ -80,8 +82,9 @@ void main() {
               return MaterialPageRoute<void>(
                 settings: const RouteSettings(name: '/'),
                 builder: (context) {
-                  generatedWithoutArgs =
-                      AppRoutes.routes[MatchPage.routeName]!(context);
+                  generatedWithoutArgs = AppRoutes.routes[MatchPage.routeName]!(
+                    context,
+                  );
                   return const SizedBox();
                 },
               );
@@ -114,8 +117,9 @@ void main() {
                 return MaterialPageRoute<void>(
                   settings: const RouteSettings(name: '/', arguments: 73),
                   builder: (context) {
-                    generatedWithArgs =
-                        AppRoutes.routes[TeamPage.routeName]!(context);
+                    generatedWithArgs = AppRoutes.routes[TeamPage.routeName]!(
+                      context,
+                    );
                     return const SizedBox();
                   },
                 );
@@ -123,8 +127,9 @@ void main() {
               return MaterialPageRoute<void>(
                 settings: const RouteSettings(name: '/'),
                 builder: (context) {
-                  generatedWithoutArgs =
-                      AppRoutes.routes[TeamPage.routeName]!(context);
+                  generatedWithoutArgs = AppRoutes.routes[TeamPage.routeName]!(
+                    context,
+                  );
                   return const SizedBox();
                 },
               );
@@ -157,8 +162,9 @@ void main() {
                 return MaterialPageRoute<void>(
                   settings: const RouteSettings(name: '/', arguments: 99),
                   builder: (context) {
-                    generatedWithArgs =
-                        AppRoutes.routes[TeamsPage.routeName]!(context);
+                    generatedWithArgs = AppRoutes.routes[TeamsPage.routeName]!(
+                      context,
+                    );
                     return const SizedBox();
                   },
                 );
@@ -166,8 +172,9 @@ void main() {
               return MaterialPageRoute<void>(
                 settings: const RouteSettings(name: '/'),
                 builder: (context) {
-                  generatedWithoutArgs =
-                      AppRoutes.routes[TeamsPage.routeName]!(context);
+                  generatedWithoutArgs = AppRoutes.routes[TeamsPage.routeName]!(
+                    context,
+                  );
                   return const SizedBox();
                 },
               );

@@ -71,13 +71,13 @@ class Staff extends Equatable {
 
   @override
   List<Object> get props => [
-        id,
-        firstName,
-        lastName,
-        name,
-        dateOfBirth,
-        nationality,
-        contract,
-        position,
-      ];
+    id,
+    firstName,
+    lastName,
+    name,
+    dateOfBirth,
+    nationality,
+    contract,
+    position,
+  ];
 }

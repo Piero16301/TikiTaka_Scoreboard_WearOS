@@ -14,11 +14,11 @@ class AppRoutes {
   static Map<String, Widget Function(BuildContext)> routes = {
     HomePage.routeName: (_) => const HomePage(),
     MatchPage.routeName: (context) => MatchPage(
-          matchId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-        ),
+      matchId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
+    ),
     TeamPage.routeName: (context) => TeamPage(
-          teamId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-        ),
+      teamId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
+    ),
     SettingsPage.routeName: (_) => const SettingsPage(),
     LeaguesPage.routeName: (_) => const LeaguesPage(),
     LanguagesPage.routeName: (_) => const LanguagesPage(),
@@ -26,7 +26,7 @@ class AppRoutes {
     TypographyPage.routeName: (_) => const TypographyPage(),
     NotificationsPage.routeName: (_) => const NotificationsPage(),
     TeamsPage.routeName: (context) => TeamsPage(
-          leagueId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-        ),
+      leagueId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
+    ),
   };
 }

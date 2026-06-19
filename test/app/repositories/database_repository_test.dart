@@ -47,8 +47,8 @@ void main() {
           .collection(AppVariables.devicesCollection)
           .doc('test-token')
           .set({
-        'enabledTeams': ['3', '4'],
-      });
+            'enabledTeams': ['3', '4'],
+          });
 
       repository.updateDeviceSettings(
         token: 'test-token',
@@ -70,13 +70,15 @@ void main() {
     test('getMatchStream streams team correctly', () async {
       final matchData = <String, dynamic>{
         'id': 99,
-        'utcDate':
-            Timestamp.fromDate(DateTime.parse('2026-03-31T23:04:31.000Z')),
+        'utcDate': Timestamp.fromDate(
+          DateTime.parse('2026-03-31T23:04:31.000Z'),
+        ),
         'status': 'SCHEDULED',
         'matchday': 1,
         'stage': 'GROUP',
-        'lastUpdated':
-            Timestamp.fromDate(DateTime.parse('2026-03-31T23:04:31.000Z')),
+        'lastUpdated': Timestamp.fromDate(
+          DateTime.parse('2026-03-31T23:04:31.000Z'),
+        ),
         'competition': {
           'id': 2000,
           'name': 'dummy',
@@ -140,8 +142,9 @@ void main() {
         'platform': 'wearOS',
         'enabledTeams': ['42'],
         'language': 'en_US',
-        'lastOpenAt':
-            Timestamp.fromDate(DateTime.parse('2026-03-31T23:04:31.000Z')),
+        'lastOpenAt': Timestamp.fromDate(
+          DateTime.parse('2026-03-31T23:04:31.000Z'),
+        ),
       };
 
       await fakeFirestore
@@ -186,8 +189,9 @@ void main() {
         },
         'plan': 'test',
         'numberOfAvailableSeasons': 2,
-        'lastUpdated':
-            Timestamp.fromDate(DateTime.parse('2026-03-31T23:04:31.000Z')),
+        'lastUpdated': Timestamp.fromDate(
+          DateTime.parse('2026-03-31T23:04:31.000Z'),
+        ),
       };
       await fakeFirestore
           .collection(AppVariables.leaguesCollection)
@@ -199,12 +203,14 @@ void main() {
       expect(items.first.id, 1);
     });
 
-    test('getMatchesStream returns empty due to static nowDate inside function',
-        () async {
-      final stream = repository.getMatchesStream(enabledLeagues: const []);
-      final items = await stream.first;
-      expect(items, isEmpty);
-    });
+    test(
+      'getMatchesStream returns empty due to static nowDate inside function',
+      () async {
+        final stream = repository.getMatchesStream(enabledLeagues: const []);
+        final items = await stream.first;
+        expect(items, isEmpty);
+      },
+    );
   });
 
   group('MockDatabaseRepository', () {
@@ -230,8 +236,9 @@ void main() {
     });
 
     test('getMatchesStream returns all matches', () async {
-      final matches =
-          await mockRepository.getMatchesStream(enabledLeagues: const []).first;
+      final matches = await mockRepository
+          .getMatchesStream(enabledLeagues: const [])
+          .first;
       expect(matches, isNotEmpty);
     });
 
@@ -246,8 +253,9 @@ void main() {
     });
 
     test('getStandingsStream returns standings', () async {
-      final standings =
-          await mockRepository.getStandingsStream(leagueId: '123').first;
+      final standings = await mockRepository
+          .getStandingsStream(leagueId: '123')
+          .first;
       expect(standings.standings, isNotEmpty);
     });
 

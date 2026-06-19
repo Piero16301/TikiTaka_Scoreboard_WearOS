@@ -112,8 +112,9 @@ void main() {
     tearDown(getIt.reset);
 
     test('subscribeToTopic calls FirebaseMessaging', () async {
-      when(() => mockMessaging.subscribeToTopic(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockMessaging.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
 
       await repository.subscribeToTopic('test_topic');
 
@@ -137,8 +138,9 @@ void main() {
     });
 
     test('unsubscribeFromTopic calls FirebaseMessaging', () async {
-      when(() => mockMessaging.unsubscribeFromTopic(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockMessaging.unsubscribeFromTopic(any()),
+      ).thenAnswer((_) async {});
 
       await repository.unsubscribeFromTopic('test_topic');
 
@@ -147,8 +149,9 @@ void main() {
 
     test('unsubscribeFromTopic logs to CrashService on error', () async {
       final exception = Exception('unsubscribe error');
-      when(() => mockMessaging.unsubscribeFromTopic(any()))
-          .thenThrow(exception);
+      when(
+        () => mockMessaging.unsubscribeFromTopic(any()),
+      ).thenThrow(exception);
 
       await repository.unsubscribeFromTopic('test_topic');
 
@@ -164,33 +167,44 @@ void main() {
 
     test('initialize performs complete setup', () async {
       final settings = MockNotificationSettings();
-      when(() => settings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.authorized);
-      when(() => mockMessaging.requestPermission())
-          .thenAnswer((_) async => settings);
-      when(() => mockMessaging.getToken())
-          .thenAnswer((_) async => 'fake-token');
-      when(() => mockMessaging.getInitialMessage())
-          .thenAnswer((_) async => null);
-      when(() => mockMessaging.subscribeToTopic(any()))
-          .thenAnswer((_) async {});
-
-      when(() => mockDeviceInfoService.deviceInfo)
-          .thenReturn(const AppDeviceInfo(id: 'id', isPhysicalDevice: true));
-      when(() => mockLocalStorageService.getLanguage())
-          .thenReturn(const Locale('es'));
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.authorized);
+      when(
+        () => mockMessaging.requestPermission(),
+      ).thenAnswer((_) async => settings);
+      when(
+        () => mockMessaging.getToken(),
+      ).thenAnswer((_) async => 'fake-token');
+      when(
+        () => mockMessaging.getInitialMessage(),
+      ).thenAnswer((_) async => null);
+      when(
+        () => mockMessaging.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
 
       when(
-        () => mockLocalNotifications.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>(),
+        () => mockDeviceInfoService.deviceInfo,
+      ).thenReturn(const AppDeviceInfo(id: 'id', isPhysicalDevice: true));
+      when(
+        () => mockLocalStorageService.getLanguage(),
+      ).thenReturn(const Locale('es'));
+
+      when(
+        () => mockLocalNotifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >(),
       ).thenReturn(mockAndroidNotifications);
-      when(() => mockAndroidNotifications.createNotificationChannel(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockAndroidNotifications.createNotificationChannel(any()),
+      ).thenAnswer((_) async {});
       when(
         () => mockLocalNotifications.initialize(
           settings: any(named: 'settings'),
-          onDidReceiveNotificationResponse:
-              any(named: 'onDidReceiveNotificationResponse'),
+          onDidReceiveNotificationResponse: any(
+            named: 'onDidReceiveNotificationResponse',
+          ),
         ),
       ).thenAnswer((_) async => true);
 
@@ -231,18 +245,22 @@ void main() {
     test('requestPermission coverage', () async {
       final settings = MockNotificationSettings();
 
-      when(() => settings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.denied);
-      when(() => mockMessaging.requestPermission())
-          .thenAnswer((_) async => settings);
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.denied);
+      when(
+        () => mockMessaging.requestPermission(),
+      ).thenAnswer((_) async => settings);
       await repository.requestPermission();
 
-      when(() => settings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.provisional);
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.provisional);
       await repository.requestPermission();
 
-      when(() => settings.authorizationStatus)
-          .thenReturn(AuthorizationStatus.notDetermined);
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.notDetermined);
       await repository.requestPermission();
     });
 
@@ -257,16 +275,20 @@ void main() {
       );
 
       when(
-        () => mockLocalNotifications.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>(),
+        () => mockLocalNotifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >(),
       ).thenReturn(mockAndroidNotifications);
-      when(() => mockAndroidNotifications.createNotificationChannel(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockAndroidNotifications.createNotificationChannel(any()),
+      ).thenAnswer((_) async {});
       when(
         () => mockLocalNotifications.initialize(
           settings: any(named: 'settings'),
-          onDidReceiveNotificationResponse:
-              any(named: 'onDidReceiveNotificationResponse'),
+          onDidReceiveNotificationResponse: any(
+            named: 'onDidReceiveNotificationResponse',
+          ),
         ),
       ).thenAnswer((_) async => true);
       when(

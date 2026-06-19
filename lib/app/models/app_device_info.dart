@@ -71,16 +71,16 @@ class AppDeviceInfo extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        versionRelease,
-        sdkInt,
-        securityPatch,
-        model,
-        brand,
-        isLowRamDevice,
-        isPhysicalDevice,
-        processor,
-        physicalRamSize,
-        availableRamSize,
-      ];
+    id,
+    versionRelease,
+    sdkInt,
+    securityPatch,
+    model,
+    brand,
+    isLowRamDevice,
+    isPhysicalDevice,
+    processor,
+    physicalRamSize,
+    availableRamSize,
+  ];
 }

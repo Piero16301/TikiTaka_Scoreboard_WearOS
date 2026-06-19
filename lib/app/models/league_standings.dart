@@ -37,7 +37,7 @@ class LeagueStandings extends Equatable {
 
   @override
   List<Object?> get props => [
-        leagueId,
-        standings,
-      ];
+    leagueId,
+    standings,
+  ];
 }

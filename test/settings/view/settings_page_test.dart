@@ -47,8 +47,9 @@ void main() {
       when(() => mockDeviceInfo.packageInfo).thenReturn(mockPackageInfo);
     });
 
-    testWidgets('renders SettingsPage and SettingsView correctly',
-        (tester) async {
+    testWidgets('renders SettingsPage and SettingsView correctly', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,

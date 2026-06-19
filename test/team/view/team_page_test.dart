@@ -39,10 +39,12 @@ void main() {
       when(() => teamCubit.initialize(teamId: 10)).thenAnswer((_) async {});
     });
 
-    testWidgets('renders TeamPage properly and shows shimmers when loading',
-        (tester) async {
-      when(() => mockDatabase.getTeamStream(teamId: 10))
-          .thenAnswer((_) => const Stream.empty());
+    testWidgets('renders TeamPage properly and shows shimmers when loading', (
+      tester,
+    ) async {
+      when(
+        () => mockDatabase.getTeamStream(teamId: 10),
+      ).thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -60,8 +62,9 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getTeamStream(teamId: 10))
-          .thenAnswer((_) => Stream.error('Error'));
+      when(
+        () => mockDatabase.getTeamStream(teamId: 10),
+      ).thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -123,8 +126,9 @@ void main() {
       when(() => mockTeam.staff).thenReturn([mockStaffMember]);
       when(() => mockTeam.runningCompetitions).thenReturn([mockLeague]);
 
-      when(() => mockDatabase.getTeamStream(teamId: 10))
-          .thenAnswer((_) => Stream.value(mockTeam));
+      when(
+        () => mockDatabase.getTeamStream(teamId: 10),
+      ).thenAnswer((_) => Stream.value(mockTeam));
 
       await tester.pumpWidget(
         MaterialApp(

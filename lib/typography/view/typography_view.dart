@@ -11,8 +11,9 @@ class TypographyView extends StatefulWidget {
 }
 
 class _TypographyViewState extends State<TypographyView> {
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: false);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
 
   @override
   void dispose() {

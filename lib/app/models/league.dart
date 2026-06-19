@@ -90,15 +90,15 @@ class League extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        area,
-        name,
-        code,
-        type,
-        emblem,
-        plan,
-        currentSeason,
-        numberOfAvailableSeasons,
-        lastUpdated,
-      ];
+    id,
+    area,
+    name,
+    code,
+    type,
+    emblem,
+    plan,
+    currentSeason,
+    numberOfAvailableSeasons,
+    lastUpdated,
+  ];
 }

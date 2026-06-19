@@ -59,29 +59,33 @@ void main() {
       ).thenAnswer((_) async {});
     });
 
-    testWidgets('renders LeaguesPage properly and shows shimmers when loading',
-        (tester) async {
-      when(() => mockDatabase.getLeaguesStream())
-          .thenAnswer((_) => const Stream.empty());
+    testWidgets(
+      'renders LeaguesPage properly and shows shimmers when loading',
+      (tester) async {
+        when(
+          () => mockDatabase.getLeaguesStream(),
+        ).thenAnswer((_) => const Stream.empty());
 
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocProvider<LeaguesCubit>.value(
-            value: leaguesCubit,
-            child: const LeaguesPage(),
+        await tester.pumpWidget(
+          MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: BlocProvider<LeaguesCubit>.value(
+              value: leaguesCubit,
+              child: const LeaguesPage(),
+            ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(LeaguesPage), findsOneWidget);
-      expect(find.byType(LeaguesView), findsOneWidget);
-    });
+        expect(find.byType(LeaguesPage), findsOneWidget);
+        expect(find.byType(LeaguesView), findsOneWidget);
+      },
+    );
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getLeaguesStream())
-          .thenAnswer((_) => Stream.error('Error'));
+      when(
+        () => mockDatabase.getLeaguesStream(),
+      ).thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -99,10 +103,12 @@ void main() {
       expect(find.text('Error loading leagues'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when stream emits empty list',
-        (tester) async {
-      when(() => mockDatabase.getLeaguesStream())
-          .thenAnswer((_) => Stream.value([]));
+    testWidgets('shows empty state when stream emits empty list', (
+      tester,
+    ) async {
+      when(
+        () => mockDatabase.getLeaguesStream(),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -127,8 +133,9 @@ void main() {
       when(() => mockLeague.name).thenReturn('Premier League');
 
       final mockLeagues = <League>[mockLeague];
-      when(() => mockDatabase.getLeaguesStream())
-          .thenAnswer((_) => Stream.value(mockLeagues));
+      when(
+        () => mockDatabase.getLeaguesStream(),
+      ).thenAnswer((_) => Stream.value(mockLeagues));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -155,8 +162,9 @@ void main() {
       when(() => mockLeague.name).thenReturn('Premier League');
 
       final mockLeagues = <League>[mockLeague];
-      when(() => mockDatabase.getLeaguesStream())
-          .thenAnswer((_) => Stream.value(mockLeagues));
+      when(
+        () => mockDatabase.getLeaguesStream(),
+      ).thenAnswer((_) => Stream.value(mockLeagues));
 
       await tester.pumpWidget(
         MaterialApp(
