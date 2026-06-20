@@ -87,16 +87,16 @@ class Table extends Equatable {
 
   @override
   List<Object?> get props => [
-        position,
-        team,
-        playedGames,
-        form,
-        won,
-        draw,
-        lost,
-        points,
-        goalsFor,
-        goalsAgainst,
-        goalDifference,
-      ];
+    position,
+    team,
+    playedGames,
+    form,
+    won,
+    draw,
+    lost,
+    points,
+    goalsFor,
+    goalsAgainst,
+    goalDifference,
+  ];
 }

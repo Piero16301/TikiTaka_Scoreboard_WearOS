@@ -1,8 +1,7 @@
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AnalyticsService {
-  AnalyticsService({required AnalyticsRepository analyticsRepository})
-      : _analyticsRepository = analyticsRepository;
+  AnalyticsService({required this._analyticsRepository});
 
   final AnalyticsRepository _analyticsRepository;
 

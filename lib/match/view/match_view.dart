@@ -132,7 +132,16 @@ class TeamsCardMatch extends StatelessWidget {
               Expanded(
                 child: AutoSizeText(
                   AppFunctions.getTeamTranslatedName(match.homeTeam.name, l10n),
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                   maxLines: 3,
                   minFontSize: 8,
                   textAlign: TextAlign.center,
@@ -141,7 +150,16 @@ class TeamsCardMatch extends StatelessWidget {
               Expanded(
                 child: AutoSizeText(
                   AppFunctions.getTeamTranslatedName(match.awayTeam.name, l10n),
-                  style: Theme.of(context).textTheme.labelMedium,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                   maxLines: 3,
                   minFontSize: 8,
                   textAlign: TextAlign.center,
@@ -156,8 +174,8 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   match.score.halfTime.home.toString(),
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        height: 1,
-                      ),
+                    height: 1,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -166,8 +184,8 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   l10n.halfTimeAbbr,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        height: 1,
-                      ),
+                    height: 1,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -175,8 +193,8 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   match.score.halfTime.away.toString(),
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        height: 1,
-                      ),
+                    height: 1,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -189,9 +207,16 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   match.score.fullTime.home.toString(),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
+                    height: 1,
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.titleLarge?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -200,8 +225,8 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   l10n.fullTimeAbbr,
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        height: 1,
-                      ),
+                    height: 1,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -209,9 +234,16 @@ class TeamsCardMatch extends StatelessWidget {
                 child: Text(
                   match.score.fullTime.away.toString(),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
+                    height: 1,
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.titleLarge?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -266,10 +298,20 @@ class RefereeCardMatch extends StatelessWidget {
                     children: [
                       Text(
                         referee.name,
-                        style:
-                            Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              fontVariations: <FontVariation>[
+                                ...(Theme.of(
+                                              context,
+                                            )
+                                            .textTheme
+                                            .labelMedium
+                                            ?.fontVariations ??
+                                        const <FontVariation>[])
+                                    .where((v) => v.axis != 'wght'),
+                                const FontVariation('wght', 700),
+                              ],
+                            ),
                       ),
                       Text(
                         referee.nationality,
@@ -316,8 +358,15 @@ class CompetitionCardMatch extends StatelessWidget {
                 child: Text(
                   match.area.name,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -336,19 +385,35 @@ class CompetitionCardMatch extends StatelessWidget {
                 child: Text(
                   match.competition.name,
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            '${l10n.seasonMatch} ${match.season.startDate!.year}'
-            '-${match.season.endDate!.year}',
+            match.season.startDate!.year == match.season.endDate!.year
+                ? '${l10n.seasonMatch} ${match.season.startDate!.year}'
+                : '${l10n.seasonMatch} ${match.season.startDate!.year}'
+                      '-${match.season.endDate!.year}',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              fontVariations: <FontVariation>[
+                ...(Theme.of(
+                          context,
+                        ).textTheme.labelSmall?.fontVariations ??
+                        const <FontVariation>[])
+                    .where((v) => v.axis != 'wght'),
+                const FontVariation('wght', 700),
+              ],
+            ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -422,10 +487,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                       child: Text(
                         l10n.playedGamesAbbr,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -434,10 +496,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                       child: Text(
                         l10n.goalDifferenceAbbr,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -446,10 +505,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                       child: Text(
                         l10n.pointsAbbr,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: const TextStyle(fontSize: 10),
                       ),
                     ),
                   ],
@@ -473,10 +529,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                             child: Text(
                               row.position.toString(),
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
+                              style: const TextStyle(fontSize: 12),
                             ),
                           ),
                         ),
@@ -504,10 +557,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                         Expanded(
                           child: Text(
                             row.team.tla,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ),
                         PointTextMatch(
@@ -544,10 +594,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               child: Text(
                                 l10n.playedGamesAbbr,
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: const TextStyle(fontSize: 10),
                               ),
                             ),
                             const SizedBox(width: 5),
@@ -556,10 +603,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               child: Text(
                                 l10n.goalDifferenceAbbr,
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: const TextStyle(fontSize: 10),
                               ),
                             ),
                             const SizedBox(width: 5),
@@ -568,10 +612,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               child: Text(
                                 l10n.pointsAbbr,
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                style: const TextStyle(fontSize: 10),
                               ),
                             ),
                           ],
@@ -595,10 +636,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                     child: Text(
                                       row.position.toString(),
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: const TextStyle(fontSize: 12),
                                     ),
                                   ),
                                 ),
@@ -628,10 +666,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                 Expanded(
                                   child: Text(
                                     row.team.tla,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
                                 PointTextMatch(
@@ -685,10 +720,7 @@ class PointTextMatch extends StatelessWidget {
         child: Text(
           value.toString(),
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 12),
         ),
       ),
     );

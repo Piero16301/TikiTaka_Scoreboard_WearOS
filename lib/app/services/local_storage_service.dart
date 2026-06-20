@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class LocalStorageService {
-  LocalStorageService({required LocalStorageRepository localStorageRepository})
-      : _localStorageRepository = localStorageRepository;
+  LocalStorageService({required this._localStorageRepository});
 
   final LocalStorageRepository _localStorageRepository;
 
   Future<void> initialize() async {
     final performance = getIt<PerformanceService>();
-    final trace =
-        performance.startTrace('local_storage_service_initialization');
+    final trace = performance.startTrace(
+      'local_storage_service_initialization',
+    );
     await _localStorageRepository.initialize();
     performance.stopTrace(trace);
   }

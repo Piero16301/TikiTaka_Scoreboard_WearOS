@@ -17,6 +17,6 @@ class TeamState extends Equatable {
 
   @override
   List<Object> get props => [
-        teamId,
-      ];
+    teamId,
+  ];
 }

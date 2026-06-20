@@ -38,8 +38,9 @@ class Match extends Equatable {
         json['season'] as Map<String, dynamic>? ?? <String, dynamic>{},
       ),
       id: json['id'] as int? ?? 0,
-      utcDate:
-          (json['utcDate'] as Timestamp? ?? Timestamp.now()).toDate().toLocal(),
+      utcDate: (json['utcDate'] as Timestamp? ?? Timestamp.now())
+          .toDate()
+          .toLocal(),
       status: json['status'] as String? ?? '-',
       matchday: json['matchday'] as int? ?? 1,
       stage: json['stage'] as String? ?? '-',
@@ -55,7 +56,8 @@ class Match extends Equatable {
       ),
       score: Score.fromJson(json['score'] as Map<String, dynamic>? ?? {}),
       odds: Odds.fromJson(json['odds'] as Map<String, dynamic>? ?? {}),
-      referees: (json['referees'] as List<dynamic>?)
+      referees:
+          (json['referees'] as List<dynamic>?)
               ?.map(
                 (e) => Referee.fromJson(
                   e as Map<String, dynamic>? ?? <String, dynamic>{},
@@ -132,20 +134,20 @@ class Match extends Equatable {
 
   @override
   List<Object?> get props => [
-        area,
-        competition,
-        season,
-        id,
-        utcDate,
-        status,
-        matchday,
-        stage,
-        group,
-        lastUpdated,
-        homeTeam,
-        awayTeam,
-        score,
-        odds,
-        referees,
-      ];
+    area,
+    competition,
+    season,
+    id,
+    utcDate,
+    status,
+    matchday,
+    stage,
+    group,
+    lastUpdated,
+    homeTeam,
+    awayTeam,
+    score,
+    odds,
+    referees,
+  ];
 }

@@ -87,8 +87,7 @@ void main() {
   });
 
   group('setupServiceLocator', () {
-    test(
-        'registers all services as lazy singletons and instantiates them in '
+    test('registers all services as lazy singletons and instantiates them in '
         'mock environment', () {
       setupServiceLocator(Environment.mock);
 

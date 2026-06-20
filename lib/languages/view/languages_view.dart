@@ -11,8 +11,9 @@ class LanguagesView extends StatefulWidget {
 }
 
 class _LanguagesViewState extends State<LanguagesView> {
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: false);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
 
   @override
   void dispose() {

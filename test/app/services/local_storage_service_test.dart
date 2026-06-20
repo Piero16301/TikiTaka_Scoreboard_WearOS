@@ -89,8 +89,9 @@ void main() {
     group('Base Color', () {
       test('saveBaseColor calls repository', () {
         const color = Colors.red;
-        when(() => mockRepository.saveBaseColor(baseColor: color))
-            .thenReturn(null);
+        when(
+          () => mockRepository.saveBaseColor(baseColor: color),
+        ).thenReturn(null);
         service.saveBaseColor(baseColor: color);
         verify(() => mockRepository.saveBaseColor(baseColor: color)).called(1);
       });
@@ -106,8 +107,9 @@ void main() {
     group('Font Family', () {
       test('saveFontFamily calls repository', () {
         const font = 'Roboto';
-        when(() => mockRepository.saveFontFamily(fontFamily: font))
-            .thenReturn(null);
+        when(
+          () => mockRepository.saveFontFamily(fontFamily: font),
+        ).thenReturn(null);
         service.saveFontFamily(fontFamily: font);
         verify(() => mockRepository.saveFontFamily(fontFamily: font)).called(1);
       });

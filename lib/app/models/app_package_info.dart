@@ -36,9 +36,9 @@ class AppPackageInfo extends Equatable {
 
   @override
   List<Object> get props => [
-        appName,
-        version,
-        buildNumber,
-        updateTime,
-      ];
+    appName,
+    version,
+    buildNumber,
+    updateTime,
+  ];
 }

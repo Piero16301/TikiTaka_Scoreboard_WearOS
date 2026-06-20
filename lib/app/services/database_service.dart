@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class DatabaseService {
-  DatabaseService({required DatabaseRepository databaseRepository})
-      : _databaseRepository = databaseRepository;
+  DatabaseService({required this._databaseRepository});
 
   final DatabaseRepository _databaseRepository;
 

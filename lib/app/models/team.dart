@@ -35,10 +35,12 @@ class Team extends Equatable {
       shortName: json['shortName'] as String? ?? '',
       tla: json['tla'] as String? ?? '',
       crest: json['crest'] as String? ?? '',
-      address:
-          json['address'] != null ? json['address'] as String? ?? '' : null,
-      website:
-          json['website'] != null ? json['website'] as String? ?? '' : null,
+      address: json['address'] != null
+          ? json['address'] as String? ?? ''
+          : null,
+      website: json['website'] != null
+          ? json['website'] as String? ?? ''
+          : null,
       founded: json['founded'] != null ? json['founded'] as int? ?? 0 : null,
       clubColors: json['clubColors'] != null
           ? json['clubColors'] as String? ?? ''
@@ -46,21 +48,21 @@ class Team extends Equatable {
       venue: json['venue'] != null ? json['venue'] as String? ?? '' : null,
       runningCompetitions: json['runningCompetitions'] != null
           ? (json['runningCompetitions'] as List<dynamic>?)
-              ?.map((e) => League.fromJson(e as Map<String, dynamic>))
-              .toList()
+                ?.map((e) => League.fromJson(e as Map<String, dynamic>))
+                .toList()
           : null,
       coach: json['coach'] != null
           ? Staff.fromJson(json['coach'] as Map<String, dynamic>)
           : null,
       squad: json['squad'] != null
           ? (json['squad'] as List<dynamic>?)
-              ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
-              .toList()
+                ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
+                .toList()
           : null,
       staff: json['staff'] != null
           ? (json['staff'] as List<dynamic>?)
-              ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
-              .toList()
+                ?.map((e) => Staff.fromJson(e as Map<String, dynamic>))
+                .toList()
           : null,
     );
   }
@@ -131,20 +133,20 @@ class Team extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        area,
-        name,
-        shortName,
-        tla,
-        crest,
-        address,
-        website,
-        founded,
-        clubColors,
-        venue,
-        runningCompetitions,
-        coach,
-        squad,
-        staff,
-      ];
+    id,
+    area,
+    name,
+    shortName,
+    tla,
+    crest,
+    address,
+    website,
+    founded,
+    clubColors,
+    venue,
+    runningCompetitions,
+    coach,
+    squad,
+    staff,
+  ];
 }

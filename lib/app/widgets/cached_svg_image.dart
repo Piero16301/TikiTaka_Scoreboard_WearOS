@@ -32,8 +32,9 @@ class _CachedSvgImageState extends State<CachedSvgImage> {
   @override
   void initState() {
     super.initState();
-    _fileFuture = (widget.cacheManager ?? DefaultCacheManager())
-        .getSingleFile(widget.imageUrl);
+    _fileFuture = (widget.cacheManager ?? DefaultCacheManager()).getSingleFile(
+      widget.imageUrl,
+    );
   }
 
   @override

@@ -62,8 +62,9 @@ void main() {
 
     test('getMatchStream delegates to repository', () {
       final mockMatchStream = Stream.value(MockMatch());
-      when(() => mockRepository.getMatchStream(matchId: 1))
-          .thenAnswer((_) => mockMatchStream);
+      when(
+        () => mockRepository.getMatchStream(matchId: 1),
+      ).thenAnswer((_) => mockMatchStream);
 
       final stream = databaseService.getMatchStream(matchId: 1);
       expect(stream, equals(mockMatchStream));
@@ -72,11 +73,13 @@ void main() {
 
     test('getMatchesStream delegates to repository', () {
       final mockMatchesStream = Stream.value([MockMatch()]);
-      when(() => mockRepository.getMatchesStream(enabledLeagues: ['PL']))
-          .thenAnswer((_) => mockMatchesStream);
+      when(
+        () => mockRepository.getMatchesStream(enabledLeagues: ['PL']),
+      ).thenAnswer((_) => mockMatchesStream);
 
-      final stream =
-          databaseService.getMatchesStream(enabledLeagues: const ['PL']);
+      final stream = databaseService.getMatchesStream(
+        enabledLeagues: const ['PL'],
+      );
       expect(stream, equals(mockMatchesStream));
       verify(
         () => mockRepository.getMatchesStream(enabledLeagues: const ['PL']),
@@ -85,8 +88,9 @@ void main() {
 
     test('getConfigStream delegates to repository', () {
       final mockConfigStream = Stream.value(MockConfig());
-      when(() => mockRepository.getConfigStream(id: 'conf1'))
-          .thenAnswer((_) => mockConfigStream);
+      when(
+        () => mockRepository.getConfigStream(id: 'conf1'),
+      ).thenAnswer((_) => mockConfigStream);
 
       final stream = databaseService.getConfigStream(id: 'conf1');
       expect(stream, equals(mockConfigStream));
@@ -95,8 +99,9 @@ void main() {
 
     test('getLeaguesStream delegates to repository', () {
       final mockLeaguesStream = Stream.value([MockLeague()]);
-      when(() => mockRepository.getLeaguesStream())
-          .thenAnswer((_) => mockLeaguesStream);
+      when(
+        () => mockRepository.getLeaguesStream(),
+      ).thenAnswer((_) => mockLeaguesStream);
 
       final stream = databaseService.getLeaguesStream();
       expect(stream, equals(mockLeaguesStream));
@@ -105,19 +110,22 @@ void main() {
 
     test('getStandingsStream delegates to repository', () {
       final mockStandingsStream = Stream.value(MockLeagueStandings());
-      when(() => mockRepository.getStandingsStream(leagueId: 'lg1'))
-          .thenAnswer((_) => mockStandingsStream);
+      when(
+        () => mockRepository.getStandingsStream(leagueId: 'lg1'),
+      ).thenAnswer((_) => mockStandingsStream);
 
       final stream = databaseService.getStandingsStream(leagueId: 'lg1');
       expect(stream, equals(mockStandingsStream));
-      verify(() => mockRepository.getStandingsStream(leagueId: 'lg1'))
-          .called(1);
+      verify(
+        () => mockRepository.getStandingsStream(leagueId: 'lg1'),
+      ).called(1);
     });
 
     test('getTeamStream delegates to repository', () {
       final mockTeamStream = Stream.value(MockTeam());
-      when(() => mockRepository.getTeamStream(teamId: 10))
-          .thenAnswer((_) => mockTeamStream);
+      when(
+        () => mockRepository.getTeamStream(teamId: 10),
+      ).thenAnswer((_) => mockTeamStream);
 
       final stream = databaseService.getTeamStream(teamId: 10);
       expect(stream, equals(mockTeamStream));
@@ -126,8 +134,9 @@ void main() {
 
     test('getTeamsStream delegates to repository', () {
       final mockTeamsStream = Stream.value([MockTeam()]);
-      when(() => mockRepository.getTeamsStream(leagueId: 5))
-          .thenAnswer((_) => mockTeamsStream);
+      when(
+        () => mockRepository.getTeamsStream(leagueId: 5),
+      ).thenAnswer((_) => mockTeamsStream);
 
       final stream = databaseService.getTeamsStream(leagueId: 5);
       expect(stream, equals(mockTeamsStream));
@@ -136,8 +145,9 @@ void main() {
 
     test('getDeviceStream delegates to repository', () {
       final mockDeviceStream = Stream.value(MockDevice());
-      when(() => mockRepository.getDeviceStream(token: 'tok1'))
-          .thenAnswer((_) => mockDeviceStream);
+      when(
+        () => mockRepository.getDeviceStream(token: 'tok1'),
+      ).thenAnswer((_) => mockDeviceStream);
 
       final stream = databaseService.getDeviceStream(token: 'tok1');
       expect(stream, equals(mockDeviceStream));

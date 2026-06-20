@@ -57,8 +57,9 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('WavingFlagBackground and Painter render without error',
-        (tester) async {
+    testWidgets('WavingFlagBackground and Painter render without error', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(

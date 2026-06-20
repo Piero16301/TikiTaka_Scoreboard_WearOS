@@ -49,15 +49,17 @@ void main() {
     });
 
     test('subscribeToTopic delegates to repository', () async {
-      when(() => mockRepository.subscribeToTopic(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockRepository.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
       await notificationService.subscribeToTopic('test_topic');
       verify(() => mockRepository.subscribeToTopic('test_topic')).called(1);
     });
 
     test('unsubscribeFromTopic delegates to repository', () async {
-      when(() => mockRepository.unsubscribeFromTopic(any()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockRepository.unsubscribeFromTopic(any()),
+      ).thenAnswer((_) async {});
       await notificationService.unsubscribeFromTopic('test_topic');
       verify(() => mockRepository.unsubscribeFromTopic('test_topic')).called(1);
     });

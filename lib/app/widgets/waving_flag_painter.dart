@@ -23,7 +23,7 @@ class WavingFlagPainter extends CustomPainter {
     final double maxDimension = math.max(size.width, size.height);
     final diagonal =
         math.sqrt(maxDimension * maxDimension + maxDimension * maxDimension) *
-            1.3;
+        1.3;
 
     // Center and tilt the flag diagonally.
     canvas
@@ -50,7 +50,8 @@ class WavingFlagPainter extends CustomPainter {
         if (i == 0) {
           y = startY;
         } else {
-          y = startY +
+          y =
+              startY +
               i * stripeHeight +
               math.sin(
                     (x / flagWidth * math.pi * 2 * waveCount) -
@@ -74,7 +75,8 @@ class WavingFlagPainter extends CustomPainter {
         if (i == colors.length - 1) {
           y = startY + flagHeight;
         } else {
-          y = startY +
+          y =
+              startY +
               (i + 1) * stripeHeight +
               math.sin(
                     (x / flagWidth * math.pi * 2 * waveCount) -
@@ -95,7 +97,8 @@ class WavingFlagPainter extends CustomPainter {
     // Overlay to simulate 3D lighting/shadows from the folds.
     final segmentWidth = flagWidth / 60;
     for (double x = 0; x < flagWidth; x += segmentWidth) {
-      final phase = (x / flagWidth * math.pi * 2 * waveCount) -
+      final phase =
+          (x / flagWidth * math.pi * 2 * waveCount) -
           (animationValue * math.pi * 2);
 
       // Slope of the sine wave dictates brightness.

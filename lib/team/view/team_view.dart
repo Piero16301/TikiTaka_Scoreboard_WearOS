@@ -82,13 +82,14 @@ class _TeamViewState extends State<TeamView> {
                 SquadCardTeam(
                   squad: team.squad!
                     ..sort(
-                      (a, b) => AppFunctions.getStaffPositionOrder(
-                        a.position,
-                      ).compareTo(
-                        AppFunctions.getStaffPositionOrder(
-                          b.position,
-                        ),
-                      ),
+                      (a, b) =>
+                          AppFunctions.getStaffPositionOrder(
+                            a.position,
+                          ).compareTo(
+                            AppFunctions.getStaffPositionOrder(
+                              b.position,
+                            ),
+                          ),
                     ),
                 ),
               ],
@@ -135,8 +136,15 @@ class MainInfoTeam extends StatelessWidget {
         Text(
           AppFunctions.getTeamTranslatedName(team.name, l10n),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
         Text(
           '${team.shortName} (${team.tla})',
@@ -175,8 +183,15 @@ class CoachCardTeam extends StatelessWidget {
                     Text(
                       coach.name,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(
+                                    context,
+                                  ).textTheme.labelMedium?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
+                      ),
                     ),
                     Text(
                       coach.nationality,
@@ -189,19 +204,29 @@ class CoachCardTeam extends StatelessWidget {
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  Text(
-                    l10n.untilTeam,
-                    style: const TextStyle(fontSize: 9),
-                  ),
-                  Text(
-                    getUntilContract(coach.contract.until),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
+              Visibility(
+                visible: coach.contract.until.isNotEmpty,
+                child: Column(
+                  children: [
+                    Text(
+                      l10n.untilTeam,
+                      style: const TextStyle(fontSize: 9),
+                    ),
+                    Text(
+                      getUntilContract(coach.contract.until),
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -259,10 +284,20 @@ class CompetitionsCardTeam extends StatelessWidget {
                       children: [
                         Text(
                           competition.name,
-                          style:
-                              Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                fontVariations: <FontVariation>[
+                                  ...(Theme.of(
+                                                context,
+                                              )
+                                              .textTheme
+                                              .labelMedium
+                                              ?.fontVariations ??
+                                          const <FontVariation>[])
+                                      .where((v) => v.axis != 'wght'),
+                                  const FontVariation('wght', 700),
+                                ],
+                              ),
                         ),
                         Text(
                           AppFunctions.getCompetitionType(
@@ -311,10 +346,20 @@ class SquadCardTeam extends StatelessWidget {
                       children: [
                         Text(
                           player.name,
-                          style:
-                              Theme.of(context).textTheme.labelMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          style: Theme.of(context).textTheme.labelMedium
+                              ?.copyWith(
+                                fontVariations: <FontVariation>[
+                                  ...(Theme.of(
+                                                context,
+                                              )
+                                              .textTheme
+                                              .labelMedium
+                                              ?.fontVariations ??
+                                          const <FontVariation>[])
+                                      .where((v) => v.axis != 'wght'),
+                                  const FontVariation('wght', 700),
+                                ],
+                              ),
                         ),
                         Text(
                           player.nationality,
@@ -343,9 +388,16 @@ class SquadCardTeam extends StatelessWidget {
                       AppFunctions.getStaffPosition(player.position, l10n),
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.onPrimaryFixed,
-                          ),
+                        fontVariations: <FontVariation>[
+                          ...(Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall?.fontVariations ??
+                                  const <FontVariation>[])
+                              .where((v) => v.axis != 'wght'),
+                          const FontVariation('wght', 700),
+                        ],
+                        color: Theme.of(context).colorScheme.onPrimaryFixed,
+                      ),
                     ),
                   ),
                 ],
@@ -419,31 +471,41 @@ class AdditionalInfoTeam extends StatelessWidget {
     required String value,
     required BuildContext context,
   }) {
-    return Row(
-      spacing: 8,
-      children: [
-        HugeIcon(
-          icon: icon,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-            ],
+    return Visibility(
+      visible: value.isNotEmpty && value != '-',
+      child: Row(
+        spacing: 8,
+        children: [
+          HugeIcon(
+            icon: icon,
+            color: Theme.of(context).colorScheme.primary,
           ),
-        ),
-      ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontVariations: <FontVariation>[
+                      ...(Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.fontVariations ??
+                              const <FontVariation>[])
+                          .where((v) => v.axis != 'wght'),
+                      const FontVariation('wght', 700),
+                    ],
+                  ),
+                ),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

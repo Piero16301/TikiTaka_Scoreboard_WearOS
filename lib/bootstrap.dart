@@ -40,8 +40,10 @@ bool _isNetworkError(dynamic error) {
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
     if (_isNetworkError(details.exception)) {
-      log('Network error suppressed from Crashlytics: '
-          '${details.exceptionAsString()}');
+      log(
+        'Network error suppressed from Crashlytics: '
+        '${details.exceptionAsString()}',
+      );
       return;
     }
 

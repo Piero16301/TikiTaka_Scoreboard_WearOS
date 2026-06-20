@@ -34,8 +34,15 @@ class AppIconTextButton extends StatelessWidget {
         Text(
           label,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            fontVariations: <FontVariation>[
+              ...(Theme.of(
+                        context,
+                      ).textTheme.labelLarge?.fontVariations ??
+                      const <FontVariation>[])
+                  .where((v) => v.axis != 'wght'),
+              const FontVariation('wght', 700),
+            ],
+          ),
         ),
       ],
     );

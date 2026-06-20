@@ -19,31 +19,33 @@ void main() {
       service = CrashService(crashRepository: mockRepository);
     });
 
-    test('recordError delegates to repository with correct default parameters',
-        () {
-      final exception = Exception('test error');
-      final stackTrace = StackTrace.current;
+    test(
+      'recordError delegates to repository with correct default parameters',
+      () {
+        final exception = Exception('test error');
+        final stackTrace = StackTrace.current;
 
-      when(
-        () => mockRepository.recordError(
-          any<Object>(),
-          any<StackTrace>(),
-          reason: any<dynamic>(named: 'reason'),
-          information: any<Iterable<Object>>(named: 'information'),
-          fatal: any<bool>(named: 'fatal'),
-        ),
-      ).thenReturn(null);
+        when(
+          () => mockRepository.recordError(
+            any<Object>(),
+            any<StackTrace>(),
+            reason: any<dynamic>(named: 'reason'),
+            information: any<Iterable<Object>>(named: 'information'),
+            fatal: any<bool>(named: 'fatal'),
+          ),
+        ).thenReturn(null);
 
-      service.recordError(exception, stackTrace);
+        service.recordError(exception, stackTrace);
 
-      verify(
-        () => mockRepository.recordError(
-          exception,
-          stackTrace,
-          fatal: false,
-        ),
-      ).called(1);
-    });
+        verify(
+          () => mockRepository.recordError(
+            exception,
+            stackTrace,
+            fatal: false,
+          ),
+        ).called(1);
+      },
+    );
 
     test('recordError delegates to repository with given parameters', () {
       final exception = Exception('test error');
@@ -87,8 +89,9 @@ void main() {
     });
 
     test('setCustomKey delegates to repository', () {
-      when(() => mockRepository.setCustomKey(any<String>(), any<Object>()))
-          .thenReturn(null);
+      when(
+        () => mockRepository.setCustomKey(any<String>(), any<Object>()),
+      ).thenReturn(null);
 
       service.setCustomKey('key', 'value');
 

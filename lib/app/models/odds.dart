@@ -47,9 +47,9 @@ class Odds extends Equatable {
 
   @override
   List<Object?> get props => [
-        homeWin,
-        draw,
-        awayWin,
-        message,
-      ];
+    homeWin,
+    draw,
+    awayWin,
+    message,
+  ];
 }

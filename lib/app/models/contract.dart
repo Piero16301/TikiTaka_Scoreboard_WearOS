@@ -32,7 +32,7 @@ class Contract extends Equatable {
 
   @override
   List<Object> get props => [
-        start,
-        until,
-      ];
+    start,
+    until,
+  ];
 }

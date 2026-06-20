@@ -19,11 +19,11 @@ class MockDeviceInfoRepository implements DeviceInfoRepository {
 
   @override
   AppPackageInfo get packageInfo => AppPackageInfo(
-        appName: 'Tiki Taka',
-        version: '1.0.0',
-        buildNumber: '1',
-        updateTime: DateTime(2026, 3, 30),
-      );
+    appName: 'Tiki Taka',
+    version: '1.0.0',
+    buildNumber: '1',
+    updateTime: DateTime(2026, 3, 30),
+  );
 }
 
 class PlusDeviceInfoRepository implements DeviceInfoRepository {

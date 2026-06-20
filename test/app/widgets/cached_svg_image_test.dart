@@ -23,8 +23,9 @@ void main() {
 
     testWidgets('renders SizedBox while waiting', (tester) async {
       final completer = Completer<pkg_file.File>();
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) => completer.future);
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) => completer.future);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -53,8 +54,9 @@ void main() {
         ),
       );
 
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => mockFile);
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => mockFile);
 
       await tester.pumpWidget(
         MaterialApp(
@@ -71,8 +73,9 @@ void main() {
     });
 
     testWidgets('renders errorBuilder on error', (tester) async {
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => throw Exception('Failed to load'));
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => throw Exception('Failed to load'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -90,10 +93,12 @@ void main() {
       expect(find.text('Error'), findsOneWidget);
     });
 
-    testWidgets('renders SizedBox on error when errorBuilder is null',
-        (tester) async {
-      when(() => mockCacheManager.getSingleFile(any()))
-          .thenAnswer((_) async => throw Exception('Failed to load'));
+    testWidgets('renders SizedBox on error when errorBuilder is null', (
+      tester,
+    ) async {
+      when(
+        () => mockCacheManager.getSingleFile(any()),
+      ).thenAnswer((_) async => throw Exception('Failed to load'));
 
       await tester.pumpWidget(
         MaterialApp(

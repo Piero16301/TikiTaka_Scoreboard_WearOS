@@ -25,8 +25,9 @@ void main() {
       'emits correct state when initialize is called and localStorage '
       'has leagues',
       setUp: () {
-        when(() => localStorageService.getEnabledLeagues())
-            .thenReturn(['PL', 'LL']);
+        when(
+          () => localStorageService.getEnabledLeagues(),
+        ).thenReturn(['PL', 'LL']);
       },
       build: LeaguesCubit.new,
       act: (cubit) => cubit.initialize(),

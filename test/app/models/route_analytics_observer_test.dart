@@ -48,8 +48,9 @@ void main() {
     test('didPush sends screen view when route has name', () {
       final route = StubPageRoute(name: 'test_screen');
       observer.didPush(route, null);
-      verify(() => mockAnalytics.setCurrentScreen(screenName: 'test_screen'))
-          .called(1);
+      verify(
+        () => mockAnalytics.setCurrentScreen(screenName: 'test_screen'),
+      ).called(1);
     });
 
     test('didPop sends screen view of previous route when it has a name', () {
@@ -65,23 +66,26 @@ void main() {
       final route = StubPageRoute(name: 'removed_screen');
       final previousRoute = StubPageRoute(name: 'new_top_screen');
       observer.didRemove(route, previousRoute);
-      verify(() => mockAnalytics.setCurrentScreen(screenName: 'new_top_screen'))
-          .called(1);
+      verify(
+        () => mockAnalytics.setCurrentScreen(screenName: 'new_top_screen'),
+      ).called(1);
     });
 
     test('didReplace sends screen view of new route', () {
       final newRoute = StubPageRoute(name: 'new_route');
       final oldRoute = StubPageRoute(name: 'old_route');
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-      verify(() => mockAnalytics.setCurrentScreen(screenName: 'new_route'))
-          .called(1);
+      verify(
+        () => mockAnalytics.setCurrentScreen(screenName: 'new_route'),
+      ).called(1);
     });
 
     test('didChangeTop sends screen view of the new top route', () {
       final topRoute = StubPageRoute(name: 'top_route');
       observer.didChangeTop(topRoute, null);
-      verify(() => mockAnalytics.setCurrentScreen(screenName: 'top_route'))
-          .called(1);
+      verify(
+        () => mockAnalytics.setCurrentScreen(screenName: 'top_route'),
+      ).called(1);
     });
 
     test('does not send screen view if route settings name is null', () {

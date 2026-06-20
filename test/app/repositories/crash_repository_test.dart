@@ -84,13 +84,15 @@ void main() {
     });
 
     test('setCustomKey calls FirebaseCrashlytics', () {
-      when(() => mockCrashlytics.setCustomKey(any<String>(), any<Object>()))
-          .thenAnswer((_) async {});
+      when(
+        () => mockCrashlytics.setCustomKey(any<String>(), any<Object>()),
+      ).thenAnswer((_) async {});
 
       repository.setCustomKey('app_key', 'some_value');
 
-      verify(() => mockCrashlytics.setCustomKey('app_key', 'some_value'))
-          .called(1);
+      verify(
+        () => mockCrashlytics.setCustomKey('app_key', 'some_value'),
+      ).called(1);
     });
   });
 

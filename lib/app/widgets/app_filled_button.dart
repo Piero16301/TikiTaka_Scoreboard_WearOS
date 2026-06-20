@@ -25,7 +25,8 @@ class AppFilledButton extends StatelessWidget {
       style: FilledButton.styleFrom(
         backgroundColor:
             color ?? Theme.of(context).colorScheme.primaryContainer,
-        padding: innerPadding ??
+        padding:
+            innerPadding ??
             const EdgeInsets.symmetric(
               vertical: 18,
               horizontal: 16,
@@ -39,8 +40,8 @@ class AppFilledButton extends StatelessWidget {
           ? Text(
               label ?? '',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                  ),
+                color: Colors.white,
+              ),
             )
           : icon!,
     );

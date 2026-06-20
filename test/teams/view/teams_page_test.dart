@@ -63,14 +63,17 @@ void main() {
       ).thenAnswer((_) async {});
 
       // Add default stubs to avoid Null errors
-      when(() => mockDatabase.getDeviceStream(token: any(named: 'token')))
-          .thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockDatabase.getDeviceStream(token: any(named: 'token')),
+      ).thenAnswer((_) => const Stream.empty());
     });
 
-    testWidgets('renders TeamsPage properly and shows shimmers when loading',
-        (tester) async {
-      when(() => mockDatabase.getTeamsStream(leagueId: 1))
-          .thenAnswer((_) => const Stream.empty());
+    testWidgets('renders TeamsPage properly and shows shimmers when loading', (
+      tester,
+    ) async {
+      when(
+        () => mockDatabase.getTeamsStream(leagueId: 1),
+      ).thenAnswer((_) => const Stream.empty());
 
       await tester.pumpWidget(
         MaterialApp(
@@ -93,8 +96,9 @@ void main() {
     });
 
     testWidgets('shows error state when stream emits error', (tester) async {
-      when(() => mockDatabase.getTeamsStream(leagueId: 1))
-          .thenAnswer((_) => Stream.error('Error'));
+      when(
+        () => mockDatabase.getTeamsStream(leagueId: 1),
+      ).thenAnswer((_) => Stream.error('Error'));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -115,10 +119,12 @@ void main() {
       expect(find.text('Error loading teams'), findsOneWidget);
     });
 
-    testWidgets('shows empty state when stream emits empty list',
-        (tester) async {
-      when(() => mockDatabase.getTeamsStream(leagueId: 1))
-          .thenAnswer((_) => Stream.value([]));
+    testWidgets('shows empty state when stream emits empty list', (
+      tester,
+    ) async {
+      when(
+        () => mockDatabase.getTeamsStream(leagueId: 1),
+      ).thenAnswer((_) => Stream.value([]));
 
       await tester.pumpWidget(
         MaterialApp(
@@ -145,8 +151,9 @@ void main() {
       when(() => mockTeam.name).thenReturn('FC Barcelona');
       when(() => mockTeam.crest).thenReturn('crest.png');
 
-      when(() => mockDatabase.getTeamsStream(leagueId: 1))
-          .thenAnswer((_) => Stream.value([mockTeam]));
+      when(
+        () => mockDatabase.getTeamsStream(leagueId: 1),
+      ).thenAnswer((_) => Stream.value([mockTeam]));
       when(() => appCubit.state).thenReturn(
         AppState(
           device: Device.fromJson(const {
@@ -183,8 +190,9 @@ void main() {
       when(() => mockTeam.name).thenReturn('FC Barcelona');
       when(() => mockTeam.crest).thenReturn('crest.png');
 
-      when(() => mockDatabase.getTeamsStream(leagueId: 1))
-          .thenAnswer((_) => Stream.value([mockTeam]));
+      when(
+        () => mockDatabase.getTeamsStream(leagueId: 1),
+      ).thenAnswer((_) => Stream.value([mockTeam]));
       when(() => appCubit.state).thenReturn(
         AppState(
           device: Device.fromJson(const {

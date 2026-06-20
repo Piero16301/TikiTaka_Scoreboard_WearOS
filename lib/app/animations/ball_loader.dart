@@ -117,8 +117,9 @@ class _BallPainter extends CustomPainter {
         final distFromCenter = (hexCenter - center).distance;
         final normalizedDist = (distFromCenter / radius).clamp(0.0, 1.0);
 
-        final wave =
-            math.sin((progress * 2 * math.pi) - (normalizedDist * math.pi));
+        final wave = math.sin(
+          (progress * 2 * math.pi) - (normalizedDist * math.pi),
+        );
 
         final opacity = 0.65 + (0.35 * wave);
 

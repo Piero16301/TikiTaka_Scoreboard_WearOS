@@ -16,8 +16,9 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   late Stream<List<Match>> _matchesStream;
-  final ScrollController _scrollController =
-      ScrollController(keepScrollOffset: false);
+  final ScrollController _scrollController = ScrollController(
+    keepScrollOffset: false,
+  );
   late DateTime _streamDate;
 
   @override
@@ -140,8 +141,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 
   Future<void> _onTapSettings(BuildContext context) async {
     getIt<AnalyticsService>().logEvent(name: 'settings_clicked');
-    final reload = (await Navigator.of(context)
-            .pushNamed(SettingsPage.routeName)) as bool? ??
+    final reload =
+        (await Navigator.of(context).pushNamed(SettingsPage.routeName))
+            as bool? ??
         true;
     if (reload) {
       setState(_reloadStream);
@@ -173,8 +175,9 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     _nowSubscription = Stream<void>.periodic(
       const Duration(seconds: 1),
     ).listen((_) => setState(() {}));
-    _configStream =
-        database.getConfigStream(id: AppVariables.matchesCollection);
+    _configStream = database.getConfigStream(
+      id: AppVariables.matchesCollection,
+    );
     super.initState();
   }
 
@@ -203,7 +206,8 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
     return StreamBuilder<Config>(
       stream: _configStream,
       builder: (context, snapshot) {
-        final config = snapshot.data ??
+        final config =
+            snapshot.data ??
             Config(
               id: AppVariables.matchesCollection,
               lastUpdate: DateTime.now(),
@@ -268,10 +272,7 @@ class MatchCardHome extends StatelessWidget {
                   height: 50,
                   width: 50,
                 ),
-                Text(
-                  match.homeTeam.tla,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+                Text(match.homeTeam.tla),
               ],
             ),
           ),
@@ -291,10 +292,7 @@ class MatchCardHome extends StatelessWidget {
                   height: 50,
                   width: 50,
                 ),
-                Text(
-                  match.awayTeam.tla,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
+                Text(match.awayTeam.tla),
               ],
             ),
           ),
@@ -317,10 +315,7 @@ class MatchCardHome extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 state,
-                style: const TextStyle(
-                  fontSize: 60,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: const TextStyle(fontSize: 60),
               ),
             ),
           ],
@@ -335,20 +330,14 @@ class MatchCardHome extends StatelessWidget {
               child: Text(
                 '${match.score.fullTime.home} - '
                 '${match.score.fullTime.away}',
-                style: const TextStyle(
-                  fontSize: 60,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(fontSize: 60),
               ),
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 state,
-                style: const TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: const TextStyle(fontSize: 10),
               ),
             ),
             const SizedBox(height: 5),

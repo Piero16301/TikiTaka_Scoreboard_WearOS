@@ -33,87 +33,90 @@ void main() {
       await tester.pumpAndSettle();
     });
 
-    testWidgets('renders with custom backgroundColor and null backgroundColor',
-        (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              backgroundColor: Colors.blue,
-              child: Text('App Content'),
+    testWidgets(
+      'renders with custom backgroundColor and null backgroundColor',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: TopCurvedTime(
+                backgroundColor: Colors.blue,
+                child: Text('App Content'),
+              ),
             ),
           ),
-        ),
-      );
-      expect(find.byType(TopCurvedTime), findsOneWidget);
+        );
+        expect(find.byType(TopCurvedTime), findsOneWidget);
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              backgroundColor: null,
-              child: Text('App Content'),
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: TopCurvedTime(
+                backgroundColor: null,
+                child: Text('App Content'),
+              ),
             ),
           ),
-        ),
-      );
-      expect(find.byType(TopCurvedTime), findsOneWidget);
-    });
+        );
+        expect(find.byType(TopCurvedTime), findsOneWidget);
+      },
+    );
 
     testWidgets(
-        'shouldRepaint triggers on background changes or theme differences',
-        (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              backgroundColor: Colors.red,
-              child: Text('App Content'),
+      'shouldRepaint triggers on background changes or theme differences',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: TopCurvedTime(
+                backgroundColor: Colors.red,
+                child: Text('App Content'),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              backgroundColor: Colors.blue,
-              child: Text('App Content'),
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: TopCurvedTime(
+                backgroundColor: Colors.blue,
+                child: Text('App Content'),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(
-            textTheme: const TextTheme(
-              labelLarge: TextStyle(fontSize: 12),
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(
+              textTheme: const TextTheme(
+                labelLarge: TextStyle(fontSize: 12),
+              ),
+            ),
+            home: const Scaffold(
+              body: TopCurvedTime(
+                child: Text('App Content'),
+              ),
             ),
           ),
-          home: const Scaffold(
-            body: TopCurvedTime(
-              child: Text('App Content'),
-            ),
-          ),
-        ),
-      );
+        );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: ThemeData(
-            textTheme: const TextTheme(
-              labelLarge: TextStyle(fontSize: 16),
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(
+              textTheme: const TextTheme(
+                labelLarge: TextStyle(fontSize: 16),
+              ),
+            ),
+            home: const Scaffold(
+              body: TopCurvedTime(
+                child: Text('App Content'),
+              ),
             ),
           ),
-          home: const Scaffold(
-            body: TopCurvedTime(
-              child: Text('App Content'),
-            ),
-          ),
-        ),
-      );
-    });
+        );
+      },
+    );
   });
 }

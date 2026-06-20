@@ -369,7 +369,7 @@ class MockDatabaseRepository implements DatabaseRepository {
 
 class FirestoreDatabaseRepository implements DatabaseRepository {
   FirestoreDatabaseRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
 
@@ -409,8 +409,10 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
               .collection(AppVariables.devicesCollection)
               .doc(token)
               .update({
-            'enabledTeams': FieldValue.arrayRemove([teamToModify.toString()]),
-          }),
+                'enabledTeams': FieldValue.arrayRemove([
+                  teamToModify.toString(),
+                ]),
+              }),
         );
       } else {
         unawaited(
@@ -418,8 +420,10 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
               .collection(AppVariables.devicesCollection)
               .doc(token)
               .update({
-            'enabledTeams': FieldValue.arrayUnion([teamToModify.toString()]),
-          }),
+                'enabledTeams': FieldValue.arrayUnion([
+                  teamToModify.toString(),
+                ]),
+              }),
         );
       }
     }
@@ -439,7 +443,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     required List<String> enabledLeagues,
   }) {
     final nowDate = DateTime.now();
-    // final nowDate = DateTime(2026, 05, 10);
+    // final nowDate = DateTime(2026, 06, 18);
 
     const maxMatchDuration = Duration(hours: 2);
     final startOfDay = DateTime(nowDate.year, nowDate.month, nowDate.day);
@@ -459,10 +463,12 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .orderBy('utcDate', descending: false)
         .snapshots()
         .map(
-      (snapshot) {
-        return snapshot.docs.map((doc) => Match.fromJson(doc.data())).toList();
-      },
-    );
+          (snapshot) {
+            return snapshot.docs
+                .map((doc) => Match.fromJson(doc.data()))
+                .toList();
+          },
+        );
   }
 
   @override
@@ -480,10 +486,12 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.leaguesCollection)
         .snapshots()
         .map(
-      (snapshot) {
-        return snapshot.docs.map((doc) => League.fromJson(doc.data())).toList();
-      },
-    );
+          (snapshot) {
+            return snapshot.docs
+                .map((doc) => League.fromJson(doc.data()))
+                .toList();
+          },
+        );
   }
 
   @override
@@ -508,8 +516,9 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
 
   @override
   Stream<List<Team>> getTeamsStream({int? leagueId}) {
-    var query =
-        _firestore.collection(AppVariables.teamsCollection).orderBy('name');
+    var query = _firestore
+        .collection(AppVariables.teamsCollection)
+        .orderBy('name');
 
     if (leagueId != null) {
       query = query.where('competition.id', isEqualTo: leagueId);

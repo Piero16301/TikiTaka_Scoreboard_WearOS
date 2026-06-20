@@ -32,7 +32,7 @@ class Time extends Equatable {
 
   @override
   List<Object> get props => [
-        home,
-        away,
-      ];
+    home,
+    away,
+  ];
 }

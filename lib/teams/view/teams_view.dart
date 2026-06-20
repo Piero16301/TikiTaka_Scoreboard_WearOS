@@ -121,8 +121,9 @@ class TeamCardTeams extends StatelessWidget {
                   children: [
                     BlocBuilder<TeamsCubit, TeamsState>(
                       builder: (context, state) {
-                        final enabled =
-                            enabledTeams.contains(team.id.toString());
+                        final enabled = enabledTeams.contains(
+                          team.id.toString(),
+                        );
                         return SizedBox(
                           width: 34,
                           child: FittedBox(
@@ -141,7 +142,20 @@ class TeamCardTeams extends StatelessWidget {
                     Expanded(
                       child: AutoSizeText(
                         AppFunctions.getTeamTranslatedName(team.name, l10n),
-                        style: Theme.of(context).textTheme.labelMedium,
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              fontVariations: <FontVariation>[
+                                ...(Theme.of(
+                                              context,
+                                            )
+                                            .textTheme
+                                            .labelMedium
+                                            ?.fontVariations ??
+                                        const <FontVariation>[])
+                                    .where((v) => v.axis != 'wght'),
+                                const FontVariation('wght', 700),
+                              ],
+                            ),
                         maxLines: 2,
                         minFontSize: 8,
                       ),

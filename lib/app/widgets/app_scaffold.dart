@@ -8,8 +8,8 @@ class AppScaffold extends StatelessWidget {
     this.disablePadding = false,
     this.background,
     super.key,
-  })  : controller = null,
-        isScrollable = false;
+  }) : controller = null,
+       isScrollable = false;
 
   const AppScaffold.scrollable({
     required this.child,
@@ -36,7 +36,7 @@ class AppScaffold extends StatelessWidget {
             body: SizedBox.expand(
               child: Stack(
                 children: [
-                  if (background != null) background!,
+                  ?background,
                   Padding(
                     padding: disablePadding
                         ? EdgeInsetsGeometry.zero
@@ -58,7 +58,7 @@ class AppScaffold extends StatelessWidget {
       body: SizedBox.expand(
         child: Stack(
           children: [
-            if (background != null) background!,
+            ?background,
             Padding(
               padding: disablePadding
                   ? EdgeInsetsGeometry.zero
