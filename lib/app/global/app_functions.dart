@@ -15,6 +15,7 @@ class AppFunctions {
         return DateFormat('HH:mm').format(date);
       case 'TIMED':
         return DateFormat('HH:mm').format(date);
+      case 'LIVE':
       case 'IN_PLAY':
         return l10n.inPlayMatch;
       case 'PAUSED':
@@ -55,6 +56,7 @@ class AppFunctions {
 
   static String notMatchState(String status, AppLocalizations l10n) {
     switch (status) {
+      case 'LIVE':
       case 'IN_PLAY':
         return l10n.inPlayMatch.toUpperCase();
       case 'PAUSED':
