@@ -12,12 +12,12 @@ dependencies:
   bloc: ^9.2.1
   cached_network_image: ^3.4.1
   cloud_firestore: ^6.6.0
-  device_info_plus: ^13.1.0
+  device_info_plus: ^13.2.0
   equatable: ^2.0.8
   firebase_analytics: ^12.4.3
   firebase_core: ^4.11.0
   firebase_crashlytics: ^5.2.4
-  firebase_messaging: ^16.4.0
+  firebase_messaging: ^16.4.1
   firebase_performance: ^0.11.4+2
   flutter:
     sdk: flutter
@@ -30,7 +30,7 @@ dependencies:
   get_it: ^9.2.1
   hugeicons: ^1.1.7
   intl: ^0.20.2
-  package_info_plus: ^10.1.0
+  package_info_plus: ^10.2.0
   shared_preferences: ^2.5.5
   wear_os_scrollbar: ^0.1.1
 

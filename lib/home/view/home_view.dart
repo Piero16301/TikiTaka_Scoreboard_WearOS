@@ -93,10 +93,11 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         final matches = snapshot.data!.map((match) => match).toList()
           ..sort((a, b) {
             final statusOrder = {
-              'IN_PLAY': 0,
-              'PAUSED': 1,
-              'SCHEDULED': 2,
-              'TIMED': 3,
+              'LIVE': 0,
+              'IN_PLAY': 1,
+              'PAUSED': 2,
+              'SCHEDULED': 3,
+              'TIMED': 4,
             };
             final aStatus = a.status;
             final bStatus = b.status;
