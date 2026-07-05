@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/teams/teams.dart';
+import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class TeamsView extends StatefulWidget {
   const TeamsView({super.key});
@@ -67,7 +68,10 @@ class _TeamsViewState extends State<TeamsView> {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleTeams),
               for (final (index, team) in teams.indexed) ...[
-                TeamCardTeams(enabledTeams: enabledTeams, team: team),
+                WearOsExpressiveItem(
+                  scrollController: _scrollController,
+                  child: TeamCardTeams(enabledTeams: enabledTeams, team: team),
+                ),
                 if (index < teams.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),
               ],

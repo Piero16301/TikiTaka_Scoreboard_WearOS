@@ -8,6 +8,7 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
+import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class MatchView extends StatefulWidget {
   const MatchView({super.key});
@@ -70,7 +71,10 @@ class _MatchViewState extends State<MatchView> {
               TeamsCardMatch(match: match),
               if (match.referees.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                RefereeCardMatch(referees: match.referees),
+                WearOsExpressiveItem(
+                  scrollController: _scrollController,
+                  child: RefereeCardMatch(referees: match.referees),
+                ),
               ],
               const SizedBox(height: AppVariables.listSpacing),
               CompetitionCardMatch(match: match),
@@ -417,12 +421,37 @@ class CompetitionCardMatch extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${l10n.matchdayMatch} ${match.matchday}',
+            _getMatchRound(match, l10n),
             style: Theme.of(context).textTheme.labelSmall,
           ),
         ],
       ),
     );
+  }
+
+  String _getMatchRound(Match match, AppLocalizations l10n) {
+    if (match.stage == 'REGULAR_SEASON') {
+      return '${l10n.matchdayMatch} ${match.matchday}';
+    } else {
+      switch (match.stage) {
+        case 'FINAL':
+          return l10n.finalMatch;
+        case 'THIRD_PLACE':
+          return l10n.thirdPlaceMatch;
+        case 'SEMI_FINALS':
+          return l10n.semiFinalsMatch;
+        case 'QUARTER_FINALS':
+          return l10n.quarterFinalsMatch;
+        case 'LAST_16':
+          return l10n.last16Match;
+        case 'LAST_32':
+          return l10n.last32Match;
+        case 'GROUP_STAGE':
+          return l10n.groupStageMatch;
+        default:
+          return '${l10n.matchdayMatch} ${match.matchday}';
+      }
+    }
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
+import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class TeamView extends StatefulWidget {
   const TeamView({super.key});
@@ -65,16 +66,25 @@ class _TeamViewState extends State<TeamView> {
           child: Column(
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              MainInfoTeam(team: team),
+              WearOsExpressiveItem(
+                scrollController: _scrollController,
+                child: MainInfoTeam(team: team),
+              ),
               if (team.coach != null && team.coach?.id != 0) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                CoachCardTeam(coach: team.coach!),
+                WearOsExpressiveItem(
+                  scrollController: _scrollController,
+                  child: CoachCardTeam(coach: team.coach!),
+                ),
               ],
               if (team.runningCompetitions != null &&
                   team.runningCompetitions!.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                CompetitionsCardTeam(
-                  competitions: team.runningCompetitions!,
+                WearOsExpressiveItem(
+                  scrollController: _scrollController,
+                  child: CompetitionsCardTeam(
+                    competitions: team.runningCompetitions!,
+                  ),
                 ),
               ],
               if (team.squad?.isNotEmpty ?? false) ...[
@@ -94,7 +104,10 @@ class _TeamViewState extends State<TeamView> {
                 ),
               ],
               const SizedBox(height: AppVariables.listSpacing),
-              AdditionalInfoTeam(team: team),
+              WearOsExpressiveItem(
+                scrollController: _scrollController,
+                child: AdditionalInfoTeam(team: team),
+              ),
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
