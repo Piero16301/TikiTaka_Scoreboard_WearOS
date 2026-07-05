@@ -165,6 +165,7 @@ void main() {
       when(() => mockMatch.area).thenReturn(area);
       when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
+      when(() => mockMatch.stage).thenReturn('REGULAR_SEASON');
       when(() => mockMatch.status).thenReturn('FINISHED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
@@ -247,6 +248,7 @@ void main() {
       when(() => mockMatch.area).thenReturn(area);
       when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
+      when(() => mockMatch.stage).thenReturn('REGULAR_SEASON');
       when(() => mockMatch.status).thenReturn('IN_PLAY');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
@@ -406,6 +408,7 @@ void main() {
       when(() => mockMatch.area).thenReturn(area);
       when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
+      when(() => mockMatch.stage).thenReturn('REGULAR_SEASON');
       when(() => mockMatch.status).thenReturn('PAUSED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);
@@ -529,6 +532,7 @@ void main() {
       when(() => mockMatch.area).thenReturn(area);
       when(() => mockMatch.competition).thenReturn(league);
       when(() => mockMatch.season).thenReturn(season);
+      when(() => mockMatch.stage).thenReturn('REGULAR_SEASON');
       when(() => mockMatch.status).thenReturn('PAUSED');
       when(() => mockMatch.utcDate).thenReturn(DateTime.now());
       when(() => mockMatch.matchday).thenReturn(5);

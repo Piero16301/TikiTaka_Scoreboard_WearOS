@@ -10,6 +10,7 @@ import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';
 import 'package:tiki_taka_scoreboard_wearos/notifications/notifications.dart';
 import 'package:tiki_taka_scoreboard_wearos/themes/themes.dart';
 import 'package:tiki_taka_scoreboard_wearos/typography/typography.dart';
+import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
@@ -37,34 +38,49 @@ class _SettingsViewState extends State<SettingsView> {
         children: [
           const SizedBox(height: AppVariables.topScaffoldSpacing),
           AppTitleText(title: l10n.titleSettings),
-          ConfigurationSetting(
-            title: l10n.titleLeagues,
-            icon: HugeIcons.strokeRoundedFootball,
-            route: LeaguesPage.routeName,
+          WearOsExpressiveItem(
+            scrollController: _scrollController,
+            child: ConfigurationSetting(
+              title: l10n.titleLeagues,
+              icon: HugeIcons.strokeRoundedFootball,
+              route: LeaguesPage.routeName,
+            ),
           ),
           const SizedBox(height: AppVariables.listSpacing),
-          ConfigurationSetting(
-            title: l10n.titleNotifications,
-            icon: HugeIcons.strokeRoundedNotification01,
-            route: NotificationsPage.routeName,
+          WearOsExpressiveItem(
+            scrollController: _scrollController,
+            child: ConfigurationSetting(
+              title: l10n.titleNotifications,
+              icon: HugeIcons.strokeRoundedNotification01,
+              route: NotificationsPage.routeName,
+            ),
           ),
           const SizedBox(height: AppVariables.listSpacing),
-          ConfigurationSetting(
-            title: l10n.titleLanguage,
-            icon: HugeIcons.strokeRoundedLanguageSkill,
-            route: LanguagesPage.routeName,
+          WearOsExpressiveItem(
+            scrollController: _scrollController,
+            child: ConfigurationSetting(
+              title: l10n.titleLanguage,
+              icon: HugeIcons.strokeRoundedLanguageSkill,
+              route: LanguagesPage.routeName,
+            ),
           ),
           const SizedBox(height: AppVariables.listSpacing),
-          ConfigurationSetting(
-            title: l10n.titleTheme,
-            icon: HugeIcons.strokeRoundedPaintBoard,
-            route: ThemesPage.routeName,
+          WearOsExpressiveItem(
+            scrollController: _scrollController,
+            child: ConfigurationSetting(
+              title: l10n.titleTheme,
+              icon: HugeIcons.strokeRoundedPaintBoard,
+              route: ThemesPage.routeName,
+            ),
           ),
           const SizedBox(height: AppVariables.listSpacing),
-          ConfigurationSetting(
-            title: l10n.titleFont,
-            icon: HugeIcons.strokeRoundedTextFont,
-            route: TypographyPage.routeName,
+          WearOsExpressiveItem(
+            scrollController: _scrollController,
+            child: ConfigurationSetting(
+              title: l10n.titleFont,
+              icon: HugeIcons.strokeRoundedTextFont,
+              route: TypographyPage.routeName,
+            ),
           ),
           const SizedBox(height: AppVariables.listFooterSpacing),
           const AppInfoSettings(),

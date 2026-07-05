@@ -32,7 +32,7 @@ dependencies:
   intl: ^0.20.2
   package_info_plus: ^10.2.0
   shared_preferences: ^2.5.5
-  wear_os_scrollbar: ^0.1.1
+  wear_os_scrollbar: ^0.2.1
 
 dev_dependencies:
   bloc_test: ^10.0.0
