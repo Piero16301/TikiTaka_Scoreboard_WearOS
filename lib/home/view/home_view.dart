@@ -98,16 +98,19 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               'IN_PLAY': 1,
               'PAUSED': 2,
               'SCHEDULED': 3,
-              'TIMED': 4,
+              'FINISHED': 4,
+              'POSTPONED': 5,
+              'SUSPENDED': 6,
+              'CANCELLED': 7,
             };
             final aStatus = a.status;
             final bStatus = b.status;
-            final aOrder = statusOrder[aStatus] ?? 4;
-            final bOrder = statusOrder[bStatus] ?? 4;
+            final aOrder = statusOrder[aStatus] ?? 8;
+            final bOrder = statusOrder[bStatus] ?? 8;
             if (aOrder != bOrder) {
               return aOrder - bOrder;
             }
-            return aStatus.compareTo(bStatus);
+            return a.utcDate!.compareTo(b.utcDate!);
           });
 
         return AppScaffold.scrollable(
