@@ -11,33 +11,33 @@ dependencies:
   auto_size_text: ^3.0.0
   bloc: ^9.2.1
   cached_network_image: ^3.4.1
-  cloud_firestore: ^6.6.0
+  cloud_firestore: ^6.7.1
   device_info_plus: ^13.2.0
   equatable: ^2.1.0
-  firebase_analytics: ^12.4.3
-  firebase_core: ^4.11.0
-  firebase_crashlytics: ^5.2.4
-  firebase_messaging: ^16.4.1
+  firebase_analytics: ^12.4.5
+  firebase_core: ^4.12.1
+  firebase_crashlytics: ^5.2.6
+  firebase_messaging: ^16.4.3
   firebase_performance: ^0.11.4+2
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_cache_manager: ^3.4.1
-  flutter_local_notifications: ^22.0.1
+  flutter_cache_manager: ^3.4.2
+  flutter_local_notifications: ^22.2.0
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.3.0
   get_it: ^9.2.1
   hugeicons: ^1.1.7
   intl: ^0.20.2
-  package_info_plus: ^10.2.0
+  package_info_plus: ^10.2.1
   shared_preferences: ^2.5.5
   wear_os_scrollbar: ^0.2.1
 
 dev_dependencies:
   bloc_test: ^10.0.0
-  build_runner: ^2.15.0
-  fake_cloud_firestore: ^4.1.1
+  build_runner: ^2.15.1
+  fake_cloud_firestore: ^4.2.0
   file: ^7.0.1
   flutter_launcher_icons: ^0.14.4
   flutter_test:
