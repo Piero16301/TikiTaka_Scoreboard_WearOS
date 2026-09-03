@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class AppLinearProgressBar extends StatefulWidget {
   const AppLinearProgressBar({
@@ -29,7 +27,7 @@ class _AppLinearProgressBarState extends State<AppLinearProgressBar>
       vsync: this,
       duration: const Duration(milliseconds: 1000),
     );
-    unawaited(_controller.repeat());
+    _controller.repeat();
   }
 
   @override

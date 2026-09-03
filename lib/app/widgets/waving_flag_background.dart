@@ -1,6 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/widgets/waving_flag_painter.dart';
 
 class WavingFlagBackground extends StatefulWidget {
@@ -26,7 +24,7 @@ class _WavingFlagBackgroundState extends State<WavingFlagBackground>
       vsync: this,
       duration: const Duration(seconds: 5),
     );
-    unawaited(_animationController.repeat());
+    _animationController.repeat();
   }
 
   @override

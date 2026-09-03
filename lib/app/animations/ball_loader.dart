@@ -1,6 +1,5 @@
-import 'dart:async';
 import 'dart:math' as math;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BallLoader extends StatefulWidget {
   const BallLoader({
@@ -31,7 +30,7 @@ class _BallLoaderState extends State<BallLoader>
       vsync: this,
       duration: Duration(seconds: widget.speedInSeconds),
     );
-    unawaited(_controller.repeat());
+    _controller.repeat();
   }
 
   @override
@@ -46,7 +45,7 @@ class _BallLoaderState extends State<BallLoader>
     if (oldWidget.speedInSeconds != widget.speedInSeconds) {
       _controller.duration = Duration(seconds: widget.speedInSeconds);
       if (_controller.isAnimating) {
-        unawaited(_controller.repeat());
+        _controller.repeat();
       }
     }
   }

@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
@@ -188,6 +188,8 @@ class FirebaseNotificationRepository implements NotificationRepository {
         debugPrint('User granted provisional permission');
       case AuthorizationStatus.notDetermined:
         debugPrint('User has not yet made a choice');
+      case AuthorizationStatus.deniedPermanently:
+        debugPrint('User denied permission permanently');
     }
   }
 

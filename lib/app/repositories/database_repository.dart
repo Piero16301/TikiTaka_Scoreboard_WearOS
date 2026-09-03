@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart' hide Table;
+import 'package:material_ui/material_ui.dart' hide Table;
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 abstract class DatabaseRepository {
@@ -443,7 +443,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     required List<String> enabledLeagues,
   }) {
     final nowDate = DateTime.now();
-    // final nowDate = DateTime(2026, 06, 18);
+    // final nowDate = DateTime(2026, 08, 31);
 
     const maxMatchDuration = Duration(hours: 2);
     final startOfDay = DateTime(nowDate.year, nowDate.month, nowDate.day);
