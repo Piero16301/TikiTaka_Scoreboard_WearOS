@@ -18,16 +18,26 @@ async function sendNotification() {
         const token = await getAccessToken();
         const url = 'https://fcm.googleapis.com/v1/projects/tiki-taka-scoreboard/messages:send';
 
+        const matchId = 498957;
+
         const messagePayload = {
             message: {
                 // topic: "all-devices",
-                token: "fCMgJV0ZQvGKnBM8SGHCG0:APA91bFyuAtxau51znP6NuVINPpV8NzZB8Omdbi3wYrZU8yHdd6l8Bas5WGq-BDoBhGfcESsaouePf9yuWbjnW1ulznDspBjMuOP8hF-98-X1dySigpxlbc",
+                token: "dGixPljGTha8RWrlyqA2tN:APA91bGGPj14JslOJCnLiNHgdNT-XbDZaXwiGA-Skexjuu6RJsVUnLwZbra0BV4jrqC55UBrTSAQAb4yMvgivh0YVKzM_bcSN7u0QqqywsK2NvIJ0ChS2-g",
                 notification: {
-                    title: "¡Gol de FC Barcelona! ⚽",
-                    body: "🔴🔵 Barça 4️⃣ - 3️⃣ Real Madrid ⚪⚪",
+                    title: "¡Gol de Barça! ⚽ 🏠",
+                    body: "Barça 6️⃣ - 2️⃣ Real Madrid",
+                },
+                android: {
+                    priority: "high",
+                    collapse_key: `match_${matchId}`,
+                    notification: {
+                        notification_priority: "PRIORITY_MAX",
+                        tag: `match_${matchId}`,
+                    },
                 },
                 data: {
-                    match: "matchId:498957"
+                    match: `matchId:${matchId}`,
                 },
             }
         };
