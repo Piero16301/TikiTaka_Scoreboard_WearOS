@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class CrestImage extends StatelessWidget {

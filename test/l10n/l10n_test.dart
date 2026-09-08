@@ -1,15 +1,20 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 
 void main() {
+  const localizationsDelegates = [
+    AppLocalizations.delegate,
+    ...GlobalMaterialLocalizations.delegates,
+  ];
+
   group('AppLocalizationsX', () {
     testWidgets('l10n returns AppLocalizations instance', (tester) async {
       late BuildContext capturedContext;
 
       await tester.pumpWidget(
         MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -33,7 +38,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('es'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -58,7 +63,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -83,7 +88,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('it'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -109,7 +114,7 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -133,7 +138,7 @@ void main() {
     testWidgets('l10n is accessible in widget build method', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -156,7 +161,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('en'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {
@@ -182,7 +187,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           locale: const Locale('fr'),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localizationsDelegates: localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: Builder(
             builder: (context) {

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
-import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class TypographyView extends StatefulWidget {
   const TypographyView({super.key});
@@ -38,12 +37,9 @@ class _TypographyViewState extends State<TypographyView> {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleFont),
               for (final (index, font) in fonts.indexed) ...[
-                WearOsExpressiveItem(
-                  scrollController: _scrollController,
-                  child: CardFonts(
-                    value: font.value,
-                    label: font.key,
-                  ),
+                CardFonts(
+                  value: font.value,
+                  label: font.key,
                 ),
                 if (index < fonts.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),

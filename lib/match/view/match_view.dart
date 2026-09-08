@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart' hide Table;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart' hide Table;
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class MatchView extends StatefulWidget {
   const MatchView({super.key});
@@ -71,10 +70,7 @@ class _MatchViewState extends State<MatchView> {
               TeamsCardMatch(match: match),
               if (match.referees.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                WearOsExpressiveItem(
-                  scrollController: _scrollController,
-                  child: RefereeCardMatch(referees: match.referees),
-                ),
+                RefereeCardMatch(referees: match.referees),
               ],
               const SizedBox(height: AppVariables.listSpacing),
               CompetitionCardMatch(match: match),
@@ -263,11 +259,10 @@ class TeamsCardMatch extends StatelessWidget {
       name: 'team_clicked',
       parameters: {'team_id': teamId.toString()},
     );
-    unawaited(
-      Navigator.of(context).pushNamed(
-        TeamPage.routeName,
-        arguments: teamId,
-      ),
+
+    Navigator.of(context).pushNamed(
+      TeamPage.routeName,
+      arguments: teamId,
     );
   }
 }
@@ -568,11 +563,10 @@ class _StandingsMatchState extends State<StandingsMatch> {
                               name: 'team_clicked',
                               parameters: {'team_id': row.team.id.toString()},
                             );
-                            unawaited(
-                              Navigator.of(context).pushNamed(
-                                TeamPage.routeName,
-                                arguments: row.team.id,
-                              ),
+
+                            Navigator.of(context).pushNamed(
+                              TeamPage.routeName,
+                              arguments: row.team.id,
                             );
                           },
                           borderRadius: BorderRadius.circular(4),
@@ -677,11 +671,10 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                         'team_id': row.team.id.toString(),
                                       },
                                     );
-                                    unawaited(
-                                      Navigator.of(context).pushNamed(
-                                        TeamPage.routeName,
-                                        arguments: row.team.id,
-                                      ),
+
+                                    Navigator.of(context).pushNamed(
+                                      TeamPage.routeName,
+                                      arguments: row.team.id,
                                     );
                                   },
                                   borderRadius: BorderRadius.circular(4),

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 

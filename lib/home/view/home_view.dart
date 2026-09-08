@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 import 'package:tiki_taka_scoreboard_wearos/settings/settings.dart';
-import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -122,11 +121,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleMatches),
               for (final (index, match) in matches.indexed) ...[
-                WearOsExpressiveItem(
-                  minScale: 0.7,
-                  scrollController: _scrollController,
-                  child: MatchCardHome(match: match),
-                ),
+                MatchCardHome(match: match),
                 if (index < matches.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),
               ],
@@ -261,11 +256,10 @@ class MatchCardHome extends StatelessWidget {
           name: 'match_clicked',
           parameters: {'match_id': match.id.toString()},
         );
-        unawaited(
-          Navigator.of(context).pushNamed(
-            MatchPage.routeName,
-            arguments: match.id,
-          ),
+
+        Navigator.of(context).pushNamed(
+          MatchPage.routeName,
+          arguments: match.id,
         );
       },
       title: match.competition.name,

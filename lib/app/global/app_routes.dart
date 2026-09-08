@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
 import 'package:tiki_taka_scoreboard_wearos/leagues/leagues.dart';

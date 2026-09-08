@@ -1,7 +1,5 @@
-import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/home/home.dart';
 import 'package:tiki_taka_scoreboard_wearos/languages/languages.dart';
@@ -92,11 +90,9 @@ void main() {
           ),
         );
 
-        unawaited(
-          tester
-              .state<NavigatorState>(find.byType(Navigator))
-              .pushNamed('/with_args'),
-        );
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .pushNamed('/with_args');
         await tester.pumpAndSettle();
 
         expect(generatedWithArgs, isA<MatchPage>());
@@ -137,11 +133,9 @@ void main() {
           ),
         );
 
-        unawaited(
-          tester
-              .state<NavigatorState>(find.byType(Navigator))
-              .pushNamed('/with_args'),
-        );
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .pushNamed('/with_args');
         await tester.pumpAndSettle();
 
         expect(generatedWithArgs, isA<TeamPage>());
@@ -182,11 +176,9 @@ void main() {
           ),
         );
 
-        unawaited(
-          tester
-              .state<NavigatorState>(find.byType(Navigator))
-              .pushNamed('/with_args'),
-        );
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .pushNamed('/with_args');
         await tester.pumpAndSettle();
 
         expect(generatedWithArgs, isA<TeamsPage>());

@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/l10n/l10n.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
-import 'package:wear_os_scrollbar/wear_os_scrollbar.dart';
 
 class TeamView extends StatefulWidget {
   const TeamView({super.key});
@@ -66,25 +65,16 @@ class _TeamViewState extends State<TeamView> {
           child: Column(
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
-              WearOsExpressiveItem(
-                scrollController: _scrollController,
-                child: MainInfoTeam(team: team),
-              ),
+              MainInfoTeam(team: team),
               if (team.coach != null && team.coach?.id != 0) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                WearOsExpressiveItem(
-                  scrollController: _scrollController,
-                  child: CoachCardTeam(coach: team.coach!),
-                ),
+                CoachCardTeam(coach: team.coach!),
               ],
               if (team.runningCompetitions != null &&
                   team.runningCompetitions!.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                WearOsExpressiveItem(
-                  scrollController: _scrollController,
-                  child: CompetitionsCardTeam(
-                    competitions: team.runningCompetitions!,
-                  ),
+                CompetitionsCardTeam(
+                  competitions: team.runningCompetitions!,
                 ),
               ],
               if (team.squad?.isNotEmpty ?? false) ...[
@@ -104,10 +94,7 @@ class _TeamViewState extends State<TeamView> {
                 ),
               ],
               const SizedBox(height: AppVariables.listSpacing),
-              WearOsExpressiveItem(
-                scrollController: _scrollController,
-                child: AdditionalInfoTeam(team: team),
-              ),
+              AdditionalInfoTeam(team: team),
               const SizedBox(height: AppVariables.bottomScaffoldSpacing),
             ],
           ),
@@ -148,6 +135,7 @@ class MainInfoTeam extends StatelessWidget {
         const SizedBox(height: 5),
         Text(
           AppFunctions.getTeamTranslatedName(team.name, l10n),
+          textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontVariations: <FontVariation>[
               ...(Theme.of(
