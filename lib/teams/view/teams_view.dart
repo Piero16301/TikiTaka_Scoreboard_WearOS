@@ -97,6 +97,12 @@ class TeamCardTeams extends StatelessWidget {
           name: 'team_toggled',
           parameters: {'team': team.id},
         );
+        final isEnabled = enabledTeams.contains(team.id.toString());
+        if (isEnabled) {
+          notification.unsubscribeFromTopic('team_${team.id}').ignore();
+        } else {
+          notification.subscribeToTopic('team_${team.id}').ignore();
+        }
         database.updateDeviceSettings(
           token: notification.token,
           teamToModify: team.id,

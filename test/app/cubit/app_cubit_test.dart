@@ -49,6 +49,9 @@ void main() {
       when(() => notificationService.initialize()).thenAnswer((_) async {});
       when(() => notificationService.token).thenReturn('');
       when(
+        () => notificationService.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
+      when(
         () => databaseService.getDeviceStream(token: any(named: 'token')),
       ).thenAnswer((_) => const Stream.empty());
 
