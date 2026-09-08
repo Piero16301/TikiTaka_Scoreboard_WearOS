@@ -38,21 +38,15 @@ class _LeaguesViewState extends State<LeaguesView> {
       stream: _leaguesStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold.basic(
-            child: AppError(text: l10n.errorLeagues),
-          );
+          return AppScaffold.basic(child: AppError(text: l10n.errorLeagues));
         }
 
         if (!snapshot.hasData) {
-          return const AppScaffold.basic(
-            child: AppLoader(),
-          );
+          return const AppScaffold.basic(child: AppLoader());
         }
 
         if (snapshot.data!.isEmpty) {
-          return AppScaffold.basic(
-            child: AppEmpty(text: l10n.emptyLeagues),
-          );
+          return AppScaffold.basic(child: AppEmpty(text: l10n.emptyLeagues));
         }
 
         final leagues = snapshot.data!;
@@ -78,10 +72,7 @@ class _LeaguesViewState extends State<LeaguesView> {
 }
 
 class LeagueCardCompetitions extends StatelessWidget {
-  const LeagueCardCompetitions({
-    required this.league,
-    super.key,
-  });
+  const LeagueCardCompetitions({required this.league, super.key});
 
   final League league;
 
@@ -131,9 +122,7 @@ class LeagueCardCompetitions extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               fontVariations: <FontVariation>[
-                                ...(Theme.of(
-                                              context,
-                                            )
+                                ...(Theme.of(context)
                                             .textTheme
                                             .labelMedium
                                             ?.fontVariations ??

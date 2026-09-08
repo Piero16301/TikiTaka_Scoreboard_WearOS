@@ -67,17 +67,11 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
       stream: _matchesStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold.basic(
-            child: AppError(
-              text: l10n.errorMatches,
-            ),
-          );
+          return AppScaffold.basic(child: AppError(text: l10n.errorMatches));
         }
 
         if (!snapshot.hasData) {
-          return const AppScaffold.basic(
-            child: AppLoader(),
-          );
+          return const AppScaffold.basic(child: AppLoader());
         }
 
         if (snapshot.data!.isEmpty) {
@@ -125,13 +119,9 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                 if (index < matches.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),
               ],
-              const SizedBox(
-                height: AppVariables.bottomScaffoldSpacingButton,
-              ),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacingButton),
               const LastUpdateHome(),
-              const SizedBox(
-                height: AppVariables.bottomScaffoldSpacingButton,
-              ),
+              const SizedBox(height: AppVariables.bottomScaffoldSpacingButton),
               AppIconButton(
                 icon: HugeIcons.strokeRoundedSettings01,
                 onPressed: () => _onTapSettings(context),
@@ -157,10 +147,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
 }
 
 class LastUpdateHome extends StatefulWidget {
-  const LastUpdateHome({
-    this.isLoading = false,
-    super.key,
-  });
+  const LastUpdateHome({this.isLoading = false, super.key});
 
   final bool isLoading;
 
@@ -201,10 +188,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
       return Text(
         l10n.updatingMatches,
         textAlign: TextAlign.center,
-        style: const TextStyle(
-          height: 1,
-          fontSize: 10,
-        ),
+        style: const TextStyle(height: 1, fontSize: 10),
       );
     }
 
@@ -223,10 +207,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
         return Text(
           l10n.updatedSecondsAgo(delta.inSeconds),
           textAlign: TextAlign.center,
-          style: const TextStyle(
-            height: 1,
-            fontSize: 10,
-          ),
+          style: const TextStyle(height: 1, fontSize: 10),
         );
       },
     );
@@ -234,10 +215,7 @@ class _LastUpdateHomeState extends State<LastUpdateHome>
 }
 
 class MatchCardHome extends StatelessWidget {
-  const MatchCardHome({
-    required this.match,
-    super.key,
-  });
+  const MatchCardHome({required this.match, super.key});
 
   final Match match;
 
@@ -257,10 +235,9 @@ class MatchCardHome extends StatelessWidget {
           parameters: {'match_id': match.id.toString()},
         );
 
-        Navigator.of(context).pushNamed(
-          MatchPage.routeName,
-          arguments: match.id,
-        );
+        Navigator.of(
+          context,
+        ).pushNamed(MatchPage.routeName, arguments: match.id);
       },
       title: match.competition.name,
       content: Row(
@@ -271,11 +248,7 @@ class MatchCardHome extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
               children: [
-                CrestImage(
-                  crest: match.homeTeam.crest,
-                  height: 50,
-                  width: 50,
-                ),
+                CrestImage(crest: match.homeTeam.crest, height: 50, width: 50),
                 Text(match.homeTeam.tla),
               ],
             ),
@@ -291,11 +264,7 @@ class MatchCardHome extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               spacing: 5,
               children: [
-                CrestImage(
-                  crest: match.awayTeam.crest,
-                  height: 50,
-                  width: 50,
-                ),
+                CrestImage(crest: match.awayTeam.crest, height: 50, width: 50),
                 Text(match.awayTeam.tla),
               ],
             ),
@@ -317,10 +286,7 @@ class MatchCardHome extends StatelessWidget {
           children: [
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                state,
-                style: const TextStyle(fontSize: 60),
-              ),
+              child: Text(state, style: const TextStyle(fontSize: 60)),
             ),
           ],
         ),
@@ -339,10 +305,7 @@ class MatchCardHome extends StatelessWidget {
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                state,
-                style: const TextStyle(fontSize: 10),
-              ),
+              child: Text(state, style: const TextStyle(fontSize: 10)),
             ),
             const SizedBox(height: 5),
             const Padding(
@@ -369,12 +332,7 @@ class MatchCardHome extends StatelessWidget {
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                state,
-                style: const TextStyle(
-                  fontSize: 10,
-                ),
-              ),
+              child: Text(state, style: const TextStyle(fontSize: 10)),
             ),
           ],
         ),

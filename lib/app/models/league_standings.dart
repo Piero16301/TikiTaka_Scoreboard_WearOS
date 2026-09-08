@@ -6,28 +6,20 @@ import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 /// {@endtemplate}
 class LeagueStandings extends Equatable {
   /// {@macro league_standings}
-  const LeagueStandings({
-    required this.leagueId,
-    required this.standings,
-  });
+  const LeagueStandings({required this.leagueId, required this.standings});
 
   /// Crea una instancia de [LeagueStandings] a partir de un [Map] json
   factory LeagueStandings.fromJson(Map<String, dynamic> json) {
     return LeagueStandings(
       leagueId: json['leagueId'] as String? ?? '',
       standings: (json['standings'] as List<dynamic>? ?? [])
-          .map(
-            (e) => Standing.fromJson(e as Map<String, dynamic>? ?? const {}),
-          )
+          .map((e) => Standing.fromJson(e as Map<String, dynamic>? ?? const {}))
           .toList(),
     );
   }
 
   /// Crea una instancia vacía de [LeagueStandings]
-  static const empty = LeagueStandings(
-    leagueId: '',
-    standings: <Standing>[],
-  );
+  static const empty = LeagueStandings(leagueId: '', standings: <Standing>[]);
 
   /// ID de la liga
   final String leagueId;
@@ -36,8 +28,5 @@ class LeagueStandings extends Equatable {
   final List<Standing> standings;
 
   @override
-  List<Object?> get props => [
-    leagueId,
-    standings,
-  ];
+  List<Object?> get props => [leagueId, standings];
 }

@@ -3,9 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AppPage extends StatelessWidget {
-  const AppPage({
-    super.key,
-  });
+  const AppPage({super.key});
 
   @override
   Widget build(BuildContext context) {

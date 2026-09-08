@@ -2,10 +2,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppError extends StatelessWidget {
-  const AppError({
-    required this.text,
-    super.key,
-  });
+  const AppError({required this.text, super.key});
 
   final String text;
 

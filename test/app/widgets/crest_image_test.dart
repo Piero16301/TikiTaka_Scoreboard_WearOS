@@ -237,9 +237,7 @@ void main() {
     testWidgets('renders placeholder when crest is empty', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: CrestImage(crest: ''),
-          ),
+          home: Scaffold(body: CrestImage(crest: '')),
         ),
       );
 
@@ -374,11 +372,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: CrestImage(
-              crest: '',
-              showBackground: true,
-              margin: 4,
-            ),
+            body: CrestImage(crest: '', showBackground: true, margin: 4),
           ),
         ),
       );

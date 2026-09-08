@@ -7,11 +7,7 @@ void main() {
     testWidgets('AppCardData renders its child properly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: AppCardAction(
-              content: Text('Test Card'),
-            ),
-          ),
+          home: Scaffold(body: AppCardAction(content: Text('Test Card'))),
         ),
       );
       expect(find.text('Test Card'), findsOneWidget);
@@ -36,9 +32,7 @@ void main() {
     testWidgets('AppScaffold renders child properly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: AppScaffold.basic(
-            child: Text('Test Scaffold'),
-          ),
+          home: AppScaffold.basic(child: Text('Test Scaffold')),
         ),
       );
       expect(find.text('Test Scaffold'), findsOneWidget);
@@ -47,9 +41,7 @@ void main() {
     testWidgets('CrestImage renders with empty string', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: CrestImage(crest: ''),
-          ),
+          home: Scaffold(body: CrestImage(crest: '')),
         ),
       );
       expect(find.byType(CrestImage), findsOneWidget);
@@ -63,9 +55,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: WavingFlagBackground(
-              colors: [Colors.red, Colors.blue],
-            ),
+            body: WavingFlagBackground(colors: [Colors.red, Colors.blue]),
           ),
         ),
       );

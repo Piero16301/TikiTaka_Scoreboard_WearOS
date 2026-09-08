@@ -37,12 +37,7 @@ void main() {
     test('supports value equality', () {
       expect(
         leagueStandings,
-        equals(
-          const LeagueStandings(
-            leagueId: 'PL',
-            standings: [standing],
-          ),
-        ),
+        equals(const LeagueStandings(leagueId: 'PL', standings: [standing])),
       );
     });
 

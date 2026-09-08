@@ -5,10 +5,7 @@ import 'package:equatable/equatable.dart';
 /// {@endtemplate}
 class Time extends Equatable {
   /// {@macro time}
-  const Time({
-    required this.home,
-    required this.away,
-  });
+  const Time({required this.home, required this.away});
 
   /// Crea una instancia de [Time] a partir de un [Map] json
   factory Time.fromJson(Map<String, dynamic> json) {
@@ -19,10 +16,7 @@ class Time extends Equatable {
   }
 
   /// Empty time
-  static const empty = Time(
-    home: 0,
-    away: 0,
-  );
+  static const empty = Time(home: 0, away: 0);
 
   /// Goles del equipo local
   final int home;
@@ -31,8 +25,5 @@ class Time extends Equatable {
   final int away;
 
   @override
-  List<Object> get props => [
-    home,
-    away,
-  ];
+  List<Object> get props => [home, away];
 }

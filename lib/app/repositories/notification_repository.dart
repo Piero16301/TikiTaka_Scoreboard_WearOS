@@ -7,8 +7,16 @@ import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 abstract class NotificationRepository {
   Future<void> initialize();
   String get token;
+  Future<String?> getToken();
+  Stream<String> get onTokenRefresh;
+  Stream<RemoteMessage> get onMessage;
+  Stream<RemoteMessage> get onMessageOpenedApp;
+  Future<RemoteMessage?> getInitialMessage();
+  Future<void> showNotification(RemoteMessage message);
   Future<void> subscribeToTopic(String topic);
   Future<void> unsubscribeFromTopic(String topic);
+  Future<void> requestPermission();
+  void handleBackgroundMessage(String message);
 }
 
 class MockNotificationRepository implements NotificationRepository {
@@ -19,104 +27,174 @@ class MockNotificationRepository implements NotificationRepository {
   String get token => 'dummy-token';
 
   @override
+  Future<String?> getToken() async => 'dummy-token';
+
+  @override
+  Stream<String> get onTokenRefresh => const Stream.empty();
+
+  @override
+  Stream<RemoteMessage> get onMessage => const Stream.empty();
+
+  @override
+  Stream<RemoteMessage> get onMessageOpenedApp => const Stream.empty();
+
+  @override
+  Future<RemoteMessage?> getInitialMessage() async => null;
+
+  @override
+  Future<void> showNotification(RemoteMessage message) async {}
+
+  @override
   Future<void> subscribeToTopic(String topic) async {}
 
   @override
   Future<void> unsubscribeFromTopic(String topic) async {}
+
+  @override
+  Future<void> requestPermission() async {}
+
+  @override
+  void handleBackgroundMessage(String message) {}
 }
 
 class FirebaseNotificationRepository implements NotificationRepository {
   FirebaseNotificationRepository({
     FirebaseMessaging? messaging,
     FlutterLocalNotificationsPlugin? localNotifications,
+    this._crashService,
   }) : _messaging = messaging ?? FirebaseMessaging.instance,
        _localNotifications =
            localNotifications ?? FlutterLocalNotificationsPlugin();
 
   final FirebaseMessaging _messaging;
   final FlutterLocalNotificationsPlugin _localNotifications;
+  final CrashService? _crashService;
 
   String _token = '';
   bool _isFlutterLocalNotificationsInitialized = false;
 
+  CrashService? get _crash =>
+      _crashService ??
+      (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
+
   @pragma('vm:entry-point')
   static Future<void> firebaseMessagingBackgroundHandler(
-    RemoteMessage message,
-  ) async {
-    final repository =
-        getIt<NotificationRepository>() as FirebaseNotificationRepository;
-    await repository.setupFlutterNotifications();
-    await repository.showNotification(message);
+    RemoteMessage message, {
+    FlutterLocalNotificationsPlugin? localNotifications,
+  }) async {
+    var plugin = localNotifications;
+    if (plugin == null && getIt.isRegistered<NotificationRepository>()) {
+      final repo = getIt<NotificationRepository>();
+      if (repo is FirebaseNotificationRepository) {
+        plugin = repo._localNotifications;
+      }
+    }
+    plugin ??= FlutterLocalNotificationsPlugin();
+
+    final notification = message.notification;
+    final android = message.notification?.android;
+    if (notification != null && android != null) {
+      const channel = AndroidNotificationChannel(
+        'high_importance_channel',
+        'High Importance Notifications',
+        description: 'This channel is used for important notifications.',
+        importance: Importance.high,
+      );
+
+      await plugin
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >()
+          ?.createNotificationChannel(channel);
+
+      await plugin.show(
+        id: notification.hashCode,
+        title: notification.title,
+        body: notification.body,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'high_importance_channel',
+            'High Importance Notifications',
+            channelDescription:
+                'This channel is used for important notifications.',
+            importance: Importance.high,
+            priority: Priority.high,
+            playSound: false,
+            icon: '@mipmap/ic_logo',
+          ),
+        ),
+        payload: (message.data['match'] ?? message.data['matchId'])?.toString(),
+      );
+    }
   }
 
   @override
   Future<void> initialize() async {
     try {
-      await _messaging.getInitialMessage(); // Just to use the instance
       setupBackgroundHandler();
     } on Exception catch (e, stackTrace) {
-      getIt<CrashService>().recordError(
+      _crash?.recordError(
         e,
         stackTrace,
         reason: 'NotificationRepository setupBackgroundHandler error',
       );
     }
 
-    String? token;
     try {
-      final results = await Future.wait([
+      await Future.wait([
         requestPermission(),
-        setupMessageHandlers(),
         setupFlutterNotifications(),
-        _messaging.getToken(),
+        getToken(),
       ]);
-
-      token = results[3] as String?;
-      if (token != null) debugPrint('FCM Token: $token');
     } on Exception catch (e, stackTrace) {
-      getIt<CrashService>().recordError(
+      _crash?.recordError(
         e,
         stackTrace,
         reason: 'NotificationRepository initialize/getToken error',
       );
     }
-
-    if (token != null) {
-      _token = token;
-    } else {
-      getIt<CrashService>().recordError(
-        Exception('FCM token is null'),
-        StackTrace.current,
-        reason: 'NotificationRepository getToken error',
-      );
-      return;
-    }
-
-    final deviceInfo = getIt<DeviceInfoService>();
-    final localStorage = getIt<LocalStorageService>();
-
-    final _ = getIt<DatabaseService>()
-      ..updateDeviceSettings(
-        token: token,
-        deviceInfo: deviceInfo.deviceInfo,
-        language: localStorage.getLanguage(),
-      );
-
-    final topicSubscriptions = <Future<void>>[
-      subscribeToTopic(AppVariables.allDevicesTopic),
-    ];
-
-    if (deviceInfo.deviceInfo.isPhysicalDevice ?? false) {
-      topicSubscriptions.add(subscribeToTopic(AppVariables.wearOSTopic));
-    } else {
-      debugPrint('Running on emulator, not subscribing to WearOS topic');
-    }
-
-    await Future.wait(topicSubscriptions);
   }
 
   @override
   String get token => _token;
+
+  @override
+  Future<String?> getToken() async {
+    try {
+      final token = await _messaging.getToken();
+      if (token != null) {
+        _token = token;
+        debugPrint('FCM Token: $token');
+      } else {
+        _crash?.recordError(
+          Exception('FCM token is null'),
+          StackTrace.current,
+          reason: 'NotificationRepository getToken error',
+        );
+      }
+      return token;
+    } on Exception catch (e, stackTrace) {
+      _crash?.recordError(
+        e,
+        stackTrace,
+        reason: 'NotificationRepository getToken error',
+      );
+      return null;
+    }
+  }
+
+  @override
+  Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
+
+  @override
+  Stream<RemoteMessage> get onMessage => FirebaseMessaging.onMessage;
+
+  @override
+  Stream<RemoteMessage> get onMessageOpenedApp =>
+      FirebaseMessaging.onMessageOpenedApp;
+
+  @override
+  Future<RemoteMessage?> getInitialMessage() => _messaging.getInitialMessage();
 
   Future<void> setupFlutterNotifications() async {
     if (_isFlutterLocalNotificationsInitialized) return;
@@ -151,6 +229,7 @@ class FirebaseNotificationRepository implements NotificationRepository {
     _isFlutterLocalNotificationsInitialized = true;
   }
 
+  @override
   Future<void> showNotification(RemoteMessage message) async {
     final notification = message.notification;
     final android = message.notification?.android;
@@ -171,11 +250,12 @@ class FirebaseNotificationRepository implements NotificationRepository {
             icon: '@mipmap/ic_logo',
           ),
         ),
-        payload: message.data['match'].toString(),
+        payload: (message.data['match'] ?? message.data['matchId'])?.toString(),
       );
     }
   }
 
+  @override
   Future<void> requestPermission() async {
     final settings = await _messaging.requestPermission();
 
@@ -193,28 +273,23 @@ class FirebaseNotificationRepository implements NotificationRepository {
     }
   }
 
-  Future<void> setupMessageHandlers() async {
-    FirebaseMessaging.onMessage.listen(showNotification);
-
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      handleBackgroundMessage(message.data['match'] as String? ?? '');
-    });
-
-    final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) {
-      handleBackgroundMessage(initialMessage.data['match'] as String? ?? '');
-    }
-  }
-
   @visibleForTesting
   void setupBackgroundHandler() {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   }
 
+  @override
   void handleBackgroundMessage(String message) {
     debugPrint('Handling a background message: $message');
     if (message.contains('matchId')) {
       final matchId = int.tryParse(message.split('matchId:')[1]);
+      if (matchId != null) {
+        AppVariables.navigatorKey.currentState
+            ?.pushNamed(MatchPage.routeName, arguments: matchId)
+            .ignore();
+      }
+    } else {
+      final matchId = int.tryParse(message.replaceAll(RegExp(r'[^\d]'), ''));
       if (matchId != null) {
         AppVariables.navigatorKey.currentState
             ?.pushNamed(MatchPage.routeName, arguments: matchId)
@@ -229,7 +304,7 @@ class FirebaseNotificationRepository implements NotificationRepository {
       await _messaging.subscribeToTopic(topic);
       debugPrint('Subscribed to topic: $topic');
     } on Exception catch (e, stackTrace) {
-      getIt<CrashService>().recordError(
+      _crash?.recordError(
         e,
         stackTrace,
         reason: 'NotificationRepository subscribeToTopic error',
@@ -243,7 +318,7 @@ class FirebaseNotificationRepository implements NotificationRepository {
       await _messaging.unsubscribeFromTopic(topic);
       debugPrint('Unsubscribed from topic: $topic');
     } on Exception catch (e, stackTrace) {
-      getIt<CrashService>().recordError(
+      _crash?.recordError(
         e,
         stackTrace,
         reason: 'NotificationRepository unsubscribeFromTopic error',

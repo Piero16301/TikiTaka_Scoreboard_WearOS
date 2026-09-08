@@ -26,9 +26,7 @@ class DatabaseService {
     return _databaseRepository.getMatchStream(matchId: matchId);
   }
 
-  Stream<List<Match>> getMatchesStream({
-    required List<String> enabledLeagues,
-  }) {
+  Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues}) {
     return _databaseRepository.getMatchesStream(enabledLeagues: enabledLeagues);
   }
 
@@ -40,9 +38,7 @@ class DatabaseService {
     return _databaseRepository.getLeaguesStream();
   }
 
-  Stream<LeagueStandings> getStandingsStream({
-    required String leagueId,
-  }) {
+  Stream<LeagueStandings> getStandingsStream({required String leagueId}) {
     return _databaseRepository.getStandingsStream(leagueId: leagueId);
   }
 

@@ -26,12 +26,7 @@ void main() {
     });
 
     test('props are correct', () {
-      expect(packageInfo.props, [
-        'TikiTaka',
-        '1.0.0',
-        '1',
-        now,
-      ]);
+      expect(packageInfo.props, ['TikiTaka', '1.0.0', '1', now]);
     });
 
     test('toJson returns correct map', () {

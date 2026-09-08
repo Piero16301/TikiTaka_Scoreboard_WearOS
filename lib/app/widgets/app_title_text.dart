@@ -29,9 +29,7 @@ class AppTitleText extends StatelessWidget {
           fontSize: AppVariables.titleSize,
           height: AppVariables.titleTextHeight,
           fontVariations: <FontVariation>[
-            ...(Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.fontVariations ??
+            ...(Theme.of(context).textTheme.bodyMedium?.fontVariations ??
                     const <FontVariation>[])
                 .where((v) => v.axis != 'wght'),
             const FontVariation('wght', 700),

@@ -37,10 +37,7 @@ class _TypographyViewState extends State<TypographyView> {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleFont),
               for (final (index, font) in fonts.indexed) ...[
-                CardFonts(
-                  value: font.value,
-                  label: font.key,
-                ),
+                CardFonts(value: font.value, label: font.key),
                 if (index < fonts.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),
               ],
@@ -54,11 +51,7 @@ class _TypographyViewState extends State<TypographyView> {
 }
 
 class CardFonts extends StatelessWidget {
-  const CardFonts({
-    required this.label,
-    required this.value,
-    super.key,
-  });
+  const CardFonts({required this.label, required this.value, super.key});
 
   final String label;
   final String value;
@@ -73,15 +66,9 @@ class CardFonts extends StatelessWidget {
         child: Row(
           spacing: 5,
           children: [
-            SizedBox.square(
-              dimension: 20,
-              child: Radio<String>(value: value),
-            ),
+            SizedBox.square(dimension: 20, child: Radio<String>(value: value)),
             Expanded(
-              child: Text(
-                label,
-                style: TextStyle(fontFamily: value),
-              ),
+              child: Text(label, style: TextStyle(fontFamily: value)),
             ),
           ],
         ),

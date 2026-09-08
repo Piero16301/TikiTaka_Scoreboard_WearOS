@@ -3,10 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
 class MatchPage extends StatelessWidget {
-  const MatchPage({
-    required this.matchId,
-    super.key,
-  });
+  const MatchPage({required this.matchId, super.key});
 
   final int matchId;
 

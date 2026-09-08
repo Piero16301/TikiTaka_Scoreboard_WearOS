@@ -4,10 +4,7 @@ import 'package:tiki_taka_scoreboard_wearos/match/cubit/match_cubit.dart';
 void main() {
   group('MatchState', () {
     test('supports value equality', () {
-      expect(
-        const MatchState(),
-        const MatchState(),
-      );
+      expect(const MatchState(), const MatchState());
     });
 
     test('copyWith works properly', () {

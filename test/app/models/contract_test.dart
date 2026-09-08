@@ -14,10 +14,7 @@ void main() {
     });
 
     test('fromJson works correctly', () {
-      final json = <String, dynamic>{
-        'start': start,
-        'until': until,
-      };
+      final json = <String, dynamic>{'start': start, 'until': until};
 
       expect(
         Contract.fromJson(json),

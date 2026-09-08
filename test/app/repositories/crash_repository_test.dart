@@ -68,18 +68,10 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
-      repository.recordError(
-        exception,
-        stack,
-        fatal: true,
-      );
+      repository.recordError(exception, stack, fatal: true);
 
       verify(
-        () => mockCrashlytics.recordError(
-          exception,
-          stack,
-          fatal: true,
-        ),
+        () => mockCrashlytics.recordError(exception, stack, fatal: true),
       ).called(1);
     });
 
@@ -107,10 +99,7 @@ void main() {
         returnsNormally,
       );
 
-      expect(
-        () => mockRepo.setCustomKey('key', 'val'),
-        returnsNormally,
-      );
+      expect(() => mockRepo.setCustomKey('key', 'val'), returnsNormally);
     });
   });
 }

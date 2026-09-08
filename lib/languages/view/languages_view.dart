@@ -54,11 +54,7 @@ class _LanguagesViewState extends State<LanguagesView> {
 }
 
 class CardLanguages extends StatelessWidget {
-  const CardLanguages({
-    required this.value,
-    required this.label,
-    super.key,
-  });
+  const CardLanguages({required this.value, required this.label, super.key});
 
   final Locale value;
   final String label;
@@ -74,9 +70,7 @@ class CardLanguages extends StatelessWidget {
           children: [
             SizedBox.square(
               dimension: 20,
-              child: IgnorePointer(
-                child: Radio<Locale>(value: value),
-              ),
+              child: IgnorePointer(child: Radio<Locale>(value: value)),
             ),
             Expanded(child: Text(label)),
           ],

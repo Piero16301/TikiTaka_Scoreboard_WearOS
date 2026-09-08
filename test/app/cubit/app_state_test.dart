@@ -5,10 +5,7 @@ import 'package:tiki_taka_scoreboard_wearos/app/cubit/app_cubit.dart';
 void main() {
   group('AppState', () {
     test('supports value equality', () {
-      expect(
-        const AppState(),
-        const AppState(),
-      );
+      expect(const AppState(), const AppState());
     });
 
     test('copyWith works properly', () {

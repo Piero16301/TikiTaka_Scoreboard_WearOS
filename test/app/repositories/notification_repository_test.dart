@@ -1,10 +1,10 @@
-import 'dart:ui';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
+import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
 class MockFirebaseMessaging extends Mock implements FirebaseMessaging {}
 
@@ -45,6 +45,8 @@ class TestFirebaseNotificationRepository
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('FirebaseNotificationRepository', () {
     late MockFirebaseMessaging mockMessaging;
     late MockFlutterLocalNotificationsPlugin mockLocalNotifications;
@@ -61,11 +63,7 @@ void main() {
       registerFallbackValue(FakeNotificationDetails());
       registerFallbackValue(FakeInitializationSettings());
       registerFallbackValue(
-        const AndroidNotificationChannel(
-          'id',
-          'name',
-          description: 'desc',
-        ),
+        const AndroidNotificationChannel('id', 'name', description: 'desc'),
       );
     });
 
@@ -305,16 +303,305 @@ void main() {
         msg,
       );
     });
+
+    test(
+      'showNotification does nothing when notification or android is null',
+      () async {
+        await repository.showNotification(const RemoteMessage());
+        await repository.showNotification(
+          const RemoteMessage(
+            notification: RemoteNotification(title: 'T', body: 'B'),
+          ),
+        );
+
+        verifyNever(
+          () => mockLocalNotifications.show(
+            id: any(named: 'id'),
+            title: any(named: 'title'),
+            body: any(named: 'body'),
+            notificationDetails: any(named: 'notificationDetails'),
+            payload: any(named: 'payload'),
+          ),
+        );
+      },
+    );
+
+    test('getToken records error when token is null', () async {
+      when(() => mockMessaging.getToken()).thenAnswer((_) async => null);
+
+      final token = await repository.getToken();
+      expect(token, isNull);
+
+      verify(
+        () => mockCrashService.recordError(
+          any<Object>(),
+          any<StackTrace?>(),
+          reason: 'NotificationRepository getToken error',
+        ),
+      ).called(1);
+    });
+
+    test('getToken records error when getToken throws', () async {
+      final exception = Exception('Token fetch failed');
+      when(() => mockMessaging.getToken()).thenThrow(exception);
+
+      final token = await repository.getToken();
+      expect(token, isNull);
+
+      verify(
+        () => mockCrashService.recordError(
+          exception,
+          any<StackTrace?>(),
+          reason: 'NotificationRepository getToken error',
+        ),
+      ).called(1);
+    });
+
+    test('streams and getters delegate properly', () async {
+      when(
+        () => mockMessaging.onTokenRefresh,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockMessaging.getInitialMessage(),
+      ).thenAnswer((_) async => null);
+
+      expect(repository.onTokenRefresh, isNotNull);
+      expect(repository.onMessage, isNotNull);
+      expect(repository.onMessageOpenedApp, isNotNull);
+      expect(await repository.getInitialMessage(), isNull);
+    });
+
+    test(
+      'setupFlutterNotifications returns early when already initialized',
+      () async {
+        when(
+          () => mockLocalNotifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >(),
+        ).thenReturn(mockAndroidNotifications);
+        when(
+          () => mockAndroidNotifications.createNotificationChannel(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockLocalNotifications.initialize(
+            settings: any(named: 'settings'),
+            onDidReceiveNotificationResponse: any(
+              named: 'onDidReceiveNotificationResponse',
+            ),
+          ),
+        ).thenAnswer((_) async => true);
+
+        await repository.setupFlutterNotifications();
+        // Second call returns immediately
+        await repository.setupFlutterNotifications();
+        verify(
+          () => mockLocalNotifications.initialize(
+            settings: any(named: 'settings'),
+            onDidReceiveNotificationResponse: any(
+              named: 'onDidReceiveNotificationResponse',
+            ),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'handleBackgroundMessage parses matchId variants and fallback digits',
+      () {
+        expect(
+          () => repository.handleBackgroundMessage('matchId:123'),
+          returnsNormally,
+        );
+        expect(
+          () => repository.handleBackgroundMessage('matchId:invalid'),
+          returnsNormally,
+        );
+        expect(
+          () => repository.handleBackgroundMessage('match_789'),
+          returnsNormally,
+        );
+        expect(
+          () => repository.handleBackgroundMessage('no_digits_here'),
+          returnsNormally,
+        );
+      },
+    );
+
+    test('requestPermission covers deniedPermanently', () async {
+      final settings = MockNotificationSettings();
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.deniedPermanently);
+      when(
+        () => mockMessaging.requestPermission(),
+      ).thenAnswer((_) async => settings);
+
+      await repository.requestPermission();
+    });
+
+    test('firebaseMessagingBackgroundHandler handles messages without '
+        'notifications', () async {
+      await FirebaseNotificationRepository.firebaseMessagingBackgroundHandler(
+        const RemoteMessage(),
+      );
+      await FirebaseNotificationRepository.firebaseMessagingBackgroundHandler(
+        const RemoteMessage(notification: RemoteNotification()),
+      );
+    });
+
+    test('initialize records error if setupBackgroundHandler throws', () async {
+      final errorRepo = ErrorBackgroundHandlerRepo(
+        messaging: mockMessaging,
+        localNotifications: mockLocalNotifications,
+        crashService: mockCrashService,
+      );
+
+      final settings = MockNotificationSettings();
+      when(
+        () => settings.authorizationStatus,
+      ).thenReturn(AuthorizationStatus.authorized);
+      when(
+        () => mockMessaging.requestPermission(),
+      ).thenAnswer((_) async => settings);
+      when(() => mockMessaging.getToken()).thenAnswer((_) async => 't');
+      when(
+        () => mockLocalNotifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >(),
+      ).thenReturn(mockAndroidNotifications);
+      when(
+        () => mockAndroidNotifications.createNotificationChannel(any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => mockLocalNotifications.initialize(
+          settings: any(named: 'settings'),
+          onDidReceiveNotificationResponse: any(
+            named: 'onDidReceiveNotificationResponse',
+          ),
+        ),
+      ).thenAnswer((_) async => true);
+
+      await errorRepo.initialize();
+
+      verify(
+        () => mockCrashService.recordError(
+          any<Object>(),
+          any<StackTrace?>(),
+          reason: 'NotificationRepository setupBackgroundHandler error',
+        ),
+      ).called(1);
+    });
+
+    test('initialize records error when Future.wait throws', () async {
+      when(
+        () => mockMessaging.requestPermission(),
+      ).thenThrow(Exception('Perm failure'));
+      await repository.initialize();
+      verify(
+        () => mockCrashService.recordError(
+          any<Object>(),
+          any<StackTrace?>(),
+          reason: 'NotificationRepository initialize/getToken error',
+        ),
+      ).called(1);
+    });
+
+    test(
+      'setupFlutterNotifications triggers onDidReceiveNotificationResponse',
+      () async {
+        void Function(NotificationResponse)? responseCallback;
+        when(
+          () => mockLocalNotifications
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >(),
+        ).thenReturn(mockAndroidNotifications);
+        when(
+          () => mockAndroidNotifications.createNotificationChannel(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockLocalNotifications.initialize(
+            settings: any(named: 'settings'),
+            onDidReceiveNotificationResponse: any(
+              named: 'onDidReceiveNotificationResponse',
+            ),
+          ),
+        ).thenAnswer((invocation) async {
+          responseCallback =
+              invocation.namedArguments[#onDidReceiveNotificationResponse]
+                  as void Function(NotificationResponse)?;
+          return true;
+        });
+
+        await repository.setupFlutterNotifications();
+        expect(
+          () => responseCallback?.call(
+            const NotificationResponse(
+              notificationResponseType:
+                  NotificationResponseType.selectedNotification,
+              payload: 'matchId:222',
+            ),
+          ),
+          returnsNormally,
+        );
+      },
+    );
+
+    testWidgets(
+      'handleBackgroundMessage navigates when navigator has mounted state',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            navigatorKey: AppVariables.navigatorKey,
+            routes: {
+              MatchPage.routeName: (_) =>
+                  const Scaffold(body: Text('MatchTarget')),
+            },
+            home: const Scaffold(body: Text('HomeTarget')),
+          ),
+        );
+
+        repository.handleBackgroundMessage('matchId:888');
+        await tester.pumpAndSettle();
+        expect(find.text('MatchTarget'), findsOneWidget);
+
+        repository.handleBackgroundMessage('digits_999');
+        await tester.pumpAndSettle();
+      },
+    );
   });
 
   group('MockNotificationRepository', () {
-    test('methods execute without error', () async {
+    test('methods execute without error and provide dummy data', () async {
       final mockRepo = MockNotificationRepository();
 
       expect(mockRepo.initialize(), completes);
       expect(mockRepo.token, 'dummy-token');
+      expect(await mockRepo.getToken(), 'dummy-token');
+      expect(await mockRepo.getInitialMessage(), isNull);
+      expect(mockRepo.onTokenRefresh, emitsDone);
+      expect(mockRepo.onMessage, emitsDone);
+      expect(mockRepo.onMessageOpenedApp, emitsDone);
+
+      await mockRepo.showNotification(const RemoteMessage());
       await mockRepo.subscribeToTopic('topic');
       await mockRepo.unsubscribeFromTopic('topic');
+      await mockRepo.requestPermission();
+      mockRepo.handleBackgroundMessage('random message');
     });
   });
+}
+
+class ErrorBackgroundHandlerRepo extends FirebaseNotificationRepository {
+  ErrorBackgroundHandlerRepo({
+    super.messaging,
+    super.localNotifications,
+    super.crashService,
+  });
+
+  @override
+  void setupBackgroundHandler() =>
+      throw Exception('Setup background handler failed');
 }

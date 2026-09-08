@@ -20,9 +20,7 @@ class Standing extends Equatable {
       type: json['type'] as String? ?? '',
       group: json['group'] != null ? json['group'] as String? : null,
       table: (json['table'] as List<dynamic>? ?? [])
-          .map(
-            (e) => Table.fromJson(e as Map<String, dynamic>? ?? const {}),
-          )
+          .map((e) => Table.fromJson(e as Map<String, dynamic>? ?? const {}))
           .toList(),
     );
   }
@@ -48,10 +46,5 @@ class Standing extends Equatable {
   final List<Table> table;
 
   @override
-  List<Object?> get props => [
-    stage,
-    type,
-    group,
-    table,
-  ];
+  List<Object?> get props => [stage, type, group, table];
 }

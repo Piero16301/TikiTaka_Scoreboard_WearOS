@@ -92,9 +92,7 @@ void main() {
       },
       build: AppCubit.new,
       act: (cubit) => cubit.initialize(),
-      expect: () => [
-        const AppState(),
-      ],
+      expect: () => [const AppState()],
       verify: (_) {
         verify(
           () => localStorageService.saveLanguage(
@@ -132,9 +130,7 @@ void main() {
       },
       build: AppCubit.new,
       act: (cubit) => cubit.changeLanguage(language: const Locale('es', 'ES')),
-      expect: () => [
-        const AppState(language: Locale('es', 'ES')),
-      ],
+      expect: () => [const AppState(language: Locale('es', 'ES'))],
       verify: (_) {
         verify(
           () => localStorageService.saveLanguage(
@@ -161,9 +157,7 @@ void main() {
       },
       build: AppCubit.new,
       act: (cubit) => cubit.changeBaseColor(baseColor: const Color(0xff000000)),
-      expect: () => [
-        const AppState(baseColor: Color(0xff000000)),
-      ],
+      expect: () => [const AppState(baseColor: Color(0xff000000))],
       verify: (_) {
         verify(
           () => localStorageService.saveBaseColor(
@@ -184,9 +178,7 @@ void main() {
       },
       build: AppCubit.new,
       act: (cubit) => cubit.changeFontFamily(fontFamily: 'Roboto'),
-      expect: () => [
-        const AppState(fontFamily: 'Roboto'),
-      ],
+      expect: () => [const AppState(fontFamily: 'Roboto')],
     );
 
     blocTest<AppCubit, AppState>(
@@ -219,10 +211,7 @@ void main() {
       },
       build: AppCubit.new,
       act: (cubit) => cubit.initialize(),
-      expect: () => [
-        const AppState(),
-        AppState(device: Device.empty),
-      ],
+      expect: () => [const AppState(), AppState(device: Device.empty)],
     );
   });
 }

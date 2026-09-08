@@ -31,10 +31,10 @@ void main() {
         repository.saveEnabledLeague(league: 'PL', enabled: true);
 
         verify(
-          () => mockPrefs.setStringList(
-            LocalStorageRepository.kUserLeagues,
-            ['CL', 'PL'],
-          ),
+          () => mockPrefs.setStringList(LocalStorageRepository.kUserLeagues, [
+            'CL',
+            'PL',
+          ]),
         ).called(1);
       });
 
@@ -52,10 +52,9 @@ void main() {
         repository.saveEnabledLeague(league: 'PL', enabled: false);
 
         verify(
-          () => mockPrefs.setStringList(
-            LocalStorageRepository.kUserLeagues,
-            ['CL'],
-          ),
+          () => mockPrefs.setStringList(LocalStorageRepository.kUserLeagues, [
+            'CL',
+          ]),
         ).called(1);
       });
 
@@ -73,10 +72,8 @@ void main() {
     group('Language', () {
       test('saveLanguage formats correctly', () {
         when(
-          () => mockPrefs.setString(
-            LocalStorageRepository.kUserLanguage,
-            any(),
-          ),
+          () =>
+              mockPrefs.setString(LocalStorageRepository.kUserLanguage, any()),
         ).thenAnswer((_) async => true);
 
         repository.saveLanguage(language: const Locale('en', 'US'));
@@ -113,19 +110,15 @@ void main() {
     group('BaseColor', () {
       test('saveBaseColor uses ColorHelper name', () {
         when(
-          () => mockPrefs.setString(
-            LocalStorageRepository.kUserBaseColor,
-            any(),
-          ),
+          () =>
+              mockPrefs.setString(LocalStorageRepository.kUserBaseColor, any()),
         ).thenAnswer((_) async => true);
 
         repository.saveBaseColor(baseColor: Colors.red);
 
         verify(
-          () => mockPrefs.setString(
-            LocalStorageRepository.kUserBaseColor,
-            'RED',
-          ),
+          () =>
+              mockPrefs.setString(LocalStorageRepository.kUserBaseColor, 'RED'),
         ).called(1);
       });
 
@@ -196,10 +189,7 @@ void main() {
         returnsNormally,
       );
       expect(mock.getLanguage(), isA<Locale>());
-      expect(
-        () => mock.saveBaseColor(baseColor: Colors.red),
-        returnsNormally,
-      );
+      expect(() => mock.saveBaseColor(baseColor: Colors.red), returnsNormally);
       expect(mock.getBaseColor(), isA<Color>());
       expect(
         () => mock.saveFontFamily(fontFamily: 'OpenSans'),

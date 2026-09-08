@@ -35,10 +35,5 @@ class AppPackageInfo extends Equatable {
   final DateTime updateTime;
 
   @override
-  List<Object> get props => [
-    appName,
-    version,
-    buildNumber,
-    updateTime,
-  ];
+  List<Object> get props => [appName, version, buildNumber, updateTime];
 }

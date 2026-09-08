@@ -2,11 +2,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 
 class AppIconButton extends StatelessWidget {
-  const AppIconButton({
-    required this.icon,
-    this.onPressed,
-    super.key,
-  });
+  const AppIconButton({required this.icon, this.onPressed, super.key});
 
   final void Function()? onPressed;
   final List<List<dynamic>>? icon;

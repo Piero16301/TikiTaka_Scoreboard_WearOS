@@ -83,7 +83,7 @@ class AppCubit extends Cubit<AppState> {
   @override
   Future<void> close() async {
     await _deviceSubscription?.cancel();
-    return super.close();
+    return await super.close();
   }
 
   void changeLanguage({required Locale language}) {

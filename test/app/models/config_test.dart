@@ -20,10 +20,7 @@ void main() {
         'lastUpdate': Timestamp.fromDate(date),
       };
 
-      expect(
-        Config.fromJson(json),
-        Config(id: id, lastUpdate: date.toLocal()),
-      );
+      expect(Config.fromJson(json), Config(id: id, lastUpdate: date.toLocal()));
     });
   });
 }
