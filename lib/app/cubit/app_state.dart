@@ -28,10 +28,5 @@ class AppState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-    baseColor,
-    language,
-    fontFamily,
-    device,
-  ];
+  List<Object?> get props => [baseColor, language, fontFamily, device];
 }

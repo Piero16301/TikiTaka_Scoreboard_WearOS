@@ -27,21 +27,16 @@ class AppFilledButton extends StatelessWidget {
             color ?? Theme.of(context).colorScheme.primaryContainer,
         padding:
             innerPadding ??
-            const EdgeInsets.symmetric(
-              vertical: 18,
-              horizontal: 16,
-            ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+            const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       icon: icon != null && !isOnlyIcon ? icon : null,
       label: label != null
           ? Text(
               label ?? '',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: Colors.white),
             )
           : icon!,
     );

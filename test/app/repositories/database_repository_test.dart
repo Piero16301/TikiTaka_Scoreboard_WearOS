@@ -15,10 +15,7 @@ void main() {
     });
 
     test('updateDeviceSettings stores data in firestore', () async {
-      const deviceInfo = AppDeviceInfo(
-        id: '123',
-        model: 'test-model',
-      );
+      const deviceInfo = AppDeviceInfo(id: '123', model: 'test-model');
 
       repository.updateDeviceSettings(
         token: 'test-token',

@@ -23,12 +23,7 @@ class Area extends Equatable {
   }
 
   /// Empty area
-  static const empty = Area(
-    id: 0,
-    name: '',
-    code: '',
-    flag: '',
-  );
+  static const empty = Area(id: 0, name: '', code: '', flag: '');
 
   /// Id del área
   final int id;
@@ -43,10 +38,5 @@ class Area extends Equatable {
   final String flag;
 
   @override
-  List<Object?> get props => [
-    id,
-    name,
-    code,
-    flag,
-  ];
+  List<Object?> get props => [id, name, code, flag];
 }

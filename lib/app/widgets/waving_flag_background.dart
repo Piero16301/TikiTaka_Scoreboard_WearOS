@@ -2,10 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/widgets/waving_flag_painter.dart';
 
 class WavingFlagBackground extends StatefulWidget {
-  const WavingFlagBackground({
-    required this.colors,
-    super.key,
-  });
+  const WavingFlagBackground({required this.colors, super.key});
 
   final List<Color> colors;
 

@@ -27,9 +27,8 @@ class MockDeviceInfoRepository implements DeviceInfoRepository {
 }
 
 class PlusDeviceInfoRepository implements DeviceInfoRepository {
-  PlusDeviceInfoRepository({
-    DeviceInfoPlugin? deviceInfoPlugin,
-  }) : _deviceInfoPlugin = deviceInfoPlugin ?? DeviceInfoPlugin();
+  PlusDeviceInfoRepository({DeviceInfoPlugin? deviceInfoPlugin})
+    : _deviceInfoPlugin = deviceInfoPlugin ?? DeviceInfoPlugin();
 
   final DeviceInfoPlugin _deviceInfoPlugin;
   late AndroidDeviceInfo _androidInfo;

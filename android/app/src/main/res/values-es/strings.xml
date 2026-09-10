@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tiki-Taka</string>
+    <string name="notification_goal_title">¡Gol de %1$s! %2$s</string>
+    <string name="notification_match_body">%1$s %2$s - %3$s %4$s</string>
+    <string name="notification_match_status_timed">¡El partido está PROGRAMADO! ⏱️</string>
+    <string name="notification_match_status_scheduled">¡El partido está PROGRAMADO! 🗓️</string>
+    <string name="notification_match_status_live">¡El partido está EN VIVO! 🔴</string>
+    <string name="notification_match_status_in_play">¡El partido está EN JUEGO! 🟢</string>
+    <string name="notification_match_status_paused">¡El partido está PAUSADO! ⏸️</string>
+    <string name="notification_match_status_finished">¡El partido está FINALIZADO! ✅</string>
+    <string name="notification_match_status_postponed">¡El partido está POSPUESTO! 📅</string>
+    <string name="notification_match_status_suspended">¡El partido está SUSPENDIDO! ⛔</string>
+    <string name="notification_match_status_cancelled">¡El partido está CANCELADO! ❌</string>
+    <string name="notification_match_status_unknown">¡El partido está %1$s! ⏳</string>
+</resources>

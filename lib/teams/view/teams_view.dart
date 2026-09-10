@@ -41,21 +41,15 @@ class _TeamsViewState extends State<TeamsView> {
       stream: _teamsStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold.basic(
-            child: AppError(text: l10n.errorTeams),
-          );
+          return AppScaffold.basic(child: AppError(text: l10n.errorTeams));
         }
 
         if (!snapshot.hasData) {
-          return const AppScaffold.basic(
-            child: AppLoader(),
-          );
+          return const AppScaffold.basic(child: AppLoader());
         }
 
         if (snapshot.data!.isEmpty) {
-          return AppScaffold.basic(
-            child: AppEmpty(text: l10n.emptyTeams),
-          );
+          return AppScaffold.basic(child: AppEmpty(text: l10n.emptyTeams));
         }
 
         final teams = snapshot.data!;
@@ -103,6 +97,12 @@ class TeamCardTeams extends StatelessWidget {
           name: 'team_toggled',
           parameters: {'team': team.id},
         );
+        final isEnabled = enabledTeams.contains(team.id.toString());
+        if (isEnabled) {
+          notification.unsubscribeFromTopic('team_${team.id}').ignore();
+        } else {
+          notification.subscribeToTopic('team_${team.id}').ignore();
+        }
         database.updateDeviceSettings(
           token: notification.token,
           teamToModify: team.id,
@@ -145,9 +145,7 @@ class TeamCardTeams extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               fontVariations: <FontVariation>[
-                                ...(Theme.of(
-                                              context,
-                                            )
+                                ...(Theme.of(context)
                                             .textTheme
                                             .labelMedium
                                             ?.fontVariations ??

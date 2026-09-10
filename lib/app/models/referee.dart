@@ -35,10 +35,5 @@ class Referee extends Equatable {
   final String nationality;
 
   @override
-  List<Object> get props => [
-    id,
-    name,
-    type,
-    nationality,
-  ];
+  List<Object> get props => [id, name, type, nationality];
 }

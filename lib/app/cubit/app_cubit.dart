@@ -68,6 +68,9 @@ class AppCubit extends Cubit<AppState> {
           .listen(
             (device) {
               emit(state.copyWith(device: device));
+              for (final teamId in device.enabledTeams) {
+                notification.subscribeToTopic('team_$teamId').ignore();
+              }
             },
             onError: (Object error, StackTrace stackTrace) {
               getIt<CrashService>().recordError(
@@ -83,7 +86,7 @@ class AppCubit extends Cubit<AppState> {
   @override
   Future<void> close() async {
     await _deviceSubscription?.cancel();
-    return super.close();
+    return await super.close();
   }
 
   void changeLanguage({required Locale language}) {

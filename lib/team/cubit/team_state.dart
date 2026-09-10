@@ -1,22 +1,14 @@
 part of 'team_cubit.dart';
 
 class TeamState extends Equatable {
-  const TeamState({
-    this.teamId = 0,
-  });
+  const TeamState({this.teamId = 0});
 
   final int teamId;
 
-  TeamState copyWith({
-    int? teamId,
-  }) {
-    return TeamState(
-      teamId: teamId ?? this.teamId,
-    );
+  TeamState copyWith({int? teamId}) {
+    return TeamState(teamId: teamId ?? this.teamId);
   }
 
   @override
-  List<Object> get props => [
-    teamId,
-  ];
+  List<Object> get props => [teamId];
 }

@@ -56,6 +56,12 @@ void main() {
       when(() => appCubit.state).thenReturn(AppState(device: Device.empty));
       when(() => mockNotification.token).thenReturn('mock_token');
       when(
+        () => mockNotification.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => mockNotification.unsubscribeFromTopic(any()),
+      ).thenAnswer((_) async {});
+      when(
         () => mockAnalytics.logEvent(
           name: any(named: 'name'),
           parameters: any(named: 'parameters'),

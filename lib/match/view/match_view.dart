@@ -42,21 +42,15 @@ class _MatchViewState extends State<MatchView> {
       stream: _matchStream,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return AppScaffold.basic(
-            child: AppError(text: l10n.errorMatch),
-          );
+          return AppScaffold.basic(child: AppError(text: l10n.errorMatch));
         }
 
         if (!snapshot.hasData) {
-          return const AppScaffold.basic(
-            child: AppLoader(),
-          );
+          return const AppScaffold.basic(child: AppLoader());
         }
 
         if (snapshot.data == null) {
-          return AppScaffold.basic(
-            child: AppEmpty(text: l10n.notFoundMatch),
-          );
+          return AppScaffold.basic(child: AppEmpty(text: l10n.notFoundMatch));
         }
 
         final match = snapshot.data!;
@@ -86,10 +80,7 @@ class _MatchViewState extends State<MatchView> {
 }
 
 class TeamsCardMatch extends StatelessWidget {
-  const TeamsCardMatch({
-    required this.match,
-    super.key,
-  });
+  const TeamsCardMatch({required this.match, super.key});
 
   final Match match;
 
@@ -173,9 +164,9 @@ class TeamsCardMatch extends StatelessWidget {
               Expanded(
                 child: Text(
                   match.score.halfTime.home.toString(),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    height: 1,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(height: 1),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -183,18 +174,18 @@ class TeamsCardMatch extends StatelessWidget {
                 width: 30,
                 child: Text(
                   l10n.halfTimeAbbr,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    height: 1,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelSmall?.copyWith(height: 1),
                   textAlign: TextAlign.center,
                 ),
               ),
               Expanded(
                 child: Text(
                   match.score.halfTime.away.toString(),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    height: 1,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(height: 1),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -224,9 +215,9 @@ class TeamsCardMatch extends StatelessWidget {
                 width: 30,
                 child: Text(
                   l10n.fullTimeAbbr,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    height: 1,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(height: 1),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -260,18 +251,12 @@ class TeamsCardMatch extends StatelessWidget {
       parameters: {'team_id': teamId.toString()},
     );
 
-    Navigator.of(context).pushNamed(
-      TeamPage.routeName,
-      arguments: teamId,
-    );
+    Navigator.of(context).pushNamed(TeamPage.routeName, arguments: teamId);
   }
 }
 
 class RefereeCardMatch extends StatelessWidget {
-  const RefereeCardMatch({
-    required this.referees,
-    super.key,
-  });
+  const RefereeCardMatch({required this.referees, super.key});
 
   final List<Referee> referees;
 
@@ -300,9 +285,7 @@ class RefereeCardMatch extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               fontVariations: <FontVariation>[
-                                ...(Theme.of(
-                                              context,
-                                            )
+                                ...(Theme.of(context)
                                             .textTheme
                                             .labelMedium
                                             ?.fontVariations ??
@@ -329,10 +312,7 @@ class RefereeCardMatch extends StatelessWidget {
 }
 
 class CompetitionCardMatch extends StatelessWidget {
-  const CompetitionCardMatch({
-    required this.match,
-    super.key,
-  });
+  const CompetitionCardMatch({required this.match, super.key});
 
   final Match match;
 
@@ -405,9 +385,7 @@ class CompetitionCardMatch extends StatelessWidget {
                       '-${match.season.endDate!.year}',
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontVariations: <FontVariation>[
-                ...(Theme.of(
-                          context,
-                        ).textTheme.labelSmall?.fontVariations ??
+                ...(Theme.of(context).textTheme.labelSmall?.fontVariations ??
                         const <FontVariation>[])
                     .where((v) => v.axis != 'wght'),
                 const FontVariation('wght', 700),
@@ -451,10 +429,7 @@ class CompetitionCardMatch extends StatelessWidget {
 }
 
 class StandingsMatch extends StatefulWidget {
-  const StandingsMatch({
-    required this.match,
-    super.key,
-  });
+  const StandingsMatch({required this.match, super.key});
 
   final Match match;
 
@@ -536,9 +511,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                 ),
                 ...leagueStandings.standings.first.table.map(
                   (row) => Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 2.5,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 2.5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       color: getRowStandingColor(row, widget.match),
@@ -583,15 +556,9 @@ class _StandingsMatchState extends State<StandingsMatch> {
                             style: const TextStyle(fontSize: 12),
                           ),
                         ),
-                        PointTextMatch(
-                          value: row.playedGames,
-                        ),
-                        PointTextMatch(
-                          value: row.goalDifference,
-                        ),
-                        PointTextMatch(
-                          value: row.points,
-                        ),
+                        PointTextMatch(value: row.playedGames),
+                        PointTextMatch(value: row.goalDifference),
+                        PointTextMatch(value: row.points),
                       ],
                     ),
                   ),
@@ -642,9 +609,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
                         ),
                         ...standing.table.map(
                           (row) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 2.5,
-                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 2.5),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: getRowStandingColor(row, widget.match),
@@ -691,15 +656,9 @@ class _StandingsMatchState extends State<StandingsMatch> {
                                     style: const TextStyle(fontSize: 12),
                                   ),
                                 ),
-                                PointTextMatch(
-                                  value: row.playedGames,
-                                ),
-                                PointTextMatch(
-                                  value: row.goalDifference,
-                                ),
-                                PointTextMatch(
-                                  value: row.points,
-                                ),
+                                PointTextMatch(value: row.playedGames),
+                                PointTextMatch(value: row.goalDifference),
+                                PointTextMatch(value: row.points),
                               ],
                             ),
                           ),
@@ -726,10 +685,7 @@ class _StandingsMatchState extends State<StandingsMatch> {
 }
 
 class PointTextMatch extends StatelessWidget {
-  const PointTextMatch({
-    required this.value,
-    super.key,
-  });
+  const PointTextMatch({required this.value, super.key});
 
   final int value;
 

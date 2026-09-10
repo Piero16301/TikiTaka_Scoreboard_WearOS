@@ -84,12 +84,4 @@ class Device extends Equatable {
   ];
 }
 
-enum Platform {
-  android,
-  ios,
-  web,
-  macOS,
-  windows,
-  linux,
-  wearOS,
-}
+enum Platform { android, ios, web, macOS, windows, linux, wearOS }

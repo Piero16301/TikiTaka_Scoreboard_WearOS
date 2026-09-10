@@ -38,11 +38,7 @@ void main() {
         service.recordError(exception, stackTrace);
 
         verify(
-          () => mockRepository.recordError(
-            exception,
-            stackTrace,
-            fatal: false,
-          ),
+          () => mockRepository.recordError(exception, stackTrace, fatal: false),
         ).called(1);
       },
     );

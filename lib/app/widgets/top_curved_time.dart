@@ -50,9 +50,7 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
       fontVariations: <FontVariation>[
-        ...(Theme.of(
-                  context,
-                ).textTheme.labelLarge?.fontVariations ??
+        ...(Theme.of(context).textTheme.labelLarge?.fontVariations ??
                 const <FontVariation>[])
             .where((v) => v.axis != 'wght'),
         const FontVariation('wght', 700),
@@ -97,9 +95,7 @@ class _CurvedTextPainter extends CustomPainter {
     final radius = this.radius;
     canvas.translate(size.width / 2, radius + 12);
 
-    final textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
 
     final chars = text.split('');
     final charAngles = <double>[];

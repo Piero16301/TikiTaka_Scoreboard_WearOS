@@ -3,10 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/team/team.dart';
 
 class TeamPage extends StatelessWidget {
-  const TeamPage({
-    required this.teamId,
-    super.key,
-  });
+  const TeamPage({required this.teamId, super.key});
 
   final int teamId;
 

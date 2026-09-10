@@ -41,9 +41,7 @@ class _NotificationsViewState extends State<NotificationsView> {
         }
 
         if (!snapshot.hasData) {
-          return const AppScaffold.basic(
-            child: AppLoader(),
-          );
+          return const AppScaffold.basic(child: AppLoader());
         }
 
         if (snapshot.data!.isEmpty) {
@@ -75,10 +73,7 @@ class _NotificationsViewState extends State<NotificationsView> {
 }
 
 class LeagueCardNotifications extends StatelessWidget {
-  const LeagueCardNotifications({
-    required this.league,
-    super.key,
-  });
+  const LeagueCardNotifications({required this.league, super.key});
 
   final League league;
 
@@ -86,10 +81,9 @@ class LeagueCardNotifications extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppCardAction(
       innerPadding: EdgeInsets.zero,
-      onPressed: () => Navigator.of(context).pushNamed(
-        TeamsPage.routeName,
-        arguments: league.id,
-      ),
+      onPressed: () => Navigator.of(
+        context,
+      ).pushNamed(TeamsPage.routeName, arguments: league.id),
       content: SizedBox(
         height: 48,
         child: Row(
@@ -109,9 +103,7 @@ class LeagueCardNotifications extends StatelessWidget {
                         style: Theme.of(context).textTheme.labelMedium
                             ?.copyWith(
                               fontVariations: <FontVariation>[
-                                ...(Theme.of(
-                                              context,
-                                            )
+                                ...(Theme.of(context)
                                             .textTheme
                                             .labelMedium
                                             ?.fontVariations ??

@@ -15,10 +15,7 @@ class LocalStorageService {
     performance.stopTrace(trace);
   }
 
-  void saveEnabledLeague({
-    required String league,
-    required bool enabled,
-  }) {
+  void saveEnabledLeague({required String league, required bool enabled}) {
     _localStorageRepository.saveEnabledLeague(league: league, enabled: enabled);
   }
 

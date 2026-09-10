@@ -5,12 +5,7 @@ import 'package:equatable/equatable.dart';
 /// {@endtemplate}
 class Odds extends Equatable {
   /// {@macro odds}
-  const Odds({
-    this.homeWin,
-    this.draw,
-    this.awayWin,
-    this.message = '',
-  });
+  const Odds({this.homeWin, this.draw, this.awayWin, this.message = ''});
 
   /// Crea una instancia de [Odds] a partir de un [Map] json
   factory Odds.fromJson(Map<String, dynamic> json) {
@@ -27,11 +22,7 @@ class Odds extends Equatable {
   }
 
   /// Empty odds
-  static const empty = Odds(
-    homeWin: 0,
-    draw: 0,
-    awayWin: 0,
-  );
+  static const empty = Odds(homeWin: 0, draw: 0, awayWin: 0);
 
   /// Cuota para el equipo local
   final double? homeWin;
@@ -46,10 +37,5 @@ class Odds extends Equatable {
   final String message;
 
   @override
-  List<Object?> get props => [
-    homeWin,
-    draw,
-    awayWin,
-    message,
-  ];
+  List<Object?> get props => [homeWin, draw, awayWin, message];
 }

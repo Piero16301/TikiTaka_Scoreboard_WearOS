@@ -100,16 +100,9 @@ class ConfigurationSetting extends StatelessWidget {
         child: Row(
           spacing: 5,
           children: [
-            HugeIcon(
-              icon: icon,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            HugeIcon(icon: icon, color: Theme.of(context).colorScheme.primary),
             Expanded(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
           ],
         ),
@@ -133,9 +126,7 @@ class AppInfoSettings extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.fontVariations ??
+              ...(Theme.of(context).textTheme.bodyMedium?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),

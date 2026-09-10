@@ -37,10 +37,7 @@ class _ThemesViewState extends State<ThemesView> {
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               AppTitleText(title: l10n.titleTheme),
               for (final (index, color) in colors.indexed) ...[
-                CardThemes(
-                  value: color.value,
-                  label: color.key,
-                ),
+                CardThemes(value: color.value, label: color.key),
                 if (index < colors.length - 1)
                   const SizedBox(height: AppVariables.listSpacing),
               ],
@@ -54,11 +51,7 @@ class _ThemesViewState extends State<ThemesView> {
 }
 
 class CardThemes extends StatelessWidget {
-  const CardThemes({
-    required this.value,
-    required this.label,
-    super.key,
-  });
+  const CardThemes({required this.value, required this.label, super.key});
 
   final Color value;
   final String label;
@@ -78,9 +71,7 @@ class CardThemes extends StatelessWidget {
           children: [
             SizedBox.square(
               dimension: 20,
-              child: IgnorePointer(
-                child: Radio<Color>(value: value),
-              ),
+              child: IgnorePointer(child: Radio<Color>(value: value)),
             ),
             Container(
               width: 20,

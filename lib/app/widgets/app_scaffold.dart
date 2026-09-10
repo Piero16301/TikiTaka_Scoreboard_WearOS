@@ -73,10 +73,7 @@ class AppScaffold extends StatelessWidget {
 }
 
 class _RouteAwareScrollReset extends StatefulWidget {
-  const _RouteAwareScrollReset({
-    required this.controller,
-    required this.child,
-  });
+  const _RouteAwareScrollReset({required this.controller, required this.child});
 
   final ScrollController controller;
   final Widget child;

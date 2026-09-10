@@ -3,11 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 
 class AppEmpty extends StatelessWidget {
-  const AppEmpty({
-    required this.text,
-    this.onPressedSettings,
-    super.key,
-  });
+  const AppEmpty({required this.text, this.onPressedSettings, super.key});
 
   final String text;
   final void Function()? onPressedSettings;

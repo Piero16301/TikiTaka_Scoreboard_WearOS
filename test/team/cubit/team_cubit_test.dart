@@ -12,9 +12,7 @@ void main() {
       'emits correct state when initialize is called',
       build: TeamCubit.new,
       act: (cubit) => cubit.initialize(teamId: 42),
-      expect: () => [
-        const TeamState(teamId: 42),
-      ],
+      expect: () => [const TeamState(teamId: 42)],
     );
   });
 }

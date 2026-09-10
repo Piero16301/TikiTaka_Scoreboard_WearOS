@@ -14,15 +14,9 @@ void main() {
     });
 
     test('fromJson works correctly', () {
-      final json = <String, dynamic>{
-        'home': home,
-        'away': away,
-      };
+      final json = <String, dynamic>{'home': home, 'away': away};
 
-      expect(
-        Time.fromJson(json),
-        const Time(home: home, away: away),
-      );
+      expect(Time.fromJson(json), const Time(home: home, away: away));
     });
 
     test('empty time has correct default values', () {

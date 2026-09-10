@@ -56,11 +56,5 @@ class Season extends Equatable {
   final Team? winner;
 
   @override
-  List<Object?> get props => [
-    id,
-    startDate,
-    endDate,
-    currentMatchday,
-    winner,
-  ];
+  List<Object?> get props => [id, startDate, endDate, currentMatchday, winner];
 }

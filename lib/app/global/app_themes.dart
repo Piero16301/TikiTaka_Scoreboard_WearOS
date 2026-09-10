@@ -13,12 +13,10 @@ class AppThemes {
     return ThemeData(
       textTheme: ThemeData.dark().textTheme
           .apply(fontFamily: fontFamily)
-          .applyFontVariations(
-            const <FontVariation>[
-              FontVariation('ROND', 100),
-              FontVariation('wght', 500),
-            ],
-          ),
+          .applyFontVariations(const <FontVariation>[
+            FontVariation('ROND', 100),
+            FontVariation('wght', 500),
+          ]),
       useMaterial3: true,
       visualDensity: VisualDensity.compact,
       brightness: Brightness.dark,
@@ -30,9 +28,7 @@ class AppThemes {
       ),
       cardTheme: CardThemeData(
         color: colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         margin: EdgeInsets.zero,
       ),
     );

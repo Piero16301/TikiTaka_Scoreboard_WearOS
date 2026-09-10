@@ -4,10 +4,7 @@ import 'package:tiki_taka_scoreboard_wearos/team/cubit/team_cubit.dart';
 void main() {
   group('TeamState', () {
     test('supports value equality', () {
-      expect(
-        const TeamState(),
-        const TeamState(),
-      );
+      expect(const TeamState(), const TeamState());
     });
 
     test('copyWith works properly', () {

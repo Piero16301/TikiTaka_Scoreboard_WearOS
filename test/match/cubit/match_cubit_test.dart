@@ -12,9 +12,7 @@ void main() {
       'emits correct state when initialize is called',
       build: MatchCubit.new,
       act: (cubit) => cubit.initialize(matchId: 42),
-      expect: () => [
-        const MatchState(matchId: 42),
-      ],
+      expect: () => [const MatchState(matchId: 42)],
     );
   });
 }

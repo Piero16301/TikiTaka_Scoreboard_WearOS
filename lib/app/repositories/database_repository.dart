@@ -13,14 +13,10 @@ abstract class DatabaseRepository {
     List<String>? enabledTeams,
   });
   Stream<Match> getMatchStream({required int matchId});
-  Stream<List<Match>> getMatchesStream({
-    required List<String> enabledLeagues,
-  });
+  Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues});
   Stream<Config> getConfigStream({required String id});
   Stream<List<League>> getLeaguesStream();
-  Stream<LeagueStandings> getStandingsStream({
-    required String leagueId,
-  });
+  Stream<LeagueStandings> getStandingsStream({required String leagueId});
   Stream<Team> getTeamStream({required int teamId});
   Stream<List<Team>> getTeamsStream({int? leagueId});
   Stream<Device> getDeviceStream({required String token});
@@ -310,9 +306,7 @@ class MockDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  Stream<List<Match>> getMatchesStream({
-    required List<String> enabledLeagues,
-  }) {
+  Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues}) {
     return Stream.value(_matches);
   }
 
@@ -332,14 +326,9 @@ class MockDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  Stream<LeagueStandings> getStandingsStream({
-    required String leagueId,
-  }) {
+  Stream<LeagueStandings> getStandingsStream({required String leagueId}) {
     return Stream.value(
-      LeagueStandings(
-        leagueId: leagueId,
-        standings: _standings,
-      ),
+      LeagueStandings(leagueId: leagueId, standings: _standings),
     );
   }
 
@@ -439,9 +428,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
   }
 
   @override
-  Stream<List<Match>> getMatchesStream({
-    required List<String> enabledLeagues,
-  }) {
+  Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues}) {
     final nowDate = DateTime.now();
     // final nowDate = DateTime(2026, 08, 31);
 
@@ -462,13 +449,11 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .where('utcDate', isLessThan: upperBound)
         .orderBy('utcDate', descending: false)
         .snapshots()
-        .map(
-          (snapshot) {
-            return snapshot.docs
-                .map((doc) => Match.fromJson(doc.data()))
-                .toList();
-          },
-        );
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => Match.fromJson(doc.data()))
+              .toList();
+        });
   }
 
   @override
@@ -485,19 +470,15 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
     return _firestore
         .collection(AppVariables.leaguesCollection)
         .snapshots()
-        .map(
-          (snapshot) {
-            return snapshot.docs
-                .map((doc) => League.fromJson(doc.data()))
-                .toList();
-          },
-        );
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => League.fromJson(doc.data()))
+              .toList();
+        });
   }
 
   @override
-  Stream<LeagueStandings> getStandingsStream({
-    required String leagueId,
-  }) {
+  Stream<LeagueStandings> getStandingsStream({required String leagueId}) {
     return _firestore
         .collection(AppVariables.standingsCollection)
         .doc(leagueId)
@@ -524,11 +505,9 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
       query = query.where('competition.id', isEqualTo: leagueId);
     }
 
-    return query.snapshots().map(
-      (snapshot) {
-        return snapshot.docs.map((doc) => Team.fromJson(doc.data())).toList();
-      },
-    );
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => Team.fromJson(doc.data())).toList();
+    });
   }
 
   @override

@@ -40,9 +40,7 @@ class AppView extends StatelessWidget {
                 maxScaleFactor: 1.1,
               ),
             ),
-            child: TopCurvedTime(
-              child: child ?? const SizedBox.shrink(),
-            ),
+            child: TopCurvedTime(child: child ?? const SizedBox.shrink()),
           );
         },
       ),

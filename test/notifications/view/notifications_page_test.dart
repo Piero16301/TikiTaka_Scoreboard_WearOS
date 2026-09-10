@@ -133,9 +133,7 @@ void main() {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           navigatorObservers: [mockObserver],
-          routes: {
-            TeamsPage.routeName: (context) => const SizedBox(),
-          },
+          routes: {TeamsPage.routeName: (context) => const SizedBox()},
           home: const NotificationsView(),
         ),
       );

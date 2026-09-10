@@ -7,11 +7,7 @@ void main() {
     testWidgets('renders child and curved time properly', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              child: Text('App Content'),
-            ),
-          ),
+          home: Scaffold(body: TopCurvedTime(child: Text('App Content'))),
         ),
       );
 
@@ -22,11 +18,7 @@ void main() {
     testWidgets('updates time string periodically', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: Scaffold(
-            body: TopCurvedTime(
-              child: Text('App Content'),
-            ),
-          ),
+          home: Scaffold(body: TopCurvedTime(child: Text('App Content'))),
         ),
       );
       await tester.pump(const Duration(seconds: 1));
@@ -90,14 +82,10 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
-              textTheme: const TextTheme(
-                labelLarge: TextStyle(fontSize: 12),
-              ),
+              textTheme: const TextTheme(labelLarge: TextStyle(fontSize: 12)),
             ),
             home: const Scaffold(
-              body: TopCurvedTime(
-                child: Text('App Content'),
-              ),
+              body: TopCurvedTime(child: Text('App Content')),
             ),
           ),
         );
@@ -105,14 +93,10 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             theme: ThemeData(
-              textTheme: const TextTheme(
-                labelLarge: TextStyle(fontSize: 16),
-              ),
+              textTheme: const TextTheme(labelLarge: TextStyle(fontSize: 16)),
             ),
             home: const Scaffold(
-              body: TopCurvedTime(
-                child: Text('App Content'),
-              ),
+              body: TopCurvedTime(child: Text('App Content')),
             ),
           ),
         );

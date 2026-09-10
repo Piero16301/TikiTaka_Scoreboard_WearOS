@@ -316,10 +316,8 @@ void main() {
           supportedLocales: AppLocalizations.supportedLocales,
           navigatorObservers: [mockObserver],
           routes: {
-            TeamPage.routeName: (context) => Scaffold(
-              appBar: AppBar(),
-              body: const Text('TeamPageScreen'),
-            ),
+            TeamPage.routeName: (context) =>
+                Scaffold(appBar: AppBar(), body: const Text('TeamPageScreen')),
           },
           home: BlocProvider<MatchCubit>.value(
             value: matchCubit,

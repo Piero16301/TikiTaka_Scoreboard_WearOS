@@ -31,9 +31,7 @@ class AppCardAction extends StatelessWidget {
               color: theme.colorScheme.primary,
               fontSize: 12,
               fontVariations: <FontVariation>[
-                ...(Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.fontVariations ??
+                ...(Theme.of(context).textTheme.bodyMedium?.fontVariations ??
                         const <FontVariation>[])
                     .where((v) => v.axis != 'wght'),
                 const FontVariation('wght', 700),
@@ -52,9 +50,7 @@ class AppCardAction extends StatelessWidget {
           color: theme.colorScheme.onSurface,
           fontSize: 14,
           fontVariations: <FontVariation>[
-            ...(Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.fontVariations ??
+            ...(Theme.of(context).textTheme.bodyMedium?.fontVariations ??
                     const <FontVariation>[])
                 .where((v) => v.axis != 'wght'),
             const FontVariation('wght', 700),
@@ -65,10 +61,7 @@ class AppCardAction extends StatelessWidget {
     );
 
     if (onPressed != null) {
-      result = InkWell(
-        onTap: onPressed,
-        child: result,
-      );
+      result = InkWell(onTap: onPressed, child: result);
     }
 
     return Card(

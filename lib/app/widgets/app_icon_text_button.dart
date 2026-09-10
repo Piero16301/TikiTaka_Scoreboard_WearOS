@@ -23,10 +23,7 @@ class AppIconTextButton extends StatelessWidget {
             onTap: onPressed,
             borderRadius: BorderRadius.circular(20),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 14,
-                horizontal: 32,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
               child: icon,
             ),
           ),
@@ -35,9 +32,7 @@ class AppIconTextButton extends StatelessWidget {
           label,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontVariations: <FontVariation>[
-              ...(Theme.of(
-                        context,
-                      ).textTheme.labelLarge?.fontVariations ??
+              ...(Theme.of(context).textTheme.labelLarge?.fontVariations ??
                       const <FontVariation>[])
                   .where((v) => v.axis != 'wght'),
               const FontVariation('wght', 700),

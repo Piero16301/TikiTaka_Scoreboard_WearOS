@@ -46,10 +46,7 @@ class RouteAnalyticsObserver extends NavigatorObserver {
   }
 
   @override
-  void didChangeTop(
-    Route<dynamic> topRoute,
-    Route<dynamic>? previousTopRoute,
-  ) {
+  void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     super.didChangeTop(topRoute, previousTopRoute);
     if (topRoute is PageRoute && topRoute.settings.name != null) {
       _sendScreenView(topRoute);

@@ -53,10 +53,7 @@ class _CachedSvgImageState extends State<CachedSvgImage> {
       future: _fileFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return SizedBox(
-            width: widget.width,
-            height: widget.height,
-          );
+          return SizedBox(width: widget.width, height: widget.height);
         }
 
         if (snapshot.hasError || !snapshot.hasData) {
@@ -67,10 +64,7 @@ class _CachedSvgImageState extends State<CachedSvgImage> {
               snapshot.stackTrace ?? StackTrace.empty,
             );
           }
-          return SizedBox(
-            width: widget.width,
-            height: widget.height,
-          );
+          return SizedBox(width: widget.width, height: widget.height);
         }
 
         return SvgPicture.file(

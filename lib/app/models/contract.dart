@@ -5,10 +5,7 @@ import 'package:equatable/equatable.dart';
 /// {@endtemplate}
 class Contract extends Equatable {
   /// {@macro contract}
-  const Contract({
-    required this.start,
-    required this.until,
-  });
+  const Contract({required this.start, required this.until});
 
   /// Crea una instancia de [Contract] a partir de un [Map] json
   factory Contract.fromJson(Map<String, dynamic> json) {
@@ -19,10 +16,7 @@ class Contract extends Equatable {
   }
 
   /// Empty contract
-  static const empty = Contract(
-    start: '',
-    until: '',
-  );
+  static const empty = Contract(start: '', until: '');
 
   /// Fecha de inicio del contrato
   final String start;
@@ -31,8 +25,5 @@ class Contract extends Equatable {
   final String until;
 
   @override
-  List<Object> get props => [
-    start,
-    until,
-  ];
+  List<Object> get props => [start, until];
 }

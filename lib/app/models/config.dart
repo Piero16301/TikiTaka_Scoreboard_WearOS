@@ -6,10 +6,7 @@ import 'package:equatable/equatable.dart';
 /// {@endtemplate}
 class Config extends Equatable {
   /// {@macro address}
-  const Config({
-    required this.id,
-    required this.lastUpdate,
-  });
+  const Config({required this.id, required this.lastUpdate});
 
   /// Crea una instancia de [Config] a partir de un [Map] json
   factory Config.fromJson(Map<String, dynamic> json) {
@@ -28,8 +25,5 @@ class Config extends Equatable {
   final DateTime lastUpdate;
 
   @override
-  List<Object?> get props => [
-    id,
-    lastUpdate,
-  ];
+  List<Object?> get props => [id, lastUpdate];
 }
