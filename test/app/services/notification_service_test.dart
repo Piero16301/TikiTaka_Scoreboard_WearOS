@@ -86,9 +86,6 @@ void main() {
       when(() => mockRepository.token).thenReturn('mock_token_123');
       when(() => mockRepository.initialize()).thenAnswer((_) async {});
       when(
-        () => mockRepository.showNotification(any()),
-      ).thenAnswer((_) async {});
-      when(
         () => mockRepository.subscribeToTopic(any()),
       ).thenAnswer((_) async {});
       when(
@@ -177,7 +174,7 @@ void main() {
       },
     );
 
-    test('onMessage stream event forwards to showNotification', () async {
+    test('onMessage stream receives foreground message', () async {
       await notificationService.initialize();
 
       const message = RemoteMessage(
@@ -185,8 +182,6 @@ void main() {
       );
       onMessageController.add(message);
       await pumpEventQueue();
-
-      verify(() => mockRepository.showNotification(message)).called(1);
     });
 
     test(

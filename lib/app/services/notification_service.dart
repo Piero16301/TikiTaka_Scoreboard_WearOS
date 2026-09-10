@@ -71,10 +71,12 @@ class NotificationService {
     try {
       await _notificationRepository.initialize();
 
-      // Escuchar mensajes en primer plano y mostrarlos
-      _messageSubscription = _notificationRepository.onMessage.listen(
-        _notificationRepository.showNotification,
-      );
+      // Escuchar mensajes en primer plano
+      _messageSubscription = _notificationRepository.onMessage.listen((
+        message,
+      ) {
+        debugPrint('Foreground FCM message: ${message.data}');
+      });
 
       // Manejar aperturas desde background
       _messageOpenedAppSubscription = _notificationRepository.onMessageOpenedApp
