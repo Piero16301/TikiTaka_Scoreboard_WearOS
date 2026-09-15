@@ -234,12 +234,8 @@ void main() {
         ],
       };
 
-      await fakeFirestore
-          .collection(AppVariables.teamsCollection)
-          .add(team1);
-      await fakeFirestore
-          .collection(AppVariables.teamsCollection)
-          .add(team2);
+      await fakeFirestore.collection(AppVariables.teamsCollection).add(team1);
+      await fakeFirestore.collection(AppVariables.teamsCollection).add(team2);
 
       final filteredStream = repository.getTeamsStream(leagueId: 2002);
       final filteredTeams = await filteredStream.first;
