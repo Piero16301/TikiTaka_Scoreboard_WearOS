@@ -23,6 +23,10 @@ class MainActivity : FlutterActivity() {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "This channel is used for important notifications."
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 250, 250, 250)
+                setShowBadge(true)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             }
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)

@@ -59,6 +59,12 @@ void main() {
       final mockNotification = getIt<NotificationService>();
       when(mockNotification.initialize).thenAnswer((_) async {});
       when(() => mockNotification.token).thenReturn('');
+      when(
+        () => mockNotification.onTokenRefresh,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockNotification.syncTeamsTopics(any()),
+      ).thenAnswer((_) async {});
     });
 
     testWidgets('renders AppView properly', (tester) async {

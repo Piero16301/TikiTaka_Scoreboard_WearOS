@@ -56,10 +56,24 @@ void main() {
       when(() => appCubit.state).thenReturn(AppState(device: Device.empty));
       when(() => mockNotification.token).thenReturn('mock_token');
       when(
-        () => mockNotification.subscribeToTopic(any()),
+        () => mockNotification.toggleTeamTopic(
+          teamId: any(named: 'teamId'),
+          enabled: any(named: 'enabled'),
+          languageCode: any(named: 'languageCode'),
+        ),
       ).thenAnswer((_) async {});
       when(
-        () => mockNotification.unsubscribeFromTopic(any()),
+        () => mockNotification.syncTeamsTopics(
+          any(),
+          languageCode: any(named: 'languageCode'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => mockNotification.switchLanguageTopics(
+          oldLanguageCode: any(named: 'oldLanguageCode'),
+          newLanguageCode: any(named: 'newLanguageCode'),
+          enabledTeams: any(named: 'enabledTeams'),
+        ),
       ).thenAnswer((_) async {});
       when(
         () => mockAnalytics.logEvent(

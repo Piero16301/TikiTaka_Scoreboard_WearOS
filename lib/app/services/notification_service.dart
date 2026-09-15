@@ -157,6 +157,65 @@ class NotificationService {
     }
   }
 
+  static String teamTopic(String teamId, String languageCode) =>
+      'team_${teamId}_${languageCode.toLowerCase()}';
+
+  Future<void> syncTeamsTopics(
+    List<String> enabledTeams, {
+    String? languageCode,
+  }) async {
+    if (enabledTeams.isEmpty) return;
+    final lang =
+        languageCode ?? _localStorage.getLanguage()?.languageCode ?? 'en';
+    try {
+      await Future.wait(
+        enabledTeams.map((teamId) => subscribeToTopic(teamTopic(teamId, lang))),
+      );
+    } on Exception catch (e, stackTrace) {
+      _crash?.recordError(
+        e,
+        stackTrace,
+        reason: 'NotificationService syncTeamsTopics error',
+      );
+    }
+  }
+
+  Future<void> switchLanguageTopics({
+    required String oldLanguageCode,
+    required String newLanguageCode,
+    required List<String> enabledTeams,
+  }) async {
+    if (enabledTeams.isEmpty || oldLanguageCode == newLanguageCode) return;
+    try {
+      final unsubs = enabledTeams.map(
+        (teamId) => unsubscribeFromTopic(teamTopic(teamId, oldLanguageCode)),
+      );
+      final subs = enabledTeams.map(
+        (teamId) => subscribeToTopic(teamTopic(teamId, newLanguageCode)),
+      );
+      await Future.wait([...unsubs, ...subs]);
+    } on Exception catch (e, stackTrace) {
+      _crash?.recordError(
+        e,
+        stackTrace,
+        reason: 'NotificationService switchLanguageTopics error',
+      );
+    }
+  }
+
+  Future<void> toggleTeamTopic({
+    required String teamId,
+    required bool enabled,
+    required String languageCode,
+  }) async {
+    final topic = teamTopic(teamId, languageCode);
+    if (enabled) {
+      await subscribeToTopic(topic);
+    } else {
+      await unsubscribeFromTopic(topic);
+    }
+  }
+
   void _handleMessage(
     RemoteMessage message,
     void Function(int matchId)? callback,
@@ -202,6 +261,8 @@ class NotificationService {
   }
 
   String get token => _notificationRepository.token;
+
+  Stream<String> get onTokenRefresh => _notificationRepository.onTokenRefresh;
 
   Future<void> subscribeToTopic(String topic) async {
     await _notificationRepository.subscribeToTopic(topic);

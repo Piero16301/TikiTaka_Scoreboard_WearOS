@@ -58,38 +58,68 @@ class AppCubit extends Cubit<AppState> {
     unawaited(_initDeviceStream());
   }
 
+  StreamSubscription<String>? _tokenRefreshSubscription;
+
   Future<void> _initDeviceStream() async {
     await notification.initialize();
     final token = notification.token;
     if (token.isNotEmpty) {
-      await _deviceSubscription?.cancel();
-      _deviceSubscription = database
-          .getDeviceStream(token: token)
-          .listen(
-            (device) {
-              emit(state.copyWith(device: device));
-              for (final teamId in device.enabledTeams) {
-                notification.subscribeToTopic('team_$teamId').ignore();
-              }
-            },
-            onError: (Object error, StackTrace stackTrace) {
-              getIt<CrashService>().recordError(
-                error,
-                stackTrace,
-                reason: 'AppCubit deviceStream error',
-              );
-            },
-          );
+      _listenToDevice(token);
     }
+    await _tokenRefreshSubscription?.cancel();
+    _tokenRefreshSubscription = notification.onTokenRefresh.listen((newToken) {
+      if (newToken.isNotEmpty) {
+        _listenToDevice(newToken);
+      }
+    });
+  }
+
+  void _listenToDevice(String token) {
+    unawaited(_deviceSubscription?.cancel());
+    _deviceSubscription = database
+        .getDeviceStream(token: token)
+        .listen(
+          (device) {
+            emit(state.copyWith(device: device));
+            if (device.enabledTeams.isNotEmpty) {
+              final lang = state.language.languageCode;
+              notification
+                  .syncTeamsTopics(device.enabledTeams, languageCode: lang)
+                  .ignore();
+            }
+          },
+          onError: (Object error, StackTrace stackTrace) {
+            getIt<CrashService>().recordError(
+              error,
+              stackTrace,
+              reason: 'AppCubit deviceStream error',
+            );
+          },
+        );
   }
 
   @override
   Future<void> close() async {
+    await _tokenRefreshSubscription?.cancel();
     await _deviceSubscription?.cancel();
     return await super.close();
   }
 
   void changeLanguage({required Locale language}) {
+    final oldLang = state.language.languageCode;
+    final newLang = language.languageCode;
+
+    final enabledTeams = state.device?.enabledTeams ?? const <String>[];
+    if (oldLang != newLang && enabledTeams.isNotEmpty) {
+      notification
+          .switchLanguageTopics(
+            oldLanguageCode: oldLang,
+            newLanguageCode: newLang,
+            enabledTeams: enabledTeams,
+          )
+          .ignore();
+    }
+
     localStorage.saveLanguage(language: language);
     database.updateDeviceSettings(
       token: notification.token,

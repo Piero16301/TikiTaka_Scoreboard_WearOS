@@ -49,7 +49,23 @@ void main() {
       when(() => notificationService.initialize()).thenAnswer((_) async {});
       when(() => notificationService.token).thenReturn('');
       when(
+        () => notificationService.onTokenRefresh,
+      ).thenAnswer((_) => const Stream.empty());
+      when(
         () => notificationService.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => notificationService.syncTeamsTopics(
+          any(),
+          languageCode: any(named: 'languageCode'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => notificationService.switchLanguageTopics(
+          oldLanguageCode: any(named: 'oldLanguageCode'),
+          newLanguageCode: any(named: 'newLanguageCode'),
+          enabledTeams: any(named: 'enabledTeams'),
+        ),
       ).thenAnswer((_) async {});
       when(
         () => databaseService.getDeviceStream(token: any(named: 'token')),
@@ -144,6 +160,43 @@ void main() {
           () => databaseService.updateDeviceSettings(
             token: 'mock_token',
             language: const Locale('es', 'ES'),
+          ),
+        ).called(1);
+      },
+    );
+
+    blocTest<AppCubit, AppState>(
+      'changeLanguage switches topic subscriptions '
+      'when device has enabled teams',
+      setUp: () {
+        when(
+          () => localStorageService.saveLanguage(
+            language: any(named: 'language'),
+          ),
+        ).thenReturn(null);
+        when(() => notificationService.token).thenReturn('mock_token');
+        when(
+          () => databaseService.updateDeviceSettings(
+            token: any(named: 'token'),
+            language: any(named: 'language'),
+          ),
+        ).thenAnswer((_) async {});
+      },
+      seed: () => AppState(
+        language: const Locale('es', 'ES'),
+        device: Device.empty.copyWith(enabledTeams: ['81', '86']),
+      ),
+      build: AppCubit.new,
+      act: (cubit) => cubit.changeLanguage(language: const Locale('en', 'US')),
+      expect: () => [
+        AppState(device: Device.empty.copyWith(enabledTeams: ['81', '86'])),
+      ],
+      verify: (_) {
+        verify(
+          () => notificationService.switchLanguageTopics(
+            oldLanguageCode: 'es',
+            newLanguageCode: 'en',
+            enabledTeams: ['81', '86'],
           ),
         ).called(1);
       },

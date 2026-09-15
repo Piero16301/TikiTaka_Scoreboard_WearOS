@@ -98,11 +98,14 @@ class TeamCardTeams extends StatelessWidget {
           parameters: {'team': team.id},
         );
         final isEnabled = enabledTeams.contains(team.id.toString());
-        if (isEnabled) {
-          notification.unsubscribeFromTopic('team_${team.id}').ignore();
-        } else {
-          notification.subscribeToTopic('team_${team.id}').ignore();
-        }
+        final lang = context.read<AppCubit>().state.language.languageCode;
+        notification
+            .toggleTeamTopic(
+              teamId: team.id.toString(),
+              enabled: !isEnabled,
+              languageCode: lang,
+            )
+            .ignore();
         database.updateDeviceSettings(
           token: notification.token,
           teamToModify: team.id,

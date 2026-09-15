@@ -55,6 +55,25 @@ class Device extends Equatable {
     wearOSInfo: const {},
   );
 
+  /// Crea una copia de [Device] con los campos especificados
+  Device copyWith({
+    List<String>? enabledTeams,
+    Locale? language,
+    DateTime? lastOpenAt,
+    Platform? platform,
+    String? token,
+    Map<String, dynamic>? wearOSInfo,
+  }) {
+    return Device(
+      enabledTeams: enabledTeams ?? this.enabledTeams,
+      language: language ?? this.language,
+      lastOpenAt: lastOpenAt ?? this.lastOpenAt,
+      platform: platform ?? this.platform,
+      token: token ?? this.token,
+      wearOSInfo: wearOSInfo ?? this.wearOSInfo,
+    );
+  }
+
   /// Códigos de equipos activos
   final List<String> enabledTeams;
 

@@ -11,14 +11,14 @@ dependencies:
   auto_size_text: ^3.0.0
   bloc: ^9.2.1
   cached_network_image: ^4.0.0
-  cloud_firestore: ^6.9.0
+  cloud_firestore: ^6.10.0
   device_info_plus: ^13.2.0
   equatable: ^2.1.0
-  firebase_analytics: ^12.5.0
-  firebase_core: ^4.14.0
-  firebase_crashlytics: ^5.3.0
-  firebase_messaging: ^16.6.0
-  firebase_performance: ^0.11.5
+  firebase_analytics: ^12.6.0
+  firebase_core: ^4.15.0
+  firebase_crashlytics: ^5.4.0
+  firebase_messaging: ^16.7.0
+  firebase_performance: ^0.11.6
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
@@ -32,7 +32,7 @@ dependencies:
   material_ui: ^1.2.0
   package_info_plus: ^10.2.1
   shared_preferences: ^2.5.5
-  wear_os_scrollbar: ^1.0.0
+  wear_os_scrollbar: ^1.1.1
 
 dev_dependencies:
   bloc_test: ^10.0.0
