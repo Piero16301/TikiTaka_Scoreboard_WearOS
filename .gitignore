@@ -111,6 +111,7 @@ app.*.map.json
 !.idea/dictionaries/
 !.idea/runConfigurations/
 pubspec.lock
+.metadata
 
 # Demo
 demo/node_modules/

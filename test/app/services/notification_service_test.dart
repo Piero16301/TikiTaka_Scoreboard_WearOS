@@ -86,9 +86,6 @@ void main() {
       when(() => mockRepository.token).thenReturn('mock_token_123');
       when(() => mockRepository.initialize()).thenAnswer((_) async {});
       when(
-        () => mockRepository.showNotification(any()),
-      ).thenAnswer((_) async {});
-      when(
         () => mockRepository.subscribeToTopic(any()),
       ).thenAnswer((_) async {});
       when(
@@ -177,7 +174,7 @@ void main() {
       },
     );
 
-    test('onMessage stream event forwards to showNotification', () async {
+    test('onMessage stream receives foreground message', () async {
       await notificationService.initialize();
 
       const message = RemoteMessage(
@@ -185,8 +182,6 @@ void main() {
       );
       onMessageController.add(message);
       await pumpEventQueue();
-
-      verify(() => mockRepository.showNotification(message)).called(1);
     });
 
     test(
@@ -361,6 +356,115 @@ void main() {
       await fallbackService.dispose();
       await getIt.reset();
     });
+
+    test('onTokenRefresh getter delegates to repository', () {
+      expect(notificationService.onTokenRefresh, emitsInOrder(['token1']));
+      onTokenRefreshController.add('token1');
+    });
+
+    test(
+      'syncTeamsTopics subscribes to all team topics with language',
+      () async {
+        when(
+          () => mockRepository.subscribeToTopic(any()),
+        ).thenAnswer((_) async {});
+
+        await notificationService.syncTeamsTopics([
+          '81',
+          '86',
+        ], languageCode: 'es');
+
+        verify(() => mockRepository.subscribeToTopic('team_81_es')).called(1);
+        verify(() => mockRepository.subscribeToTopic('team_86_es')).called(1);
+      },
+    );
+
+    test('syncTeamsTopics does nothing when list is empty', () async {
+      await notificationService.syncTeamsTopics([]);
+      verifyNever(() => mockRepository.subscribeToTopic(any()));
+    });
+
+    test('syncTeamsTopics logs error to CrashService on failure', () async {
+      final exception = Exception('Failed to subscribe');
+      when(() => mockRepository.subscribeToTopic(any())).thenThrow(exception);
+
+      await notificationService.syncTeamsTopics(['81'], languageCode: 'es');
+
+      verify(
+        () => mockCrash.recordError(
+          exception,
+          any(),
+          reason: 'NotificationService syncTeamsTopics error',
+        ),
+      ).called(1);
+    });
+
+    test('switchLanguageTopics switches topics between languages', () async {
+      when(
+        () => mockRepository.unsubscribeFromTopic(any()),
+      ).thenAnswer((_) async {});
+      when(
+        () => mockRepository.subscribeToTopic(any()),
+      ).thenAnswer((_) async {});
+
+      await notificationService.switchLanguageTopics(
+        oldLanguageCode: 'es',
+        newLanguageCode: 'en',
+        enabledTeams: ['81', '86'],
+      );
+
+      verify(() => mockRepository.unsubscribeFromTopic('team_81_es')).called(1);
+      verify(() => mockRepository.unsubscribeFromTopic('team_86_es')).called(1);
+      verify(() => mockRepository.subscribeToTopic('team_81_en')).called(1);
+      verify(() => mockRepository.subscribeToTopic('team_86_en')).called(1);
+    });
+
+    test(
+      'switchLanguageTopics does nothing if languages are same or list empty',
+      () async {
+        await notificationService.switchLanguageTopics(
+          oldLanguageCode: 'es',
+          newLanguageCode: 'es',
+          enabledTeams: ['81'],
+        );
+        await notificationService.switchLanguageTopics(
+          oldLanguageCode: 'es',
+          newLanguageCode: 'en',
+          enabledTeams: [],
+        );
+
+        verifyNever(() => mockRepository.unsubscribeFromTopic(any()));
+        verifyNever(() => mockRepository.subscribeToTopic(any()));
+      },
+    );
+
+    test(
+      'toggleTeamTopic subscribes when enabled and unsubscribes when disabled',
+      () async {
+        when(
+          () => mockRepository.subscribeToTopic(any()),
+        ).thenAnswer((_) async {});
+        when(
+          () => mockRepository.unsubscribeFromTopic(any()),
+        ).thenAnswer((_) async {});
+
+        await notificationService.toggleTeamTopic(
+          teamId: '81',
+          enabled: true,
+          languageCode: 'es',
+        );
+        verify(() => mockRepository.subscribeToTopic('team_81_es')).called(1);
+
+        await notificationService.toggleTeamTopic(
+          teamId: '81',
+          enabled: false,
+          languageCode: 'es',
+        );
+        verify(
+          () => mockRepository.unsubscribeFromTopic('team_81_es'),
+        ).called(1);
+      },
+    );
 
     testWidgets('navigates immediately to match when navigatorKey is mounted', (
       tester,

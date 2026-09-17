@@ -502,7 +502,7 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .orderBy('name');
 
     if (leagueId != null) {
-      query = query.where('competition.id', isEqualTo: leagueId);
+      query = query.where('runningCompetitionIds', arrayContains: leagueId);
     }
 
     return query.snapshots().map((snapshot) {
@@ -518,6 +518,12 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.devicesCollection)
         .doc(token)
         .snapshots()
-        .map((snapshot) => Device.fromJson(snapshot.data()!));
+        .map((snapshot) {
+          final data = snapshot.data();
+          if (data == null || !snapshot.exists) {
+            return Device.empty;
+          }
+          return Device.fromJson(data);
+        });
   }
 }

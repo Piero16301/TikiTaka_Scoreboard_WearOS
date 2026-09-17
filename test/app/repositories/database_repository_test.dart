@@ -208,6 +208,44 @@ void main() {
         expect(items, isEmpty);
       },
     );
+
+    test('getTeamsStream filters by runningCompetitions id', () async {
+      final team1 = <String, dynamic>{
+        'id': 1,
+        'name': 'Team 1',
+        'shortName': 'T1',
+        'tla': 'T1',
+        'crest': 'url',
+        'runningCompetitionIds': [2002, 2011],
+        'runningCompetitions': [
+          {'id': 2002, 'name': 'Bundesliga', 'code': 'BL1'},
+          {'id': 2011, 'name': 'DFB-Pokal', 'code': 'DFB'},
+        ],
+      };
+      final team2 = <String, dynamic>{
+        'id': 2,
+        'name': 'Team 2',
+        'shortName': 'T2',
+        'tla': 'T2',
+        'crest': 'url',
+        'runningCompetitionIds': [2014],
+        'runningCompetitions': [
+          {'id': 2014, 'name': 'LaLiga', 'code': 'PD'},
+        ],
+      };
+
+      await fakeFirestore.collection(AppVariables.teamsCollection).add(team1);
+      await fakeFirestore.collection(AppVariables.teamsCollection).add(team2);
+
+      final filteredStream = repository.getTeamsStream(leagueId: 2002);
+      final filteredTeams = await filteredStream.first;
+      expect(filteredTeams.length, 1);
+      expect(filteredTeams.first.id, 1);
+
+      final allStream = repository.getTeamsStream();
+      final allTeams = await allStream.first;
+      expect(allTeams.length, 2);
+    });
   });
 
   group('MockDatabaseRepository', () {
