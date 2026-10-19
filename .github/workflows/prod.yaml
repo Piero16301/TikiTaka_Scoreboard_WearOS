@@ -1,4 +1,4 @@
-name: Production
+name: Tiki Taka WearOS - Prod
 # CI workflow for Tiki Taka Scoreboard WearOS application.
 # This workflow checks the commit author, runs semantic checks, spell checks,
 # executes tests, builds the application, and deploys it to the Play Store
@@ -6,7 +6,7 @@ name: Production
 # to the production track.
 
 concurrency:
-  group: main-$-$
+  group: prod-${{ github.ref }}
   cancel-in-progress: true
 
 on:
@@ -17,7 +17,7 @@ on:
 jobs:
   check-commit-type:
     name: "🔍 Check Commit Type"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
       is_dev_merge: ${{ steps.check_commit.outputs.is_dev_merge }}
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: |
           COMMIT_MSG=$(git log -1 --pretty=format:'%s')
           echo "Commit message: $COMMIT_MSG"
-          if [[ "$COMMIT_MSG" == "Merge pull request"* && "$COMMIT_MSG" == *"from Piero16301/dev" ]]; then
+          if [[ "$COMMIT_MSG" == "Merge pull request"* && "$COMMIT_MSG" == *"dev"* ]] || [[ "$COMMIT_MSG" == *"Merge branch 'dev'"* ]]; then
             echo "is_dev_merge=true" >> $GITHUB_OUTPUT
             echo "Commit is a merge from dev branch, continuing with workflow"
           else
@@ -40,24 +40,34 @@ jobs:
 
   semantic-pull-request:
     name: "📝 Semantic"
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+    runs-on: ubuntu-26.04
     permissions:
+      pull-requests: read
       contents: read
+    steps:
+      - name: 🤖 Ensure Commit is Semantic
+        if: github.event_name == 'pull_request'
+        uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   spell-check:
     name: "🔍 Spell Check"
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
     with:
+      runs_on: ubuntu-26.04
       includes: |
         **/*.md
       modified_files_only: false
 
   quality:
-    name: "💯 Quality Gates"
+    name: "💯 Verify Quality Gates"
     needs: [semantic-pull-request, spell-check]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: 📚 Git Checkout
         uses: actions/checkout@v7
@@ -91,8 +101,9 @@ jobs:
 
   promote:
     name: "📈 Promote to Production"
-    needs: quality
-    runs-on: ubuntu-latest
+    needs: [check-commit-type, quality]
+    if: needs.check-commit-type.outputs.is_dev_merge == 'true'
+    runs-on: ubuntu-26.04
     env:
       APP_PACKAGE_NAME: com.pmorales.wearos.tikitaka
       SERVICE_ACCOUNT_PATH: service-account.json
