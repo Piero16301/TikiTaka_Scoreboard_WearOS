@@ -14,6 +14,7 @@ class NotificationService {
     this._localStorageService,
     this._performanceService,
     this._crashService,
+    this._analyticsService,
   });
 
   final NotificationRepository _notificationRepository;
@@ -22,6 +23,7 @@ class NotificationService {
   final LocalStorageService? _localStorageService;
   final PerformanceService? _performanceService;
   final CrashService? _crashService;
+  final AnalyticsService? _analyticsService;
 
   Future<void>? _initializeFuture;
   StreamSubscription<String>? _registeredSubscription;
@@ -55,6 +57,12 @@ class NotificationService {
   CrashService? get _crash =>
       _crashService ??
       (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
+
+  AnalyticsService? get _analytics =>
+      _analyticsService ??
+      (getIt.isRegistered<AnalyticsService>()
+          ? getIt<AnalyticsService>()
+          : null);
 
   Future<void> initialize({
     void Function(int matchId)? onMatchNotificationOpened,
@@ -122,6 +130,7 @@ class NotificationService {
 
   Future<void> syncDeviceAndTopics(String token) async {
     if (token.isEmpty) return;
+    final trace = _perf?.startTrace('device_sync_duration');
 
     try {
       final isDbAvailable =
@@ -157,6 +166,10 @@ class NotificationService {
         stackTrace,
         reason: 'NotificationService syncDeviceAndTopics error',
       );
+    } finally {
+      if (trace != null) {
+        _perf?.stopTrace(trace);
+      }
     }
   }
 
@@ -168,6 +181,7 @@ class NotificationService {
     String? languageCode,
   }) async {
     if (enabledTeams.isEmpty) return;
+    final trace = _perf?.startTrace('fcm_topics_sync_duration');
     final lang =
         languageCode ?? _localStorage.getLanguage()?.languageCode ?? 'en';
     try {
@@ -180,6 +194,10 @@ class NotificationService {
         stackTrace,
         reason: 'NotificationService syncTeamsTopics error',
       );
+    } finally {
+      if (trace != null) {
+        _perf?.stopTrace(trace);
+      }
     }
   }
 
@@ -228,6 +246,10 @@ class NotificationService {
 
     final matchId = _parseMatchId(rawMatch.toString());
     if (matchId != null) {
+      _analytics?.logEvent(
+        name: 'notification_opened',
+        parameters: {'match_id': matchId, 'source': 'fcm'},
+      );
       if (callback != null) {
         callback(matchId);
       } else {

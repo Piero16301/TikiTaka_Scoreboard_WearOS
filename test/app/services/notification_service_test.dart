@@ -23,6 +23,8 @@ class MockLocalStorageService extends Mock implements LocalStorageService {}
 
 class MockTrace extends Mock implements Trace {}
 
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 class MockNavigatorState extends Mock implements NavigatorState {
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
@@ -39,6 +41,7 @@ void main() {
     late MockDatabaseService mockDatabase;
     late MockDeviceInfoService mockDeviceInfo;
     late MockLocalStorageService mockLocalStorage;
+    late MockAnalyticsService mockAnalytics;
     late StreamController<RemoteMessage> onMessageController;
     late StreamController<RemoteMessage> onMessageOpenedAppController;
     late StreamController<String> onRegisteredController;
@@ -62,6 +65,7 @@ void main() {
       mockDatabase = MockDatabaseService();
       mockDeviceInfo = MockDeviceInfoService();
       mockLocalStorage = MockLocalStorageService();
+      mockAnalytics = MockAnalyticsService();
 
       onMessageController = StreamController<RemoteMessage>.broadcast();
       onMessageOpenedAppController =
@@ -70,6 +74,12 @@ void main() {
 
       when(() => mockPerformance.startTrace(any())).thenReturn(MockTrace());
       when(() => mockPerformance.stopTrace(any())).thenReturn(null);
+      when(
+        () => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenReturn(null);
 
       when(
         () => mockRepository.onMessage,
@@ -111,6 +121,7 @@ void main() {
         localStorageService: mockLocalStorage,
         performanceService: mockPerformance,
         crashService: mockCrash,
+        analyticsService: mockAnalytics,
       );
     });
 
@@ -130,8 +141,11 @@ void main() {
           () =>
               mockPerformance.startTrace('notification_service_initialization'),
         ).called(1);
+        verify(
+          () => mockPerformance.startTrace('device_sync_duration'),
+        ).called(1);
         verify(() => mockRepository.initialize()).called(1);
-        verify(() => mockPerformance.stopTrace(any())).called(1);
+        verify(() => mockPerformance.stopTrace(any())).called(2);
 
         verify(
           () => mockDatabase.updateDeviceSettings(
@@ -197,6 +211,12 @@ void main() {
         await pumpEventQueue();
 
         expect(openedMatchId, 101);
+        verify(
+          () => mockAnalytics.logEvent(
+            name: 'notification_opened',
+            parameters: {'match_id': 101, 'source': 'fcm'},
+          ),
+        ).called(1);
       },
     );
 
@@ -374,6 +394,10 @@ void main() {
           '86',
         ], languageCode: 'es');
 
+        verify(
+          () => mockPerformance.startTrace('fcm_topics_sync_duration'),
+        ).called(1);
+        verify(() => mockPerformance.stopTrace(any())).called(1);
         verify(() => mockRepository.subscribeToTopic('team_81_es')).called(1);
         verify(() => mockRepository.subscribeToTopic('team_86_es')).called(1);
       },

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart' hide Table;
@@ -19,10 +20,18 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
   late final Stream<Match> _matchStream;
+  Trace? _matchLoadTrace;
+  bool _hasLoggedInitialMatch = false;
 
   @override
   void initState() {
     super.initState();
+
+    if (getIt.isRegistered<PerformanceService>()) {
+      _matchLoadTrace = getIt<PerformanceService>().startTrace(
+        'match_detail_load',
+      );
+    }
 
     final matchId = context.read<MatchCubit>().state.matchId;
     _matchStream = getIt<DatabaseService>().getMatchStream(matchId: matchId);
@@ -31,6 +40,10 @@ class _MatchViewState extends State<MatchView> {
   @override
   void dispose() {
     _scrollController.dispose();
+    if (_matchLoadTrace != null && getIt.isRegistered<PerformanceService>()) {
+      getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
+      _matchLoadTrace = null;
+    }
     super.dispose();
   }
 
@@ -41,6 +54,22 @@ class _MatchViewState extends State<MatchView> {
     return StreamBuilder<Match>(
       stream: _matchStream,
       builder: (context, snapshot) {
+        if (!_hasLoggedInitialMatch &&
+            (snapshot.hasData || snapshot.hasError)) {
+          _hasLoggedInitialMatch = true;
+          if (_matchLoadTrace != null &&
+              getIt.isRegistered<PerformanceService>()) {
+            getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
+            _matchLoadTrace = null;
+          }
+          if (snapshot.hasError && getIt.isRegistered<AnalyticsService>()) {
+            getIt<AnalyticsService>().logEvent(
+              name: 'match_detail_error',
+              parameters: {'error': snapshot.error.toString()},
+            );
+          }
+        }
+
         if (snapshot.hasError) {
           return AppScaffold.basic(child: AppError(text: l10n.errorMatch));
         }

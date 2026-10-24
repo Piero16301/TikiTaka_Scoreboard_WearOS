@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
@@ -20,11 +21,18 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     keepScrollOffset: false,
   );
   late DateTime _streamDate;
+  Trace? _matchesLoadTrace;
+  bool _hasLoggedInitialMatches = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    if (getIt.isRegistered<PerformanceService>()) {
+      _matchesLoadTrace = getIt<PerformanceService>().startTrace(
+        'home_matches_first_load',
+      );
+    }
     _reloadStream();
   }
 
@@ -56,6 +64,10 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
+    if (_matchesLoadTrace != null && getIt.isRegistered<PerformanceService>()) {
+      getIt<PerformanceService>().stopTrace(_matchesLoadTrace!);
+      _matchesLoadTrace = null;
+    }
     super.dispose();
   }
 
@@ -66,6 +78,26 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     return StreamBuilder<List<Match>>(
       stream: _matchesStream,
       builder: (context, snapshot) {
+        if (!_hasLoggedInitialMatches &&
+            (snapshot.hasData || snapshot.hasError)) {
+          _hasLoggedInitialMatches = true;
+          if (_matchesLoadTrace != null &&
+              getIt.isRegistered<PerformanceService>()) {
+            getIt<PerformanceService>().stopTrace(_matchesLoadTrace!);
+            _matchesLoadTrace = null;
+          }
+          if (snapshot.hasError && getIt.isRegistered<AnalyticsService>()) {
+            getIt<AnalyticsService>().logEvent(
+              name: 'home_matches_error',
+              parameters: {'error': snapshot.error.toString()},
+            );
+          } else if (snapshot.hasData &&
+              snapshot.data!.isEmpty &&
+              getIt.isRegistered<AnalyticsService>()) {
+            getIt<AnalyticsService>().logEvent(name: 'home_matches_empty');
+          }
+        }
+
         if (snapshot.hasError) {
           return AppScaffold.basic(child: AppError(text: l10n.errorMatches));
         }

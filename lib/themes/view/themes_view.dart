@@ -62,8 +62,15 @@ class CardThemes extends StatelessWidget {
     final colorName = AppFunctions.getColorName(label, l10n);
 
     return AppCardAction(
-      onPressed: () =>
-          context.read<AppCubit>().changeBaseColor(baseColor: value),
+      onPressed: () {
+        if (getIt.isRegistered<AnalyticsService>()) {
+          getIt<AnalyticsService>().logEvent(
+            name: 'theme_changed',
+            parameters: {'color_name': label, 'color_value': value.toARGB32()},
+          );
+        }
+        context.read<AppCubit>().changeBaseColor(baseColor: value);
+      },
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
         child: Row(
