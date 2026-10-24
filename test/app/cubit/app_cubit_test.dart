@@ -55,7 +55,7 @@ void main() {
       when(() => notificationService.initialize()).thenAnswer((_) async {});
       when(() => notificationService.token).thenReturn('');
       when(
-        () => notificationService.onTokenRefresh,
+        () => notificationService.onRegistered,
       ).thenAnswer((_) => const Stream.empty());
       when(
         () => notificationService.subscribeToTopic(any()),
@@ -294,7 +294,7 @@ void main() {
       when(() => localStorageService.getFontFamily()).thenReturn('Roboto');
       when(() => notificationService.token).thenReturn('initial_token');
       when(
-        () => notificationService.onTokenRefresh,
+        () => notificationService.onRegistered,
       ).thenAnswer((_) => tokenController.stream);
       when(
         () => databaseService.getDeviceStream(token: 'initial_token'),
@@ -532,7 +532,7 @@ void main() {
       when(() => localStorageService.getFontFamily()).thenReturn('Roboto');
       when(() => notificationService.token).thenReturn('mock_token');
       when(
-        () => notificationService.onTokenRefresh,
+        () => notificationService.onRegistered,
       ).thenAnswer((_) => tokenController.stream);
       when(
         () => databaseService.getDeviceStream(token: 'mock_token'),

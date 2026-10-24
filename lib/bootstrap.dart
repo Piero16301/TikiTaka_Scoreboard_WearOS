@@ -28,13 +28,16 @@ class AppBlocObserver extends BlocObserver {
 }
 
 bool _isNetworkError(dynamic error) {
+  const networkErrors = [
+    'socketexception',
+    'handshakeexception',
+    'httpexception',
+    'timeoutexception',
+    'clientexception',
+    'networkimageloadexception',
+  ];
   final errorString = error.toString().toLowerCase();
-  return errorString.contains('socketexception') ||
-      errorString.contains('handshakeexception') ||
-      errorString.contains('httpexception') ||
-      errorString.contains('timeoutexception') ||
-      errorString.contains('clientexception') ||
-      errorString.contains('networkimageloadexception');
+  return networkErrors.any(errorString.contains);
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {

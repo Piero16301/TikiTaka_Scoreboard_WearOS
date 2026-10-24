@@ -23,7 +23,7 @@ class NotificationService {
   final CrashService? _crashService;
 
   Future<void>? _initializeFuture;
-  StreamSubscription<String>? _tokenRefreshSubscription;
+  StreamSubscription<String>? _registeredSubscription;
   StreamSubscription<RemoteMessage>? _messageSubscription;
   StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
 
@@ -96,14 +96,14 @@ class NotificationService {
         await syncDeviceAndTopics(currentToken);
       }
 
-      // Escuchar rotación de token
-      _tokenRefreshSubscription = _notificationRepository.onTokenRefresh.listen(
-        (newToken) {
-          if (newToken.isNotEmpty) {
-            unawaited(syncDeviceAndTopics(newToken));
-          }
-        },
-      );
+      // Escuchar registro de token
+      _registeredSubscription = _notificationRepository.onRegistered.listen((
+        newToken,
+      ) {
+        if (newToken.isNotEmpty) {
+          unawaited(syncDeviceAndTopics(newToken));
+        }
+      });
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
@@ -262,7 +262,7 @@ class NotificationService {
 
   String get token => _notificationRepository.token;
 
-  Stream<String> get onTokenRefresh => _notificationRepository.onTokenRefresh;
+  Stream<String> get onRegistered => _notificationRepository.onRegistered;
 
   Future<void> subscribeToTopic(String topic) async {
     await _notificationRepository.subscribeToTopic(topic);
@@ -273,7 +273,7 @@ class NotificationService {
   }
 
   Future<void> dispose() async {
-    await _tokenRefreshSubscription?.cancel();
+    await _registeredSubscription?.cancel();
     await _messageSubscription?.cancel();
     await _messageOpenedAppSubscription?.cancel();
   }

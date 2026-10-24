@@ -6,8 +6,8 @@ import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 abstract class NotificationRepository {
   Future<void> initialize();
   String get token;
-  Future<String?> getToken();
-  Stream<String> get onTokenRefresh;
+  Future<void> register();
+  Stream<String> get onRegistered;
   Stream<RemoteMessage> get onMessage;
   Stream<RemoteMessage> get onMessageOpenedApp;
   Future<RemoteMessage?> getInitialMessage();
@@ -25,10 +25,10 @@ class MockNotificationRepository implements NotificationRepository {
   String get token => 'dummy-token';
 
   @override
-  Future<String?> getToken() async => 'dummy-token';
+  Future<void> register() async {}
 
   @override
-  Stream<String> get onTokenRefresh => const Stream.empty();
+  Stream<String> get onRegistered => const Stream.empty();
 
   @override
   Stream<RemoteMessage> get onMessage => const Stream.empty();
@@ -70,12 +70,16 @@ class FirebaseNotificationRepository implements NotificationRepository {
   @override
   Future<void> initialize() async {
     try {
-      await Future.wait([requestPermission(), getToken()]);
+      _messaging.onRegistered.listen((token) {
+        _token = token;
+        debugPrint('FCM Token: $token');
+      });
+      await Future.wait([requestPermission(), register()]);
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
         stackTrace,
-        reason: 'NotificationRepository initialize/getToken error',
+        reason: 'NotificationRepository initialize/register error',
       );
     }
   }
@@ -84,32 +88,20 @@ class FirebaseNotificationRepository implements NotificationRepository {
   String get token => _token;
 
   @override
-  Future<String?> getToken() async {
+  Future<void> register() async {
     try {
-      final token = await _messaging.getToken();
-      if (token != null) {
-        _token = token;
-        debugPrint('FCM Token: $token');
-      } else {
-        _crash?.recordError(
-          Exception('FCM token is null'),
-          StackTrace.current,
-          reason: 'NotificationRepository getToken error',
-        );
-      }
-      return token;
+      await _messaging.register();
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
         stackTrace,
-        reason: 'NotificationRepository getToken error',
+        reason: 'NotificationRepository register error',
       );
-      return null;
     }
   }
 
   @override
-  Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
+  Stream<String> get onRegistered => _messaging.onRegistered;
 
   @override
   Stream<RemoteMessage> get onMessage => FirebaseMessaging.onMessage;

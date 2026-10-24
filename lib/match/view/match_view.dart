@@ -268,8 +268,8 @@ class RefereeCardMatch extends StatelessWidget {
       title: l10n.refereeMatch,
       content: Column(
         children: [
-          ...referees.map((referee) {
-            return Row(
+          for (final referee in referees)
+            Row(
               spacing: 8,
               children: [
                 HugeIcon(
@@ -303,8 +303,7 @@ class RefereeCardMatch extends StatelessWidget {
                   ),
                 ),
               ],
-            );
-          }),
+            ),
         ],
       ),
     );
@@ -402,30 +401,17 @@ class CompetitionCardMatch extends StatelessWidget {
     );
   }
 
-  String _getMatchRound(Match match, AppLocalizations l10n) {
-    if (match.stage == 'REGULAR_SEASON') {
-      return '${l10n.matchdayMatch} ${match.matchday}';
-    } else {
+  String _getMatchRound(Match match, AppLocalizations l10n) =>
       switch (match.stage) {
-        case 'FINAL':
-          return l10n.finalMatch;
-        case 'THIRD_PLACE':
-          return l10n.thirdPlaceMatch;
-        case 'SEMI_FINALS':
-          return l10n.semiFinalsMatch;
-        case 'QUARTER_FINALS':
-          return l10n.quarterFinalsMatch;
-        case 'LAST_16':
-          return l10n.last16Match;
-        case 'LAST_32':
-          return l10n.last32Match;
-        case 'GROUP_STAGE':
-          return l10n.groupStageMatch;
-        default:
-          return '${l10n.matchdayMatch} ${match.matchday}';
-      }
-    }
-  }
+        'FINAL' => l10n.finalMatch,
+        'THIRD_PLACE' => l10n.thirdPlaceMatch,
+        'SEMI_FINALS' => l10n.semiFinalsMatch,
+        'QUARTER_FINALS' => l10n.quarterFinalsMatch,
+        'LAST_16' => l10n.last16Match,
+        'LAST_32' => l10n.last32Match,
+        'GROUP_STAGE' => l10n.groupStageMatch,
+        _ => '${l10n.matchdayMatch} ${match.matchday}',
+      };
 }
 
 class StandingsMatch extends StatefulWidget {

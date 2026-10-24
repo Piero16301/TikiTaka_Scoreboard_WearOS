@@ -64,6 +64,10 @@ void main() {
       }
       getIt.registerSingleton<DatabaseService>(mockDatabaseService);
 
+      when(
+        () => mockMessaging.onRegistered,
+      ).thenAnswer((_) => const Stream.empty());
+
       repository = FirebaseNotificationRepository(
         messaging: mockMessaging,
         crashService: mockCrashService,
@@ -71,7 +75,7 @@ void main() {
     });
 
     test(
-      'initialize runs requestPermission and getToken successfully',
+      'initialize runs requestPermission and register successfully',
       () async {
         final settings = MockNotificationSettings();
         when(
@@ -80,11 +84,13 @@ void main() {
         when(
           () => mockMessaging.requestPermission(),
         ).thenAnswer((_) async => settings);
+        when(() => mockMessaging.register()).thenAnswer((_) async {});
         when(
-          () => mockMessaging.getToken(),
-        ).thenAnswer((_) async => 'fake-token');
+          () => mockMessaging.onRegistered,
+        ).thenAnswer((_) => Stream.value('fake-token'));
 
         await repository.initialize();
+        await pumpEventQueue();
         expect(repository.token, 'fake-token');
       },
     );
@@ -98,7 +104,7 @@ void main() {
         () => mockCrashService.recordError(
           any<Object>(),
           any<StackTrace?>(),
-          reason: 'NotificationRepository initialize/getToken error',
+          reason: 'NotificationRepository initialize/register error',
         ),
       ).called(1);
     });
@@ -137,46 +143,38 @@ void main() {
       await repository.requestPermission();
     });
 
-    test('getToken records error when token is null', () async {
-      when(() => mockMessaging.getToken()).thenAnswer((_) async => null);
+    test(
+      'register delegates to messaging and records error on failure',
+      () async {
+        when(() => mockMessaging.register()).thenAnswer((_) async {});
 
-      final token = await repository.getToken();
-      expect(token, isNull);
+        await repository.register();
+        verify(() => mockMessaging.register()).called(1);
 
-      verify(
-        () => mockCrashService.recordError(
-          any<Object>(),
-          any<StackTrace?>(),
-          reason: 'NotificationRepository getToken error',
-        ),
-      ).called(1);
-    });
+        final exception = Exception('Token registration failed');
+        when(() => mockMessaging.register()).thenThrow(exception);
 
-    test('getToken records error when getToken throws', () async {
-      final exception = Exception('Token fetch failed');
-      when(() => mockMessaging.getToken()).thenThrow(exception);
+        await repository.register();
 
-      final token = await repository.getToken();
-      expect(token, isNull);
-
-      verify(
-        () => mockCrashService.recordError(
-          exception,
-          any<StackTrace?>(),
-          reason: 'NotificationRepository getToken error',
-        ),
-      ).called(1);
-    });
+        verify(
+          () => mockCrashService.recordError(
+            exception,
+            any<StackTrace?>(),
+            reason: 'NotificationRepository register error',
+          ),
+        ).called(1);
+      },
+    );
 
     test('streams and getters delegate properly', () async {
       when(
-        () => mockMessaging.onTokenRefresh,
+        () => mockMessaging.onRegistered,
       ).thenAnswer((_) => const Stream.empty());
       when(
         () => mockMessaging.getInitialMessage(),
       ).thenAnswer((_) async => null);
 
-      expect(repository.onTokenRefresh, isNotNull);
+      expect(repository.onRegistered, isNotNull);
       expect(repository.onMessage, isNotNull);
       expect(repository.onMessageOpenedApp, isNotNull);
       expect(await repository.getInitialMessage(), isNull);
@@ -282,9 +280,9 @@ void main() {
 
       expect(mockRepo.initialize(), completes);
       expect(mockRepo.token, 'dummy-token');
-      expect(await mockRepo.getToken(), 'dummy-token');
+      expect(mockRepo.register(), completes);
       expect(await mockRepo.getInitialMessage(), isNull);
-      expect(mockRepo.onTokenRefresh, emitsDone);
+      expect(mockRepo.onRegistered, emitsDone);
       expect(mockRepo.onMessage, emitsDone);
       expect(mockRepo.onMessageOpenedApp, emitsDone);
 

@@ -60,19 +60,19 @@ class _TeamViewState extends State<TeamView> {
             children: [
               const SizedBox(height: AppVariables.topScaffoldSpacing),
               MainInfoTeam(team: team),
-              if (team.coach != null && team.coach?.id != 0) ...[
+              if (team.coach case final coach? when coach.id != 0) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                CoachCardTeam(coach: team.coach!),
+                CoachCardTeam(coach: coach),
               ],
-              if (team.runningCompetitions != null &&
-                  team.runningCompetitions!.isNotEmpty) ...[
+              if (team.runningCompetitions case final competitions?
+                  when competitions.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
-                CompetitionsCardTeam(competitions: team.runningCompetitions!),
+                CompetitionsCardTeam(competitions: competitions),
               ],
-              if (team.squad?.isNotEmpty ?? false) ...[
+              if (team.squad case final squad? when squad.isNotEmpty) ...[
                 const SizedBox(height: AppVariables.listSpacing),
                 SquadCardTeam(
-                  squad: team.squad!
+                  squad: [...squad]
                     ..sort(
                       (a, b) => AppFunctions.getStaffPositionOrder(a.position)
                           .compareTo(
