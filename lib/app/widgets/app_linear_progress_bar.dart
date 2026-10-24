@@ -49,12 +49,14 @@ class _AppLinearProgressBarState extends State<AppLinearProgressBar>
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, _) {
-          return CustomPaint(
-            painter: _AppLinearProgressBarPainter(
-              animationValue: _controller.value,
-              backgroundColor: backgroundColor,
-              indicatorColor: indicatorColor,
-              strokeWidth: widget.strokeWidth,
+          return RepaintBoundary(
+            child: CustomPaint(
+              painter: _AppLinearProgressBarPainter(
+                animationValue: _controller.value,
+                backgroundColor: backgroundColor,
+                indicatorColor: indicatorColor,
+                strokeWidth: widget.strokeWidth,
+              ),
             ),
           );
         },

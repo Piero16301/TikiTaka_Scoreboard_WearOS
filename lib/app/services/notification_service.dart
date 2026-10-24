@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
@@ -75,7 +76,9 @@ class NotificationService {
       _messageSubscription = _notificationRepository.onMessage.listen((
         message,
       ) {
-        debugPrint('Foreground FCM message: ${message.data}');
+        if (kDebugMode) {
+          debugPrint('Foreground FCM message: ${message.data}');
+        }
       });
 
       // Manejar aperturas desde background

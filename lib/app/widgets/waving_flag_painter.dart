@@ -23,26 +23,26 @@ class WavingFlagPainter extends CustomPainter {
   double _calculateWaveOffset({
     required double u,
     required double v,
-    required double t,
+    required double theta,
+    required double twoTheta,
+    required double threeTheta,
     required double baseAmplitude,
   }) {
-    final theta = t * 2 * math.pi;
-
     // 1. Primary traveling billow in wind direction
     final w1 = math.sin(u * 2.8 * math.pi - theta + v * 0.45);
 
     // 2. Secondary undulating harmonic (ripples traveling with the wind)
-    final w2 = 0.38 * math.sin(u * 5.6 * math.pi - 2 * theta + v * 0.9 + 1.2);
+    final w2 = 0.38 * math.sin(u * 5.6 * math.pi - twoTheta + v * 0.9 + 1.2);
 
     // 3. High-frequency micro-flutter (fast wind flapping near edges)
-    final w3 = 0.16 * math.sin(u * 9.2 * math.pi - 3 * theta + 2.1);
+    final w3 = 0.16 * math.sin(u * 9.2 * math.pi - threeTheta + 2.1);
 
     // 4. Diagonal cloth twist (cross-wind variation).
     final w4 =
         0.20 * math.sin(v * 2.6 * math.pi + u * 1.8 * math.pi - theta + 0.7);
 
     // 5. Wind gust modulation (gusts that swell and relax naturally).
-    final windGust = 0.88 + 0.16 * math.sin(u * 2 * math.pi - 2 * theta + 0.5);
+    final windGust = 0.88 + 0.16 * math.sin(u * 2 * math.pi - twoTheta + 0.5);
 
     // Amplitude increases naturally towards the free fly-edge (u -> 1.0)
     final flutterMultiplier = 0.75 + 0.5 * u;
@@ -75,6 +75,10 @@ class WavingFlagPainter extends CustomPainter {
     final stripeHeight = flagHeight / colors.length;
     final baseAmplitude = flagHeight * 0.038;
 
+    final theta = animationValue * 2 * math.pi;
+    final twoTheta = 2 * theta;
+    final threeTheta = 3 * theta;
+
     const steps = 100;
     final dx = flagWidth / steps;
 
@@ -97,7 +101,9 @@ class WavingFlagPainter extends CustomPainter {
                   _calculateWaveOffset(
                     u: u,
                     v: topV,
-                    t: animationValue,
+                    theta: theta,
+                    twoTheta: twoTheta,
+                    threeTheta: threeTheta,
                     baseAmplitude: baseAmplitude,
                   );
 
@@ -119,7 +125,9 @@ class WavingFlagPainter extends CustomPainter {
                   _calculateWaveOffset(
                     u: u,
                     v: bottomV,
-                    t: animationValue,
+                    theta: theta,
+                    twoTheta: twoTheta,
+                    threeTheta: threeTheta,
                     baseAmplitude: baseAmplitude,
                   );
 
@@ -146,13 +154,17 @@ class WavingFlagPainter extends CustomPainter {
       final wavePrev = _calculateWaveOffset(
         u: uPrev,
         v: 0.5,
-        t: animationValue,
+        theta: theta,
+        twoTheta: twoTheta,
+        threeTheta: threeTheta,
         baseAmplitude: baseAmplitude,
       );
       final waveNext = _calculateWaveOffset(
         u: uNext,
         v: 0.5,
-        t: animationValue,
+        theta: theta,
+        twoTheta: twoTheta,
+        threeTheta: threeTheta,
         baseAmplitude: baseAmplitude,
       );
       final slope = (waveNext - wavePrev) / ((uNext - uPrev) * flagWidth);

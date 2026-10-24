@@ -55,12 +55,14 @@ class _BallLoaderState extends State<BallLoader>
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        return CustomPaint(
-          size: Size(widget.size, widget.size),
-          painter: _BallPainter(
-            primary: widget.primary,
-            secondary: widget.secondary,
-            progress: _controller.value,
+        return RepaintBoundary(
+          child: CustomPaint(
+            size: Size(widget.size, widget.size),
+            painter: _BallPainter(
+              primary: widget.primary,
+              secondary: widget.secondary,
+              progress: _controller.value,
+            ),
           ),
         );
       },

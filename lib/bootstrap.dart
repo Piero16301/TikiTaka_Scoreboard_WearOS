@@ -12,12 +12,16 @@ class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    log('onChange(${bloc.runtimeType}, $change)');
+    if (kDebugMode) {
+      log('onChange(${bloc.runtimeType}, $change)');
+    }
   }
 
   @override
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    if (kDebugMode) {
+      log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    }
     getIt<CrashService>().recordError(
       error,
       stackTrace,
@@ -43,14 +47,18 @@ bool _isNetworkError(dynamic error) {
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
     if (_isNetworkError(details.exception)) {
-      log(
-        'Network error suppressed from Crashlytics: '
-        '${details.exceptionAsString()}',
-      );
+      if (kDebugMode) {
+        log(
+          'Network error suppressed from Crashlytics: '
+          '${details.exceptionAsString()}',
+        );
+      }
       return;
     }
 
-    log(details.exceptionAsString(), stackTrace: details.stack);
+    if (kDebugMode) {
+      log(details.exceptionAsString(), stackTrace: details.stack);
+    }
     getIt<CrashService>().recordError(
       details.exception,
       details.stack,
@@ -61,11 +69,15 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
 
   PlatformDispatcher.instance.onError = (error, stack) {
     if (_isNetworkError(error)) {
-      log('Network error suppressed from Crashlytics: $error');
+      if (kDebugMode) {
+        log('Network error suppressed from Crashlytics: $error');
+      }
       return true;
     }
 
-    log(error.toString(), stackTrace: stack);
+    if (kDebugMode) {
+      log(error.toString(), stackTrace: stack);
+    }
     getIt<CrashService>().recordError(error, stack, fatal: true);
     return true;
   };

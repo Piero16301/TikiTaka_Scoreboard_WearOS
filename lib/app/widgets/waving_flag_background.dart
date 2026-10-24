@@ -36,10 +36,12 @@ class _WavingFlagBackgroundState extends State<WavingFlagBackground>
       child: AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
-          return CustomPaint(
-            painter: WavingFlagPainter(
-              colors: widget.colors,
-              animationValue: _animationController.value,
+          return RepaintBoundary(
+            child: CustomPaint(
+              painter: WavingFlagPainter(
+                colors: widget.colors,
+                animationValue: _animationController.value,
+              ),
             ),
           );
         },

@@ -1,5 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
@@ -72,7 +72,9 @@ class FirebaseNotificationRepository implements NotificationRepository {
     try {
       _messaging.onRegistered.listen((token) {
         _token = token;
-        debugPrint('FCM Token: $token');
+        if (kDebugMode) {
+          debugPrint('FCM Token: $token');
+        }
       });
       await Future.wait([requestPermission(), register()]);
     } on Exception catch (e, stackTrace) {
@@ -133,21 +135,25 @@ class FirebaseNotificationRepository implements NotificationRepository {
 
   @override
   void handleBackgroundMessage(String message) {
-    debugPrint('Handling a background message: $message');
-    if (message.contains('matchId')) {
-      final matchId = int.tryParse(message.split('matchId:')[1]);
-      if (matchId != null) {
-        AppVariables.navigatorKey.currentState
-            ?.pushNamed(MatchPage.routeName, arguments: matchId)
-            .ignore();
-      }
+    if (kDebugMode) {
+      debugPrint('Handling a background message: $message');
+    }
+    int? matchId;
+    final matchIdRegex = RegExp(r'matchId:(\d+)');
+    final match = matchIdRegex.firstMatch(message);
+    if (match != null) {
+      matchId = int.tryParse(match.group(1)!);
     } else {
-      final matchId = int.tryParse(message.replaceAll(RegExp(r'[^\d]'), ''));
-      if (matchId != null) {
-        AppVariables.navigatorKey.currentState
-            ?.pushNamed(MatchPage.routeName, arguments: matchId)
-            .ignore();
+      final digits = message.replaceAll(RegExp(r'[^\d]'), '');
+      if (digits.isNotEmpty && digits.length <= 9) {
+        matchId = int.tryParse(digits);
       }
+    }
+
+    if (matchId != null && matchId > 0) {
+      AppVariables.navigatorKey.currentState
+          ?.pushNamed(MatchPage.routeName, arguments: matchId)
+          .ignore();
     }
   }
 
