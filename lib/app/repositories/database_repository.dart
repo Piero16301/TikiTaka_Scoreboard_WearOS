@@ -387,7 +387,16 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         _firestore
             .collection(AppVariables.devicesCollection)
             .doc(token)
-            .set(data, SetOptions(mergeFields: data.keys.toList())),
+            .set(data, SetOptions(mergeFields: data.keys.toList()))
+            .catchError((Object error, StackTrace stackTrace) {
+              if (getIt.isRegistered<CrashService>()) {
+                getIt<CrashService>().recordError(
+                  error,
+                  stackTrace,
+                  reason: 'updateDeviceSettings set error',
+                );
+              }
+            }),
       );
     }
 

@@ -77,6 +77,17 @@ class FirebaseNotificationRepository implements NotificationRepository {
         }
       });
       await Future.wait([requestPermission(), register()]);
+      if (_token.isEmpty) {
+        // Fallback to getToken to obtain token if onRegistered has not emitted.
+        // ignore: deprecated_member_use
+        final token = await _messaging.getToken();
+        if (token != null && token.isNotEmpty) {
+          _token = token;
+          if (kDebugMode) {
+            debugPrint('FCM Token: $token');
+          }
+        }
+      }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
@@ -93,6 +104,15 @@ class FirebaseNotificationRepository implements NotificationRepository {
   Future<void> register() async {
     try {
       await _messaging.register();
+      // Retrieve current FCM token since register() does not return it.
+      // ignore: deprecated_member_use
+      final token = await _messaging.getToken();
+      if (token != null && token.isNotEmpty) {
+        _token = token;
+        if (kDebugMode) {
+          debugPrint('FCM Token: $token');
+        }
+      }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,

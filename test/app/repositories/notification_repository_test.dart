@@ -1,3 +1,6 @@
+// Testing deprecated getToken fallback behavior.
+// ignore_for_file: deprecated_member_use
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -67,6 +70,10 @@ void main() {
       when(
         () => mockMessaging.onRegistered,
       ).thenAnswer((_) => const Stream.empty());
+      when(
+        () => mockMessaging.getToken(),
+      ).thenAnswer((_) async => 'fake-token');
+      when(() => mockMessaging.register()).thenAnswer((_) async {});
 
       repository = FirebaseNotificationRepository(
         messaging: mockMessaging,
@@ -86,12 +93,38 @@ void main() {
         ).thenAnswer((_) async => settings);
         when(() => mockMessaging.register()).thenAnswer((_) async {});
         when(
+          () => mockMessaging.getToken(),
+        ).thenAnswer((_) async => 'fake-token');
+        when(
           () => mockMessaging.onRegistered,
         ).thenAnswer((_) => Stream.value('fake-token'));
 
         await repository.initialize();
         await pumpEventQueue();
         expect(repository.token, 'fake-token');
+      },
+    );
+
+    test(
+      'initialize retrieves token using getToken when onRegistered is empty',
+      () async {
+        final settings = MockNotificationSettings();
+        when(
+          () => settings.authorizationStatus,
+        ).thenReturn(AuthorizationStatus.authorized);
+        when(
+          () => mockMessaging.requestPermission(),
+        ).thenAnswer((_) async => settings);
+        when(() => mockMessaging.register()).thenAnswer((_) async {});
+        when(
+          () => mockMessaging.getToken(),
+        ).thenAnswer((_) async => 'retrieved-token');
+        when(
+          () => mockMessaging.onRegistered,
+        ).thenAnswer((_) => const Stream.empty());
+
+        await repository.initialize();
+        expect(repository.token, 'retrieved-token');
       },
     );
 
@@ -147,9 +180,14 @@ void main() {
       'register delegates to messaging and records error on failure',
       () async {
         when(() => mockMessaging.register()).thenAnswer((_) async {});
+        when(
+          () => mockMessaging.getToken(),
+        ).thenAnswer((_) async => 'fake-token');
 
         await repository.register();
         verify(() => mockMessaging.register()).called(1);
+        verify(() => mockMessaging.getToken()).called(1);
+        expect(repository.token, 'fake-token');
 
         final exception = Exception('Token registration failed');
         when(() => mockMessaging.register()).thenThrow(exception);
