@@ -23,6 +23,8 @@ class MockLocalStorageService extends Mock implements LocalStorageService {}
 
 class MockTrace extends Mock implements Trace {}
 
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
 class MockNavigatorState extends Mock implements NavigatorState {
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) =>
@@ -39,9 +41,10 @@ void main() {
     late MockDatabaseService mockDatabase;
     late MockDeviceInfoService mockDeviceInfo;
     late MockLocalStorageService mockLocalStorage;
+    late MockAnalyticsService mockAnalytics;
     late StreamController<RemoteMessage> onMessageController;
     late StreamController<RemoteMessage> onMessageOpenedAppController;
-    late StreamController<String> onTokenRefreshController;
+    late StreamController<String> onRegisteredController;
     late NotificationService notificationService;
 
     setUpAll(() async {
@@ -62,14 +65,21 @@ void main() {
       mockDatabase = MockDatabaseService();
       mockDeviceInfo = MockDeviceInfoService();
       mockLocalStorage = MockLocalStorageService();
+      mockAnalytics = MockAnalyticsService();
 
       onMessageController = StreamController<RemoteMessage>.broadcast();
       onMessageOpenedAppController =
           StreamController<RemoteMessage>.broadcast();
-      onTokenRefreshController = StreamController<String>.broadcast();
+      onRegisteredController = StreamController<String>.broadcast();
 
       when(() => mockPerformance.startTrace(any())).thenReturn(MockTrace());
       when(() => mockPerformance.stopTrace(any())).thenReturn(null);
+      when(
+        () => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        ),
+      ).thenReturn(null);
 
       when(
         () => mockRepository.onMessage,
@@ -78,8 +88,8 @@ void main() {
         () => mockRepository.onMessageOpenedApp,
       ).thenAnswer((_) => onMessageOpenedAppController.stream);
       when(
-        () => mockRepository.onTokenRefresh,
-      ).thenAnswer((_) => onTokenRefreshController.stream);
+        () => mockRepository.onRegistered,
+      ).thenAnswer((_) => onRegisteredController.stream);
       when(
         () => mockRepository.getInitialMessage(),
       ).thenAnswer((_) async => null);
@@ -111,6 +121,7 @@ void main() {
         localStorageService: mockLocalStorage,
         performanceService: mockPerformance,
         crashService: mockCrash,
+        analyticsService: mockAnalytics,
       );
     });
 
@@ -118,7 +129,7 @@ void main() {
       await notificationService.dispose();
       await onMessageController.close();
       await onMessageOpenedAppController.close();
-      await onTokenRefreshController.close();
+      await onRegisteredController.close();
     });
 
     test(
@@ -130,8 +141,11 @@ void main() {
           () =>
               mockPerformance.startTrace('notification_service_initialization'),
         ).called(1);
+        verify(
+          () => mockPerformance.startTrace('device_sync_duration'),
+        ).called(1);
         verify(() => mockRepository.initialize()).called(1);
-        verify(() => mockPerformance.stopTrace(any())).called(1);
+        verify(() => mockPerformance.stopTrace(any())).called(2);
 
         verify(
           () => mockDatabase.updateDeviceSettings(
@@ -197,13 +211,19 @@ void main() {
         await pumpEventQueue();
 
         expect(openedMatchId, 101);
+        verify(
+          () => mockAnalytics.logEvent(
+            name: 'notification_opened',
+            parameters: {'match_id': 101, 'source': 'fcm'},
+          ),
+        ).called(1);
       },
     );
 
-    test('onTokenRefresh stream event triggers syncDeviceAndTopics', () async {
+    test('onRegistered stream event triggers syncDeviceAndTopics', () async {
       await notificationService.initialize();
 
-      onTokenRefreshController.add('new_refreshed_token');
+      onRegisteredController.add('new_refreshed_token');
       await pumpEventQueue();
 
       verify(
@@ -357,9 +377,9 @@ void main() {
       await getIt.reset();
     });
 
-    test('onTokenRefresh getter delegates to repository', () {
-      expect(notificationService.onTokenRefresh, emitsInOrder(['token1']));
-      onTokenRefreshController.add('token1');
+    test('onRegistered getter delegates to repository', () {
+      expect(notificationService.onRegistered, emitsInOrder(['token1']));
+      onRegisteredController.add('token1');
     });
 
     test(
@@ -374,6 +394,10 @@ void main() {
           '86',
         ], languageCode: 'es');
 
+        verify(
+          () => mockPerformance.startTrace('fcm_topics_sync_duration'),
+        ).called(1);
+        verify(() => mockPerformance.stopTrace(any())).called(1);
         verify(() => mockRepository.subscribeToTopic('team_81_es')).called(1);
         verify(() => mockRepository.subscribeToTopic('team_86_es')).called(1);
       },

@@ -45,6 +45,7 @@ void setupServiceLocator(Environment env) {
         localStorageService: getIt<LocalStorageService>(),
         performanceService: getIt<PerformanceService>(),
         crashService: getIt<CrashService>(),
+        analyticsService: getIt<AnalyticsService>(),
       ),
     );
 }

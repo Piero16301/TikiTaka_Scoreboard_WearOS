@@ -245,7 +245,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final switchFinder = find.byType(Switch);
-      await tester.tap(switchFinder);
+      await tester.tap(switchFinder, warnIfMissed: false);
       await tester.pumpAndSettle();
 
       verify(

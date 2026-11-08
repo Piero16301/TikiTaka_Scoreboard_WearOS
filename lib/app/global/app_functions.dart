@@ -9,72 +9,40 @@ class AppFunctions {
     String status,
     DateTime date,
     AppLocalizations l10n,
-  ) {
-    switch (status) {
-      case 'SCHEDULED':
-        return DateFormat('HH:mm').format(date);
-      case 'TIMED':
-        return DateFormat('HH:mm').format(date);
-      case 'LIVE':
-      case 'IN_PLAY':
-        return l10n.inPlayMatch;
-      case 'PAUSED':
-        return l10n.pausedMatch;
-      case 'FINISHED':
-        return l10n.finishedMatch;
-      case 'POSTPONED':
-        return l10n.postponedMatch;
-      case 'SUSPENDED':
-        return l10n.suspendMatch;
-      case 'CANCELED':
-        return l10n.cancelledMatch;
-      case 'AWARDED':
-        return l10n.awardedMatch;
-      default:
-        return l10n.unknownMatch;
-    }
-  }
+  ) => switch (status) {
+    'SCHEDULED' || 'TIMED' => DateFormat('HH:mm').format(date),
+    'LIVE' || 'IN_PLAY' => l10n.inPlayMatch,
+    'PAUSED' => l10n.pausedMatch,
+    'FINISHED' => l10n.finishedMatch,
+    'POSTPONED' => l10n.postponedMatch,
+    'SUSPENDED' => l10n.suspendMatch,
+    'CANCELED' => l10n.cancelledMatch,
+    'AWARDED' => l10n.awardedMatch,
+    _ => l10n.unknownMatch,
+  };
 
-  static String getLanguageLabel(AppLocalizations l10n, Locale language) {
-    switch (language.languageCode) {
-      case 'en':
-        return l10n.englishLanguage;
-      case 'es':
-        return l10n.spanishLanguage;
-      case 'it':
-        return l10n.italianLanguage;
-      case 'fr':
-        return l10n.frenchLanguage;
-      case 'de':
-        return l10n.germanLanguage;
-      case 'pt':
-        return l10n.portugueseLanguage;
-      default:
-        return language.languageCode;
-    }
-  }
+  static String getLanguageLabel(AppLocalizations l10n, Locale language) =>
+      switch (language.languageCode) {
+        'en' => l10n.englishLanguage,
+        'es' => l10n.spanishLanguage,
+        'it' => l10n.italianLanguage,
+        'fr' => l10n.frenchLanguage,
+        'de' => l10n.germanLanguage,
+        'pt' => l10n.portugueseLanguage,
+        _ => language.languageCode,
+      };
 
-  static String notMatchState(String status, AppLocalizations l10n) {
-    switch (status) {
-      case 'LIVE':
-      case 'IN_PLAY':
-        return l10n.inPlayMatch.toUpperCase();
-      case 'PAUSED':
-        return l10n.pausedMatch.toUpperCase();
-      case 'FINISHED':
-        return l10n.finishedMatch.toUpperCase();
-      case 'POSTPONED':
-        return l10n.postponedMatch.toUpperCase();
-      case 'SUSPENDED':
-        return l10n.suspendMatch.toUpperCase();
-      case 'CANCELED':
-        return l10n.cancelledMatch.toUpperCase();
-      case 'AWARDED':
-        return l10n.awardedMatch.toUpperCase();
-      default:
-        return l10n.unknownMatch.toUpperCase();
-    }
-  }
+  static String notMatchState(String status, AppLocalizations l10n) =>
+      switch (status) {
+        'LIVE' || 'IN_PLAY' => l10n.inPlayMatch.toUpperCase(),
+        'PAUSED' => l10n.pausedMatch.toUpperCase(),
+        'FINISHED' => l10n.finishedMatch.toUpperCase(),
+        'POSTPONED' => l10n.postponedMatch.toUpperCase(),
+        'SUSPENDED' => l10n.suspendMatch.toUpperCase(),
+        'CANCELED' => l10n.cancelledMatch.toUpperCase(),
+        'AWARDED' => l10n.awardedMatch.toUpperCase(),
+        _ => l10n.unknownMatch.toUpperCase(),
+      };
 
   static List<Color> getTeamColors(String colors) {
     final list = colors.split(' / ');
@@ -100,324 +68,188 @@ class AppFunctions {
     }).toList();
   }
 
-  static String getCompetitionType(String type, AppLocalizations l10n) {
-    switch (type) {
-      case 'LEAGUE':
-        return l10n.leagueCompetition;
-      case 'CUP':
-        return l10n.cupCompetition;
-      case 'SUPER_CUP':
-        return l10n.superCupCompetition;
-      case 'FRIENDLY':
-        return l10n.friendlyCompetition;
-      default:
-        return l10n.otherCompetition;
-    }
-  }
+  static String getCompetitionType(String type, AppLocalizations l10n) =>
+      switch (type) {
+        'LEAGUE' => l10n.leagueCompetition,
+        'CUP' => l10n.cupCompetition,
+        'SUPER_CUP' => l10n.superCupCompetition,
+        'FRIENDLY' => l10n.friendlyCompetition,
+        _ => l10n.otherCompetition,
+      };
 
-  static String getStaffPosition(String position, AppLocalizations l10n) {
-    switch (position) {
-      case 'Goalkeeper':
-        return l10n.goalkeeperPosition;
-      case 'Defence':
-        return l10n.defencePosition;
-      case 'Midfield':
-        return l10n.midfieldPosition;
-      case 'Offence':
-        return l10n.offencePosition;
-      case 'Left-Back':
-        return l10n.leftBackPosition;
-      case 'Central Midfield':
-        return l10n.centralMidfieldPosition;
-      case 'Attacking Midfield':
-        return l10n.attackingMidfieldPosition;
-      case 'Centre-Forward':
-        return l10n.centreForwardPosition;
-      case 'Left Winger':
-        return l10n.leftWingerPosition;
-      case 'Centre-Back':
-        return l10n.centreBackPosition;
-      case 'Right Winger':
-        return l10n.rightWingerPosition;
-      case 'Right-Back':
-        return l10n.rightBackPosition;
-      case 'Defensive Midfield':
-        return l10n.defensiveMidfieldPosition;
-      case 'Left Midfield':
-        return l10n.leftMidfieldPosition;
-      case 'Right Midfield':
-        return l10n.rightMidfieldPosition;
-      case 'Secondary Forward':
-        return l10n.secondaryForwardPosition;
-      case 'Coach':
-        return l10n.coachPosition;
-      case 'Assistant Coach':
-        return l10n.assistantCoachPosition;
-      case 'Goalkeeping Coach':
-        return l10n.goalkeepingCoachPosition;
-      case 'Forward Coach':
-        return l10n.forwardCoachPosition;
-      case 'Caretaker Manager':
-        return l10n.caretakerManagerPosition;
-      default:
-        return l10n.unknownPosition;
-    }
-  }
+  static String getStaffPosition(String position, AppLocalizations l10n) =>
+      switch (position) {
+        'Goalkeeper' => l10n.goalkeeperPosition,
+        'Defence' => l10n.defencePosition,
+        'Midfield' => l10n.midfieldPosition,
+        'Offence' => l10n.offencePosition,
+        'Left-Back' => l10n.leftBackPosition,
+        'Central Midfield' => l10n.centralMidfieldPosition,
+        'Attacking Midfield' => l10n.attackingMidfieldPosition,
+        'Centre-Forward' => l10n.centreForwardPosition,
+        'Left Winger' => l10n.leftWingerPosition,
+        'Centre-Back' => l10n.centreBackPosition,
+        'Right Winger' => l10n.rightWingerPosition,
+        'Right-Back' => l10n.rightBackPosition,
+        'Defensive Midfield' => l10n.defensiveMidfieldPosition,
+        'Left Midfield' => l10n.leftMidfieldPosition,
+        'Right Midfield' => l10n.rightMidfieldPosition,
+        'Secondary Forward' => l10n.secondaryForwardPosition,
+        'Coach' => l10n.coachPosition,
+        'Assistant Coach' => l10n.assistantCoachPosition,
+        'Goalkeeping Coach' => l10n.goalkeepingCoachPosition,
+        'Forward Coach' => l10n.forwardCoachPosition,
+        'Caretaker Manager' => l10n.caretakerManagerPosition,
+        _ => l10n.unknownPosition,
+      };
 
-  static String getColorName(String colorName, AppLocalizations l10n) {
-    switch (colorName) {
-      case 'RED':
-        return l10n.colorRed;
-      case 'PINK':
-        return l10n.colorPink;
-      case 'PURPLE':
-        return l10n.colorPurple;
-      case 'DEEP_PURPLE':
-        return l10n.colorDeepPurple;
-      case 'INDIGO':
-        return l10n.colorIndigo;
-      case 'BLUE':
-        return l10n.colorBlue;
-      case 'LIGHT_BLUE':
-        return l10n.colorLightBlue;
-      case 'CYAN':
-        return l10n.colorCyan;
-      case 'TEAL':
-        return l10n.colorTeal;
-      case 'GREEN':
-        return l10n.colorGreen;
-      case 'LIGHT_GREEN':
-        return l10n.colorLightGreen;
-      case 'LIME':
-        return l10n.colorLime;
-      case 'YELLOW':
-        return l10n.colorYellow;
-      case 'AMBER':
-        return l10n.colorAmber;
-      case 'ORANGE':
-        return l10n.colorOrange;
-      case 'DEEP_ORANGE':
-        return l10n.colorDeepOrange;
-      case 'BROWN':
-        return l10n.colorBrown;
-      case 'GREY':
-        return l10n.colorGrey;
-      case 'BLUE_GREY':
-        return l10n.colorBlueGrey;
-      default:
-        return colorName;
-    }
-  }
+  static String getColorName(String colorName, AppLocalizations l10n) =>
+      switch (colorName) {
+        'RED' => l10n.colorRed,
+        'PINK' => l10n.colorPink,
+        'PURPLE' => l10n.colorPurple,
+        'DEEP_PURPLE' => l10n.colorDeepPurple,
+        'INDIGO' => l10n.colorIndigo,
+        'BLUE' => l10n.colorBlue,
+        'LIGHT_BLUE' => l10n.colorLightBlue,
+        'CYAN' => l10n.colorCyan,
+        'TEAL' => l10n.colorTeal,
+        'GREEN' => l10n.colorGreen,
+        'LIGHT_GREEN' => l10n.colorLightGreen,
+        'LIME' => l10n.colorLime,
+        'YELLOW' => l10n.colorYellow,
+        'AMBER' => l10n.colorAmber,
+        'ORANGE' => l10n.colorOrange,
+        'DEEP_ORANGE' => l10n.colorDeepOrange,
+        'BROWN' => l10n.colorBrown,
+        'GREY' => l10n.colorGrey,
+        'BLUE_GREY' => l10n.colorBlueGrey,
+        _ => colorName,
+      };
 
-  static Color getStaffPositionColor(String position) {
-    switch (position) {
-      // Goalkeeper positions
-      case 'Goalkeeper':
-        return Colors.orange.shade600;
+  static Color getStaffPositionColor(String position) => switch (position) {
+    'Goalkeeper' => Colors.orange.shade600,
+    'Defence' ||
+    'Left-Back' ||
+    'Centre-Back' ||
+    'Right-Back' => Colors.blue.shade600,
+    'Midfield' ||
+    'Central Midfield' ||
+    'Defensive Midfield' ||
+    'Left Midfield' ||
+    'Right Midfield' ||
+    'Attacking Midfield' => Colors.green.shade600,
+    'Offence' ||
+    'Centre-Forward' ||
+    'Left Winger' ||
+    'Right Winger' ||
+    'Secondary Forward' => Colors.red.shade600,
+    'Coach' ||
+    'Assistant Coach' ||
+    'Goalkeeping Coach' ||
+    'Forward Coach' ||
+    'Caretaker Manager' => Colors.purple.shade600,
+    _ => Colors.grey.shade600,
+  };
 
-      // Defensive positions
-      case 'Defence':
-      case 'Left-Back':
-      case 'Centre-Back':
-      case 'Right-Back':
-        return Colors.blue.shade600;
+  static int getStaffPositionOrder(String position) => switch (position) {
+    'Goalkeeper' => 1,
+    'Defence' || 'Left-Back' || 'Centre-Back' || 'Right-Back' => 2,
+    'Midfield' ||
+    'Central Midfield' ||
+    'Defensive Midfield' ||
+    'Left Midfield' ||
+    'Right Midfield' ||
+    'Attacking Midfield' => 3,
+    'Offence' ||
+    'Centre-Forward' ||
+    'Left Winger' ||
+    'Right Winger' ||
+    'Secondary Forward' => 4,
+    'Coach' ||
+    'Assistant Coach' ||
+    'Goalkeeping Coach' ||
+    'Forward Coach' ||
+    'Caretaker Manager' => 5,
+    _ => 6,
+  };
 
-      // Midfield positions
-      case 'Midfield':
-      case 'Central Midfield':
-      case 'Defensive Midfield':
-      case 'Left Midfield':
-      case 'Right Midfield':
-      case 'Attacking Midfield':
-        return Colors.green.shade600;
+  static List<List<dynamic>> getStaffPositionIcon(String position) =>
+      switch (position) {
+        'Goalkeeper' => HugeIcons.strokeRoundedFootball,
+        'Defence' ||
+        'Left-Back' ||
+        'Centre-Back' ||
+        'Right-Back' => HugeIcons.strokeRoundedKnightShield,
+        'Midfield' ||
+        'Central Midfield' ||
+        'Defensive Midfield' ||
+        'Left Midfield' ||
+        'Right Midfield' ||
+        'Attacking Midfield' => HugeIcons.strokeRoundedAlignVerticalCenter,
+        'Offence' ||
+        'Centre-Forward' ||
+        'Left Winger' ||
+        'Right Winger' ||
+        'Secondary Forward' => HugeIcons.strokeRoundedArrowRightDouble,
+        'Coach' ||
+        'Assistant Coach' ||
+        'Goalkeeping Coach' ||
+        'Forward Coach' ||
+        'Caretaker Manager' => HugeIcons.strokeRoundedUser,
+        _ => HugeIcons.strokeRoundedQuestion,
+      };
 
-      // Offensive positions
-      case 'Offence':
-      case 'Centre-Forward':
-      case 'Left Winger':
-      case 'Right Winger':
-      case 'Secondary Forward':
-        return Colors.red.shade600;
-
-      // Technical staff
-      case 'Coach':
-      case 'Assistant Coach':
-      case 'Goalkeeping Coach':
-      case 'Forward Coach':
-      case 'Caretaker Manager':
-        return Colors.purple.shade600;
-
-      default:
-        return Colors.grey.shade600;
-    }
-  }
-
-  static int getStaffPositionOrder(String position) {
-    switch (position) {
-      case 'Goalkeeper':
-        return 1;
-      case 'Defence':
-      case 'Left-Back':
-      case 'Centre-Back':
-      case 'Right-Back':
-        return 2;
-      case 'Midfield':
-      case 'Central Midfield':
-      case 'Defensive Midfield':
-      case 'Left Midfield':
-      case 'Right Midfield':
-      case 'Attacking Midfield':
-        return 3;
-      case 'Offence':
-      case 'Centre-Forward':
-      case 'Left Winger':
-      case 'Right Winger':
-      case 'Secondary Forward':
-        return 4;
-      case 'Coach':
-      case 'Assistant Coach':
-      case 'Goalkeeping Coach':
-      case 'Forward Coach':
-      case 'Caretaker Manager':
-        return 5;
-      default:
-        return 6;
-    }
-  }
-
-  static List<List<dynamic>> getStaffPositionIcon(String position) {
-    switch (position) {
-      case 'Goalkeeper':
-        return HugeIcons.strokeRoundedFootball;
-      case 'Defence':
-      case 'Left-Back':
-      case 'Centre-Back':
-      case 'Right-Back':
-        return HugeIcons.strokeRoundedKnightShield;
-      case 'Midfield':
-      case 'Central Midfield':
-      case 'Defensive Midfield':
-      case 'Left Midfield':
-      case 'Right Midfield':
-      case 'Attacking Midfield':
-        return HugeIcons.strokeRoundedAlignVerticalCenter;
-      case 'Offence':
-      case 'Centre-Forward':
-      case 'Left Winger':
-      case 'Right Winger':
-      case 'Secondary Forward':
-        return HugeIcons.strokeRoundedArrowRightDouble;
-      case 'Coach':
-      case 'Assistant Coach':
-      case 'Goalkeeping Coach':
-      case 'Forward Coach':
-      case 'Caretaker Manager':
-        return HugeIcons.strokeRoundedUser;
-      default:
-        return HugeIcons.strokeRoundedQuestion;
-    }
-  }
-
-  static String getTeamTranslatedName(String name, AppLocalizations l10n) {
-    switch (name) {
-      case 'Bosnia-Herzegovina':
-        return l10n.teamBosniaHerzegovina;
-      case 'Panama':
-        return l10n.teamPanama;
-      case 'Cape Verde Islands':
-        return l10n.teamCapeVerdeIslands;
-      case 'Congo DR':
-        return l10n.teamCongoDR;
-      case 'Ivory Coast':
-        return l10n.teamIvoryCoast;
-      case 'Uruguay':
-        return l10n.teamUruguay;
-      case 'Germany':
-        return l10n.teamGermany;
-      case 'Spain':
-        return l10n.teamSpain;
-      case 'Paraguay':
-        return l10n.teamParaguay;
-      case 'Argentina':
-        return l10n.teamArgentina;
-      case 'Ghana':
-        return l10n.teamGhana;
-      case 'Brazil':
-        return l10n.teamBrazil;
-      case 'Portugal':
-        return l10n.teamPortugal;
-      case 'Japan':
-        return l10n.teamJapan;
-      case 'Mexico':
-        return l10n.teamMexico;
-      case 'England':
-        return l10n.teamEngland;
-      case 'United States':
-        return l10n.teamUnitedStates;
-      case 'South Korea':
-        return l10n.teamSouthKorea;
-      case 'France':
-        return l10n.teamFrance;
-      case 'South Africa':
-        return l10n.teamSouthAfrica;
-      case 'Algeria':
-        return l10n.teamAlgeria;
-      case 'Australia':
-        return l10n.teamAustralia;
-      case 'New Zealand':
-        return l10n.teamNewZealand;
-      case 'Switzerland':
-        return l10n.teamSwitzerland;
-      case 'Ecuador':
-        return l10n.teamEcuador;
-      case 'Sweden':
-        return l10n.teamSweden;
-      case 'Czechia':
-        return l10n.teamCzechia;
-      case 'Croatia':
-        return l10n.teamCroatia;
-      case 'Saudi Arabia':
-        return l10n.teamSaudiArabia;
-      case 'Tunisia':
-        return l10n.teamTunisia;
-      case 'Turkey':
-        return l10n.teamTurkey;
-      case 'Qatar':
-        return l10n.teamQatar;
-      case 'Senegal':
-        return l10n.teamSenegal;
-      case 'Jordan':
-        return l10n.teamJordan;
-      case 'Belgium':
-        return l10n.teamBelgium;
-      case 'Iraq':
-        return l10n.teamIraq;
-      case 'Uzbekistan':
-        return l10n.teamUzbekistan;
-      case 'Morocco':
-        return l10n.teamMorocco;
-      case 'Austria':
-        return l10n.teamAustria;
-      case 'Colombia':
-        return l10n.teamColombia;
-      case 'Egypt':
-        return l10n.teamEgypt;
-      case 'Canada':
-        return l10n.teamCanada;
-      case 'Haiti':
-        return l10n.teamHaiti;
-      case 'Iran':
-        return l10n.teamIran;
-      case 'Netherlands':
-        return l10n.teamNetherlands;
-      case 'Norway':
-        return l10n.teamNorway;
-      case 'Scotland':
-        return l10n.teamScotland;
-      case 'Curaçao':
-        return l10n.teamCuracao;
-      default:
-        return name;
-    }
-  }
+  static String getTeamTranslatedName(String name, AppLocalizations l10n) =>
+      switch (name) {
+        'Bosnia-Herzegovina' => l10n.teamBosniaHerzegovina,
+        'Panama' => l10n.teamPanama,
+        'Cape Verde Islands' => l10n.teamCapeVerdeIslands,
+        'Congo DR' => l10n.teamCongoDR,
+        'Ivory Coast' => l10n.teamIvoryCoast,
+        'Uruguay' => l10n.teamUruguay,
+        'Germany' => l10n.teamGermany,
+        'Spain' => l10n.teamSpain,
+        'Paraguay' => l10n.teamParaguay,
+        'Argentina' => l10n.teamArgentina,
+        'Ghana' => l10n.teamGhana,
+        'Brazil' => l10n.teamBrazil,
+        'Portugal' => l10n.teamPortugal,
+        'Japan' => l10n.teamJapan,
+        'Mexico' => l10n.teamMexico,
+        'England' => l10n.teamEngland,
+        'United States' => l10n.teamUnitedStates,
+        'South Korea' => l10n.teamSouthKorea,
+        'France' => l10n.teamFrance,
+        'South Africa' => l10n.teamSouthAfrica,
+        'Algeria' => l10n.teamAlgeria,
+        'Australia' => l10n.teamAustralia,
+        'New Zealand' => l10n.teamNewZealand,
+        'Switzerland' => l10n.teamSwitzerland,
+        'Ecuador' => l10n.teamEcuador,
+        'Sweden' => l10n.teamSweden,
+        'Czechia' => l10n.teamCzechia,
+        'Croatia' => l10n.teamCroatia,
+        'Saudi Arabia' => l10n.teamSaudiArabia,
+        'Tunisia' => l10n.teamTunisia,
+        'Turkey' => l10n.teamTurkey,
+        'Qatar' => l10n.teamQatar,
+        'Senegal' => l10n.teamSenegal,
+        'Jordan' => l10n.teamJordan,
+        'Belgium' => l10n.teamBelgium,
+        'Iraq' => l10n.teamIraq,
+        'Uzbekistan' => l10n.teamUzbekistan,
+        'Morocco' => l10n.teamMorocco,
+        'Austria' => l10n.teamAustria,
+        'Colombia' => l10n.teamColombia,
+        'Egypt' => l10n.teamEgypt,
+        'Canada' => l10n.teamCanada,
+        'Haiti' => l10n.teamHaiti,
+        'Iran' => l10n.teamIran,
+        'Netherlands' => l10n.teamNetherlands,
+        'Norway' => l10n.teamNorway,
+        'Scotland' => l10n.teamScotland,
+        'Curaçao' => l10n.teamCuracao,
+        _ => name,
+      };
 }

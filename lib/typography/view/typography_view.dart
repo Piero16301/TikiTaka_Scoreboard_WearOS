@@ -59,8 +59,15 @@ class CardFonts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardAction(
-      onPressed: () =>
-          context.read<AppCubit>().changeFontFamily(fontFamily: value),
+      onPressed: () {
+        if (getIt.isRegistered<AnalyticsService>()) {
+          getIt<AnalyticsService>().logEvent(
+            name: 'font_family_changed',
+            parameters: {'font_family': value},
+          );
+        }
+        context.read<AppCubit>().changeFontFamily(fontFamily: value);
+      },
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
         child: Row(

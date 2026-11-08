@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:material_ui/material_ui.dart' hide Table;
@@ -19,10 +20,18 @@ class MatchView extends StatefulWidget {
 class _MatchViewState extends State<MatchView> {
   final _scrollController = ScrollController(keepScrollOffset: false);
   late final Stream<Match> _matchStream;
+  Trace? _matchLoadTrace;
+  bool _hasLoggedInitialMatch = false;
 
   @override
   void initState() {
     super.initState();
+
+    if (getIt.isRegistered<PerformanceService>()) {
+      _matchLoadTrace = getIt<PerformanceService>().startTrace(
+        'match_detail_load',
+      );
+    }
 
     final matchId = context.read<MatchCubit>().state.matchId;
     _matchStream = getIt<DatabaseService>().getMatchStream(matchId: matchId);
@@ -31,6 +40,10 @@ class _MatchViewState extends State<MatchView> {
   @override
   void dispose() {
     _scrollController.dispose();
+    if (_matchLoadTrace != null && getIt.isRegistered<PerformanceService>()) {
+      getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
+      _matchLoadTrace = null;
+    }
     super.dispose();
   }
 
@@ -41,6 +54,22 @@ class _MatchViewState extends State<MatchView> {
     return StreamBuilder<Match>(
       stream: _matchStream,
       builder: (context, snapshot) {
+        if (!_hasLoggedInitialMatch &&
+            (snapshot.hasData || snapshot.hasError)) {
+          _hasLoggedInitialMatch = true;
+          if (_matchLoadTrace != null &&
+              getIt.isRegistered<PerformanceService>()) {
+            getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
+            _matchLoadTrace = null;
+          }
+          if (snapshot.hasError && getIt.isRegistered<AnalyticsService>()) {
+            getIt<AnalyticsService>().logEvent(
+              name: 'match_detail_error',
+              parameters: {'error': snapshot.error.toString()},
+            );
+          }
+        }
+
         if (snapshot.hasError) {
           return AppScaffold.basic(child: AppError(text: l10n.errorMatch));
         }
@@ -268,8 +297,8 @@ class RefereeCardMatch extends StatelessWidget {
       title: l10n.refereeMatch,
       content: Column(
         children: [
-          ...referees.map((referee) {
-            return Row(
+          for (final referee in referees)
+            Row(
               spacing: 8,
               children: [
                 HugeIcon(
@@ -303,8 +332,7 @@ class RefereeCardMatch extends StatelessWidget {
                   ),
                 ),
               ],
-            );
-          }),
+            ),
         ],
       ),
     );
@@ -402,30 +430,17 @@ class CompetitionCardMatch extends StatelessWidget {
     );
   }
 
-  String _getMatchRound(Match match, AppLocalizations l10n) {
-    if (match.stage == 'REGULAR_SEASON') {
-      return '${l10n.matchdayMatch} ${match.matchday}';
-    } else {
+  String _getMatchRound(Match match, AppLocalizations l10n) =>
       switch (match.stage) {
-        case 'FINAL':
-          return l10n.finalMatch;
-        case 'THIRD_PLACE':
-          return l10n.thirdPlaceMatch;
-        case 'SEMI_FINALS':
-          return l10n.semiFinalsMatch;
-        case 'QUARTER_FINALS':
-          return l10n.quarterFinalsMatch;
-        case 'LAST_16':
-          return l10n.last16Match;
-        case 'LAST_32':
-          return l10n.last32Match;
-        case 'GROUP_STAGE':
-          return l10n.groupStageMatch;
-        default:
-          return '${l10n.matchdayMatch} ${match.matchday}';
-      }
-    }
-  }
+        'FINAL' => l10n.finalMatch,
+        'THIRD_PLACE' => l10n.thirdPlaceMatch,
+        'SEMI_FINALS' => l10n.semiFinalsMatch,
+        'QUARTER_FINALS' => l10n.quarterFinalsMatch,
+        'LAST_16' => l10n.last16Match,
+        'LAST_32' => l10n.last32Match,
+        'GROUP_STAGE' => l10n.groupStageMatch,
+        _ => '${l10n.matchdayMatch} ${match.matchday}',
+      };
 }
 
 class StandingsMatch extends StatefulWidget {

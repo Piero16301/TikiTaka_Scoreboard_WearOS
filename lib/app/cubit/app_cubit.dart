@@ -58,7 +58,7 @@ class AppCubit extends Cubit<AppState> {
     unawaited(_initDeviceStream());
   }
 
-  StreamSubscription<String>? _tokenRefreshSubscription;
+  StreamSubscription<String>? _registeredSubscription;
 
   Future<void> _initDeviceStream() async {
     await notification.initialize();
@@ -66,8 +66,8 @@ class AppCubit extends Cubit<AppState> {
     if (token.isNotEmpty) {
       _listenToDevice(token);
     }
-    await _tokenRefreshSubscription?.cancel();
-    _tokenRefreshSubscription = notification.onTokenRefresh.listen((newToken) {
+    await _registeredSubscription?.cancel();
+    _registeredSubscription = notification.onRegistered.listen((newToken) {
       if (newToken.isNotEmpty) {
         _listenToDevice(newToken);
       }
@@ -100,7 +100,7 @@ class AppCubit extends Cubit<AppState> {
 
   @override
   Future<void> close() async {
-    await _tokenRefreshSubscription?.cancel();
+    await _registeredSubscription?.cancel();
     await _deviceSubscription?.cancel();
     return await super.close();
   }

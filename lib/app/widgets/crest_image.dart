@@ -32,6 +32,8 @@ class CrestImage extends StatelessWidget {
     final background = Theme.of(context).colorScheme.inverseSurface;
     final borderRadius = this.borderRadius ?? BorderRadius.circular(10);
     final applyMargin = showBackground || margin != 0;
+    final innerWidth = applyMargin ? width - (margin * 2) : width;
+    final innerHeight = applyMargin ? height - (margin * 2) : height;
 
     if (crest.isEmpty || hideCrest) {
       return SizedBox(
@@ -48,10 +50,7 @@ class CrestImage extends StatelessWidget {
                   width: width,
                   height: height,
                 ),
-              Icon(
-                Icons.image,
-                size: applyMargin ? width - (margin * 2) : width,
-              ),
+              Icon(Icons.image, size: innerWidth.isFinite ? innerWidth : null),
             ],
           ),
         ),
@@ -74,18 +73,18 @@ class CrestImage extends StatelessWidget {
                   height: height,
                 ),
               SizedBox(
-                width: applyMargin ? width - (margin * 2) : width,
-                height: applyMargin ? height - (margin * 2) : height,
+                width: innerWidth,
+                height: innerHeight,
                 child: RepaintBoundary(
                   child: CachedSvgImage(
                     imageUrl: crest,
                     cacheManager: cacheManager,
                     fit: fit,
-                    width: applyMargin ? width - (margin * 2) : width,
-                    height: applyMargin ? height - (margin * 2) : height,
+                    width: innerWidth,
+                    height: innerHeight,
                     errorBuilder: (context, error, stackTrace) => Icon(
                       Icons.image,
-                      size: applyMargin ? width - (margin * 2) : width,
+                      size: innerWidth.isFinite ? innerWidth : null,
                     ),
                   ),
                 ),
@@ -95,6 +94,13 @@ class CrestImage extends StatelessWidget {
         ),
       );
     } else {
+      final memCacheWidth = innerWidth.isFinite && innerWidth > 0
+          ? (innerWidth * 2.5).round()
+          : null;
+      final memCacheHeight = innerHeight.isFinite && innerHeight > 0
+          ? (innerHeight * 2.5).round()
+          : null;
+
       return SizedBox(
         width: width,
         height: height,
@@ -112,14 +118,16 @@ class CrestImage extends StatelessWidget {
               Padding(
                 padding: applyMargin ? EdgeInsets.all(margin) : EdgeInsets.zero,
                 child: CachedNetworkImage(
-                  width: applyMargin ? width - (margin * 2) : width,
-                  height: applyMargin ? height - (margin * 2) : height,
+                  width: innerWidth,
+                  height: innerHeight,
+                  memCacheWidth: memCacheWidth,
+                  memCacheHeight: memCacheHeight,
                   imageUrl: crest,
                   cacheManager: cacheManager,
                   fit: fit,
                   errorWidget: (context, url, error) => Icon(
                     Icons.image,
-                    size: applyMargin ? width - (margin * 2) : width,
+                    size: innerWidth.isFinite ? innerWidth : null,
                   ),
                 ),
               ),

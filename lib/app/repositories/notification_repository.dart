@@ -1,13 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:material_ui/material_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
 
 abstract class NotificationRepository {
   Future<void> initialize();
   String get token;
-  Future<String?> getToken();
-  Stream<String> get onTokenRefresh;
+  Future<void> register();
+  Stream<String> get onRegistered;
   Stream<RemoteMessage> get onMessage;
   Stream<RemoteMessage> get onMessageOpenedApp;
   Future<RemoteMessage?> getInitialMessage();
@@ -25,10 +25,10 @@ class MockNotificationRepository implements NotificationRepository {
   String get token => 'dummy-token';
 
   @override
-  Future<String?> getToken() async => 'dummy-token';
+  Future<void> register() async {}
 
   @override
-  Stream<String> get onTokenRefresh => const Stream.empty();
+  Stream<String> get onRegistered => const Stream.empty();
 
   @override
   Stream<RemoteMessage> get onMessage => const Stream.empty();
@@ -70,12 +70,29 @@ class FirebaseNotificationRepository implements NotificationRepository {
   @override
   Future<void> initialize() async {
     try {
-      await Future.wait([requestPermission(), getToken()]);
+      _messaging.onRegistered.listen((token) {
+        _token = token;
+        if (kDebugMode) {
+          debugPrint('FCM Token: $token');
+        }
+      });
+      await Future.wait([requestPermission(), register()]);
+      if (_token.isEmpty) {
+        // Fallback to getToken to obtain token if onRegistered has not emitted.
+        // ignore: deprecated_member_use
+        final token = await _messaging.getToken();
+        if (token != null && token.isNotEmpty) {
+          _token = token;
+          if (kDebugMode) {
+            debugPrint('FCM Token: $token');
+          }
+        }
+      }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
         stackTrace,
-        reason: 'NotificationRepository initialize/getToken error',
+        reason: 'NotificationRepository initialize/register error',
       );
     }
   }
@@ -84,32 +101,29 @@ class FirebaseNotificationRepository implements NotificationRepository {
   String get token => _token;
 
   @override
-  Future<String?> getToken() async {
+  Future<void> register() async {
     try {
+      await _messaging.register();
+      // Retrieve current FCM token since register() does not return it.
+      // ignore: deprecated_member_use
       final token = await _messaging.getToken();
-      if (token != null) {
+      if (token != null && token.isNotEmpty) {
         _token = token;
-        debugPrint('FCM Token: $token');
-      } else {
-        _crash?.recordError(
-          Exception('FCM token is null'),
-          StackTrace.current,
-          reason: 'NotificationRepository getToken error',
-        );
+        if (kDebugMode) {
+          debugPrint('FCM Token: $token');
+        }
       }
-      return token;
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
         stackTrace,
-        reason: 'NotificationRepository getToken error',
+        reason: 'NotificationRepository register error',
       );
-      return null;
     }
   }
 
   @override
-  Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
+  Stream<String> get onRegistered => _messaging.onRegistered;
 
   @override
   Stream<RemoteMessage> get onMessage => FirebaseMessaging.onMessage;
@@ -141,21 +155,25 @@ class FirebaseNotificationRepository implements NotificationRepository {
 
   @override
   void handleBackgroundMessage(String message) {
-    debugPrint('Handling a background message: $message');
-    if (message.contains('matchId')) {
-      final matchId = int.tryParse(message.split('matchId:')[1]);
-      if (matchId != null) {
-        AppVariables.navigatorKey.currentState
-            ?.pushNamed(MatchPage.routeName, arguments: matchId)
-            .ignore();
-      }
+    if (kDebugMode) {
+      debugPrint('Handling a background message: $message');
+    }
+    int? matchId;
+    final matchIdRegex = RegExp(r'matchId:(\d+)');
+    final match = matchIdRegex.firstMatch(message);
+    if (match != null) {
+      matchId = int.tryParse(match.group(1)!);
     } else {
-      final matchId = int.tryParse(message.replaceAll(RegExp(r'[^\d]'), ''));
-      if (matchId != null) {
-        AppVariables.navigatorKey.currentState
-            ?.pushNamed(MatchPage.routeName, arguments: matchId)
-            .ignore();
+      final digits = message.replaceAll(RegExp(r'[^\d]'), '');
+      if (digits.isNotEmpty && digits.length <= 9) {
+        matchId = int.tryParse(digits);
       }
+    }
+
+    if (matchId != null && matchId > 0) {
+      AppVariables.navigatorKey.currentState
+          ?.pushNamed(MatchPage.routeName, arguments: matchId)
+          .ignore();
     }
   }
 

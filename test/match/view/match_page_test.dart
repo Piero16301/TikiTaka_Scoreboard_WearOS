@@ -343,22 +343,22 @@ void main() {
           renderBox.localToGlobal(Offset.zero);
         }
       }
-      await tester.tap(find.byType(CrestImage).first);
+      await tester.tap(find.byType(CrestImage).first, warnIfMissed: false);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       verify(() => mockObserver.didPush(any(), any())).called(greaterThan(0));
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(BackButton), warnIfMissed: false);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
       await tester.ensureVisible(find.byType(CrestImage).last);
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(CrestImage).last);
+      await tester.tap(find.byType(CrestImage).last, warnIfMissed: false);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
-      await tester.tap(find.byType(BackButton));
+      await tester.tap(find.byType(BackButton), warnIfMissed: false);
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 

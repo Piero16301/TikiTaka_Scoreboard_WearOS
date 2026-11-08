@@ -112,6 +112,7 @@ app.*.map.json
 !.idea/runConfigurations/
 pubspec.lock
 .metadata
+graphify-out/
 
 # Demo
 demo/node_modules/

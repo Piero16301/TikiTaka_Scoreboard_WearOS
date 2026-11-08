@@ -86,6 +86,7 @@ android {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -95,6 +96,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
 }
 
 kotlin {
@@ -109,7 +111,7 @@ flutter {
 
 dependencies {
     implementation("androidx.wear:wear:1.4.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.21")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     
     // Fix for profileinstaller NoSuchMethodError on Crashlytics

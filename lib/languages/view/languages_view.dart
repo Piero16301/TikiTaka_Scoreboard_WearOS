@@ -62,7 +62,15 @@ class CardLanguages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppCardAction(
-      onPressed: () => context.read<AppCubit>().changeLanguage(language: value),
+      onPressed: () {
+        if (getIt.isRegistered<AnalyticsService>()) {
+          getIt<AnalyticsService>().logEvent(
+            name: 'language_changed',
+            parameters: {'language': value.languageCode},
+          );
+        }
+        context.read<AppCubit>().changeLanguage(language: value);
+      },
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
         child: Row(

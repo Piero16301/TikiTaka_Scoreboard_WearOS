@@ -19,6 +19,7 @@ class TopCurvedTime extends StatefulWidget {
 }
 
 class _TopCurvedTimeState extends State<TopCurvedTime> {
+  static final DateFormat _timeFormat = DateFormat.Hm();
   late String _timeString;
   Timer? _timer;
 
@@ -37,7 +38,7 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
   }
 
   String _formatTime(DateTime time) {
-    return DateFormat.Hm().format(time);
+    return _timeFormat.format(time);
   }
 
   @override
@@ -63,12 +64,14 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
         Align(
           alignment: Alignment.topCenter,
           child: IgnorePointer(
-            child: CustomPaint(
-              size: const Size(100, 30),
-              painter: _CurvedTextPainter(
-                text: _timeString,
-                textStyle: textStyle,
-                backgroundColor: widget.backgroundColor,
+            child: RepaintBoundary(
+              child: CustomPaint(
+                size: const Size(100, 30),
+                painter: _CurvedTextPainter(
+                  text: _timeString,
+                  textStyle: textStyle,
+                  backgroundColor: widget.backgroundColor,
+                ),
               ),
             ),
           ),

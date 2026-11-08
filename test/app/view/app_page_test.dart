@@ -60,7 +60,7 @@ void main() {
       when(mockNotification.initialize).thenAnswer((_) async {});
       when(() => mockNotification.token).thenReturn('');
       when(
-        () => mockNotification.onTokenRefresh,
+        () => mockNotification.onRegistered,
       ).thenAnswer((_) => const Stream.empty());
       when(
         () => mockNotification.syncTeamsTopics(any()),

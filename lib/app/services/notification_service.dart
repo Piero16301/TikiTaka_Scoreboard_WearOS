@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tiki_taka_scoreboard_wearos/app/app.dart';
 import 'package:tiki_taka_scoreboard_wearos/match/match.dart';
@@ -13,6 +14,7 @@ class NotificationService {
     this._localStorageService,
     this._performanceService,
     this._crashService,
+    this._analyticsService,
   });
 
   final NotificationRepository _notificationRepository;
@@ -21,9 +23,10 @@ class NotificationService {
   final LocalStorageService? _localStorageService;
   final PerformanceService? _performanceService;
   final CrashService? _crashService;
+  final AnalyticsService? _analyticsService;
 
   Future<void>? _initializeFuture;
-  StreamSubscription<String>? _tokenRefreshSubscription;
+  StreamSubscription<String>? _registeredSubscription;
   StreamSubscription<RemoteMessage>? _messageSubscription;
   StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
 
@@ -55,6 +58,12 @@ class NotificationService {
       _crashService ??
       (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
 
+  AnalyticsService? get _analytics =>
+      _analyticsService ??
+      (getIt.isRegistered<AnalyticsService>()
+          ? getIt<AnalyticsService>()
+          : null);
+
   Future<void> initialize({
     void Function(int matchId)? onMatchNotificationOpened,
   }) {
@@ -75,7 +84,9 @@ class NotificationService {
       _messageSubscription = _notificationRepository.onMessage.listen((
         message,
       ) {
-        debugPrint('Foreground FCM message: ${message.data}');
+        if (kDebugMode) {
+          debugPrint('Foreground FCM message: ${message.data}');
+        }
       });
 
       // Manejar aperturas desde background
@@ -96,14 +107,14 @@ class NotificationService {
         await syncDeviceAndTopics(currentToken);
       }
 
-      // Escuchar rotación de token
-      _tokenRefreshSubscription = _notificationRepository.onTokenRefresh.listen(
-        (newToken) {
-          if (newToken.isNotEmpty) {
-            unawaited(syncDeviceAndTopics(newToken));
-          }
-        },
-      );
+      // Escuchar registro de token
+      _registeredSubscription = _notificationRepository.onRegistered.listen((
+        newToken,
+      ) {
+        if (newToken.isNotEmpty) {
+          unawaited(syncDeviceAndTopics(newToken));
+        }
+      });
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
@@ -119,6 +130,7 @@ class NotificationService {
 
   Future<void> syncDeviceAndTopics(String token) async {
     if (token.isEmpty) return;
+    final trace = _perf?.startTrace('device_sync_duration');
 
     try {
       final isDbAvailable =
@@ -154,6 +166,10 @@ class NotificationService {
         stackTrace,
         reason: 'NotificationService syncDeviceAndTopics error',
       );
+    } finally {
+      if (trace != null) {
+        _perf?.stopTrace(trace);
+      }
     }
   }
 
@@ -165,6 +181,7 @@ class NotificationService {
     String? languageCode,
   }) async {
     if (enabledTeams.isEmpty) return;
+    final trace = _perf?.startTrace('fcm_topics_sync_duration');
     final lang =
         languageCode ?? _localStorage.getLanguage()?.languageCode ?? 'en';
     try {
@@ -177,6 +194,10 @@ class NotificationService {
         stackTrace,
         reason: 'NotificationService syncTeamsTopics error',
       );
+    } finally {
+      if (trace != null) {
+        _perf?.stopTrace(trace);
+      }
     }
   }
 
@@ -225,6 +246,10 @@ class NotificationService {
 
     final matchId = _parseMatchId(rawMatch.toString());
     if (matchId != null) {
+      _analytics?.logEvent(
+        name: 'notification_opened',
+        parameters: {'match_id': matchId, 'source': 'fcm'},
+      );
       if (callback != null) {
         callback(matchId);
       } else {
@@ -262,7 +287,7 @@ class NotificationService {
 
   String get token => _notificationRepository.token;
 
-  Stream<String> get onTokenRefresh => _notificationRepository.onTokenRefresh;
+  Stream<String> get onRegistered => _notificationRepository.onRegistered;
 
   Future<void> subscribeToTopic(String topic) async {
     await _notificationRepository.subscribeToTopic(topic);
@@ -273,7 +298,7 @@ class NotificationService {
   }
 
   Future<void> dispose() async {
-    await _tokenRefreshSubscription?.cancel();
+    await _registeredSubscription?.cancel();
     await _messageSubscription?.cancel();
     await _messageOpenedAppSubscription?.cancel();
   }
