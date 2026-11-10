@@ -6,13 +6,56 @@ import 'package:material_ui/material_ui.dart';
 class WavingFlagPainter extends CustomPainter {
   WavingFlagPainter({
     required this.colors,
-    required this.animationValue,
+    double animationValue = 0.0,
+    this.animation,
     this.numberOfWaves = 3,
-  });
+  }) : _staticAnimationValue = animationValue,
+       super(repaint: animation);
 
   final List<Color> colors;
-  final double animationValue;
+  final double _staticAnimationValue;
+  final Animation<double>? animation;
   final int numberOfWaves;
+
+  double get animationValue => animation?.value ?? _staticAnimationValue;
+
+  static const int _steps = 48;
+  static const int _lightingSamples = 64;
+  static final List<double> _lightingStops = List<double>.generate(
+    _lightingSamples + 1,
+    (i) => i / _lightingSamples,
+  );
+  static final List<double> _uValues = List<double>.generate(
+    _steps + 1,
+    (s) => s / _steps,
+  );
+
+  final Path _stripePath = Path();
+  final Paint _stripePaint = Paint();
+  final Paint _lightingPaint = Paint();
+  final Paint _sheenPaint = Paint();
+  final Paint _vignettePaint = Paint();
+  Size? _cachedSize;
+  final List<Color> _gradientColors = List<Color>.filled(
+    _lightingSamples + 1,
+    Colors.transparent,
+  );
+
+  static final List<Color> _sheenColors = [
+    Colors.white.withValues(alpha: 0.07),
+    Colors.transparent,
+    Colors.black.withValues(alpha: 0.10),
+    Colors.white.withValues(alpha: 0.05),
+    Colors.transparent,
+  ];
+  static const List<double> _sheenStops = [0, 0.3, 0.6, 0.85, 1];
+
+  static final List<Color> _vignetteColors = [
+    Colors.transparent,
+    Colors.black.withValues(alpha: 0.15),
+    Colors.black.withValues(alpha: 0.55),
+  ];
+  static const List<double> _vignetteStops = [0, 0.65, 1];
 
   /// Multi-harmonic wind wave equation.
   ///
@@ -79,13 +122,13 @@ class WavingFlagPainter extends CustomPainter {
     final twoTheta = 2 * theta;
     final threeTheta = 3 * theta;
 
-    const steps = 100;
+    const steps = _steps;
     final dx = flagWidth / steps;
 
     // 1. Draw smooth wavy stripes
     for (var i = 0; i < colors.length; i++) {
-      final path = Path();
-      final color = colors[i];
+      _stripePath.reset();
+      _stripePaint.color = colors[i];
 
       final topV = i / colors.length;
       final bottomV = (i + 1) / colors.length;
@@ -93,7 +136,7 @@ class WavingFlagPainter extends CustomPainter {
       // Top edge from left to right (x: 0 -> flagWidth)
       for (var s = 0; s <= steps; s++) {
         final x = s * dx;
-        final u = s / steps;
+        final u = _uValues[s];
         final y = (i == 0)
             ? startY - baseAmplitude * 3.0
             : startY +
@@ -108,16 +151,16 @@ class WavingFlagPainter extends CustomPainter {
                   );
 
         if (s == 0) {
-          path.moveTo(startX + x, y);
+          _stripePath.moveTo(startX + x, y);
         } else {
-          path.lineTo(startX + x, y);
+          _stripePath.lineTo(startX + x, y);
         }
       }
 
       // Bottom edge from right to left (x: flagWidth -> 0)
       for (var s = steps; s >= 0; s--) {
         final x = s * dx;
-        final u = s / steps;
+        final u = _uValues[s];
         final y = (i == colors.length - 1)
             ? startY + flagHeight + baseAmplitude * 3.0
             : startY +
@@ -131,126 +174,84 @@ class WavingFlagPainter extends CustomPainter {
                     baseAmplitude: baseAmplitude,
                   );
 
-        path.lineTo(startX + x, y);
+        _stripePath.lineTo(startX + x, y);
       }
 
-      path.close();
-      canvas.drawPath(path, Paint()..color = color);
+      _stripePath.close();
+      canvas.drawPath(_stripePath, _stripePaint);
     }
 
-    // 2. Realistic 3D cloth lighting (continuous gradient shader).
-    const lightingSamples = 100;
-    final gradientColors = <Color>[];
-    final gradientStops = <double>[];
+    // 2. Smooth 3D cloth lighting (analytical slope across 64 continuous stops)
+    const twoPointEightPi = 2.8 * math.pi;
+    const fivePointSixPi = 5.6 * math.pi;
+    const slopeScale = 0.038 * 1.75;
 
-    for (var s = 0; s <= lightingSamples; s++) {
-      final u = s / lightingSamples;
-      gradientStops.add(u);
-
-      // Numerical derivative along the wave direction to compute surface slope
-      const du = 0.006;
-      final uPrev = math.max<double>(0, u - du);
-      final uNext = math.min<double>(1, u + du);
-      final wavePrev = _calculateWaveOffset(
-        u: uPrev,
-        v: 0.5,
-        theta: theta,
-        twoTheta: twoTheta,
-        threeTheta: threeTheta,
-        baseAmplitude: baseAmplitude,
-      );
-      final waveNext = _calculateWaveOffset(
-        u: uNext,
-        v: 0.5,
-        theta: theta,
-        twoTheta: twoTheta,
-        threeTheta: threeTheta,
-        baseAmplitude: baseAmplitude,
-      );
-      final slope = (waveNext - wavePrev) / ((uNext - uPrev) * flagWidth);
-
-      // Surfaces sloping toward light catch highlights.
-      final light = (slope * 14).clamp(-1.0, 1.0);
+    for (var s = 0; s <= _lightingSamples; s++) {
+      final u = _lightingStops[s];
+      final d1 =
+          twoPointEightPi * math.cos(u * twoPointEightPi - theta + 0.225);
+      final d2 =
+          0.38 *
+          fivePointSixPi *
+          math.cos(u * fivePointSixPi - twoTheta + 1.65);
+      final light = ((d1 + d2) * slopeScale).clamp(-1.0, 1.0);
 
       if (light > 0) {
-        // Specular highlight on wave ridges (silky sheen)
-        final alpha = math.pow(light, 1.4) * 0.28;
-        gradientColors.add(Colors.white.withValues(alpha: alpha));
+        // Silky highlight on wave ridges without harsh flat bars.
+        final alpha = math.pow(light, 1.6) * 0.16;
+        _gradientColors[s] = Colors.white.withValues(alpha: alpha);
       } else {
-        // Crease shadow in wave valleys
-        final alpha = math.pow(-light, 1.2) * 0.35;
-        gradientColors.add(Colors.black.withValues(alpha: alpha));
+        // Crease shadow in wave valleys.
+        final alpha = math.pow(-light, 1.4) * 0.28;
+        _gradientColors[s] = Colors.black.withValues(alpha: alpha);
       }
     }
 
-    final lightingPaint = Paint()
-      ..shader = ui.Gradient.linear(
-        Offset(startX, 0),
-        Offset(startX + flagWidth, 0),
-        gradientColors,
-        gradientStops,
-      );
-
-    canvas.drawRect(
-      Rect.fromLTWH(
-        startX - 20,
-        startY - baseAmplitude * 3.0,
-        flagWidth + 40,
-        flagHeight + baseAmplitude * 6.0,
-      ),
-      lightingPaint,
+    _lightingPaint.shader = ui.Gradient.linear(
+      Offset(startX, 0),
+      Offset(startX + flagWidth, 0),
+      _gradientColors,
+      _lightingStops,
     );
 
-    // 3. Subtle fabric satin sheen to enhance realistic material depth
-    final sheenPaint = Paint()
-      ..shader = ui.Gradient.linear(
+    final flagRect = Rect.fromLTWH(
+      startX - 20,
+      startY - baseAmplitude * 3.0,
+      flagWidth + 40,
+      flagHeight + baseAmplitude * 6.0,
+    );
+    canvas.drawRect(flagRect, _lightingPaint);
+
+    // 3. Subtle fabric satin sheen & vignette (cached per canvas size)
+    if (_cachedSize != size) {
+      _cachedSize = size;
+      _sheenPaint.shader = ui.Gradient.linear(
         Offset(startX, startY),
         Offset(startX + flagWidth, startY + flagHeight),
-        [
-          Colors.white.withValues(alpha: 0.07),
-          Colors.transparent,
-          Colors.black.withValues(alpha: 0.10),
-          Colors.white.withValues(alpha: 0.05),
-          Colors.transparent,
-        ],
-        [0, 0.3, 0.6, 0.85, 1],
+        _sheenColors,
+        _sheenStops,
       );
 
-    canvas
-      ..drawRect(
-        Rect.fromLTWH(
-          startX - 20,
-          startY - baseAmplitude * 3.0,
-          flagWidth + 40,
-          flagHeight + baseAmplitude * 6.0,
-        ),
-        sheenPaint,
-      )
-      ..restore();
-
-    // 4. Smooth circular edge vignette for WearOS round display.
-    final vignetteRadius = math.max(size.width, size.height) * 0.55;
-    final vignettePaint = Paint()
-      ..shader = ui.Gradient.radial(
+      final vignetteRadius = math.max(size.width, size.height) * 0.55;
+      _vignettePaint.shader = ui.Gradient.radial(
         Offset(size.width / 2, size.height / 2),
         vignetteRadius,
-        [
-          Colors.transparent,
-          Colors.black.withValues(alpha: 0.15),
-          Colors.black.withValues(alpha: 0.55),
-        ],
-        [0, 0.65, 1],
+        _vignetteColors,
+        _vignetteStops,
       );
+    }
 
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      vignettePaint,
-    );
+    canvas
+      ..drawRect(flagRect, _sheenPaint)
+      ..restore()
+      // 4. Smooth circular edge vignette for WearOS round display.
+      ..drawRect(Rect.fromLTWH(0, 0, size.width, size.height), _vignettePaint);
   }
 
   @override
   bool shouldRepaint(covariant WavingFlagPainter oldDelegate) {
-    return oldDelegate.animationValue != animationValue ||
+    return oldDelegate.animation != animation ||
+        oldDelegate._staticAnimationValue != _staticAnimationValue ||
         oldDelegate.colors != colors;
   }
 }

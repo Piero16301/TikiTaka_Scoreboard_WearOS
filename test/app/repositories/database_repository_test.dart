@@ -306,6 +306,57 @@ void main() {
           ).called(1);
         },
       );
+
+      test('does not throw and ignores team modification when enabledTeams is '
+          'null', () async {
+        expect(
+          () => repository.updateDeviceSettings(
+            token: 'token-123',
+            teamToModify: 94,
+          ),
+          returnsNormally,
+        );
+
+        await pumpEventQueue();
+
+        verifyNever(() => mockDocument.update(any()));
+      });
+
+      test(
+        'records error in CrashService when arrayRemove update fails',
+        () async {
+          final mockCrash = MockCrashService();
+          getIt.registerSingleton<CrashService>(mockCrash);
+          when(
+            () => mockCrash.recordError(
+              any<Object>(),
+              any<StackTrace?>(),
+              reason: any<String>(named: 'reason'),
+            ),
+          ).thenAnswer((_) async {});
+
+          final exception = Exception('Firestore update failed');
+          when(
+            () => mockDocument.update(any()),
+          ).thenAnswer((_) => Future.error(exception));
+
+          repository.updateDeviceSettings(
+            token: 'token-123',
+            teamToModify: 81,
+            enabledTeams: const ['81'],
+          );
+
+          await pumpEventQueue();
+
+          verify(
+            () => mockCrash.recordError(
+              exception,
+              any<StackTrace?>(),
+              reason: 'updateDeviceSettings arrayRemove error',
+            ),
+          ).called(1);
+        },
+      );
     });
 
     group('getMatchStream', () {
@@ -322,6 +373,14 @@ void main() {
         verify(() => mockCollection.doc('42')).called(1);
         expect(match.id, 42);
         expect(match.status, 'FINISHED');
+      });
+
+      test('returns empty Match when snapshot data is null', () async {
+        when(() => mockDocSnapshot.data()).thenReturn(null);
+
+        final match = await repository.getMatchStream(matchId: 42).first;
+
+        expect(match, Match.empty);
       });
     });
 
@@ -382,6 +441,14 @@ void main() {
         verify(() => mockCollection.doc('cfg-1')).called(1);
         expect(config.id, 'cfg-1');
       });
+
+      test('returns empty Config when snapshot data is null', () async {
+        when(() => mockDocSnapshot.data()).thenReturn(null);
+
+        final config = await repository.getConfigStream(id: 'cfg-1').first;
+
+        expect(config, Config.empty);
+      });
     });
 
     group('getLeaguesStream', () {
@@ -418,6 +485,19 @@ void main() {
         verify(() => mockCollection.doc('PD')).called(1);
         expect(standings.leagueId, 'PD');
       });
+
+      test(
+        'returns empty LeagueStandings when snapshot data is null',
+        () async {
+          when(() => mockDocSnapshot.data()).thenReturn(null);
+
+          final standings = await repository
+              .getStandingsStream(leagueId: 'PD')
+              .first;
+
+          expect(standings, LeagueStandings.empty);
+        },
+      );
     });
 
     group('getTeamStream', () {
@@ -435,6 +515,14 @@ void main() {
         verify(() => mockCollection.where('id', isEqualTo: 81)).called(1);
         expect(team.id, 81);
         expect(team.name, 'FC Barcelona');
+      });
+
+      test('returns empty Team when query snapshot has no docs', () async {
+        when(() => mockQuerySnapshot.docs).thenReturn([]);
+
+        final team = await repository.getTeamStream(teamId: 81).first;
+
+        expect(team, Team.empty);
       });
     });
 

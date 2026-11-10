@@ -37,13 +37,17 @@ class _MatchViewState extends State<MatchView> {
     _matchStream = getIt<DatabaseService>().getMatchStream(matchId: matchId);
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
+  void _stopMatchTrace() {
     if (_matchLoadTrace != null && getIt.isRegistered<PerformanceService>()) {
       getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
       _matchLoadTrace = null;
     }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _stopMatchTrace();
     super.dispose();
   }
 
@@ -57,11 +61,7 @@ class _MatchViewState extends State<MatchView> {
         if (!_hasLoggedInitialMatch &&
             (snapshot.hasData || snapshot.hasError)) {
           _hasLoggedInitialMatch = true;
-          if (_matchLoadTrace != null &&
-              getIt.isRegistered<PerformanceService>()) {
-            getIt<PerformanceService>().stopTrace(_matchLoadTrace!);
-            _matchLoadTrace = null;
-          }
+          _stopMatchTrace();
           if (snapshot.hasError && getIt.isRegistered<AnalyticsService>()) {
             getIt<AnalyticsService>().logEvent(
               name: 'match_detail_error',

@@ -357,10 +357,17 @@ class MockDatabaseRepository implements DatabaseRepository {
 }
 
 class FirestoreDatabaseRepository implements DatabaseRepository {
-  FirestoreDatabaseRepository({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  FirestoreDatabaseRepository({
+    FirebaseFirestore? firestore,
+    this._crashService,
+  }) : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
+  final CrashService? _crashService;
+
+  CrashService? get _crash =>
+      _crashService ??
+      (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
 
   @override
   void updateDeviceSettings({
@@ -389,19 +396,17 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
             .doc(token)
             .set(data, SetOptions(mergeFields: data.keys.toList()))
             .catchError((Object error, StackTrace stackTrace) {
-              if (getIt.isRegistered<CrashService>()) {
-                getIt<CrashService>().recordError(
-                  error,
-                  stackTrace,
-                  reason: 'updateDeviceSettings set error',
-                );
-              }
+              _crash?.recordError(
+                error,
+                stackTrace,
+                reason: 'updateDeviceSettings set error',
+              );
             }),
       );
     }
 
-    if (teamToModify != null) {
-      if (enabledTeams!.contains(teamToModify.toString())) {
+    if (teamToModify != null && enabledTeams != null) {
+      if (enabledTeams.contains(teamToModify.toString())) {
         unawaited(
           _firestore
               .collection(AppVariables.devicesCollection)
@@ -410,6 +415,13 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
                 'enabledTeams': FieldValue.arrayRemove([
                   teamToModify.toString(),
                 ]),
+              })
+              .catchError((Object error, StackTrace stackTrace) {
+                _crash?.recordError(
+                  error,
+                  stackTrace,
+                  reason: 'updateDeviceSettings arrayRemove error',
+                );
               }),
         );
       } else {
@@ -421,6 +433,13 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
                 'enabledTeams': FieldValue.arrayUnion([
                   teamToModify.toString(),
                 ]),
+              })
+              .catchError((Object error, StackTrace stackTrace) {
+                _crash?.recordError(
+                  error,
+                  stackTrace,
+                  reason: 'updateDeviceSettings arrayUnion error',
+                );
               }),
         );
       }
@@ -433,13 +452,19 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.matchesCollection)
         .doc(matchId.toString())
         .snapshots()
-        .map((snapshot) => Match.fromJson(snapshot.data()!));
+        .map((snapshot) {
+          final data = snapshot.data();
+          if (data == null) {
+            return Match.empty;
+          }
+          return Match.fromJson(data);
+        });
   }
 
   @override
   Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues}) {
-    final nowDate = DateTime.now();
-    // final nowDate = DateTime(2026, 08, 31);
+    // final nowDate = DateTime.now();
+    final nowDate = DateTime(2026, 11, 08);
 
     const maxMatchDuration = Duration(hours: 2);
     final startOfDay = DateTime(nowDate.year, nowDate.month, nowDate.day);
@@ -471,7 +496,13 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.configsCollection)
         .doc(id)
         .snapshots()
-        .map((snapshot) => Config.fromJson(snapshot.data()!));
+        .map((snapshot) {
+          final data = snapshot.data();
+          if (data == null) {
+            return Config.empty;
+          }
+          return Config.fromJson(data);
+        });
   }
 
   @override
@@ -492,7 +523,13 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.standingsCollection)
         .doc(leagueId)
         .snapshots()
-        .map((snapshot) => LeagueStandings.fromJson(snapshot.data()!));
+        .map((snapshot) {
+          final data = snapshot.data();
+          if (data == null) {
+            return LeagueStandings.empty;
+          }
+          return LeagueStandings.fromJson(data);
+        });
   }
 
   @override
@@ -501,7 +538,12 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
         .collection(AppVariables.teamsCollection)
         .where('id', isEqualTo: teamId)
         .snapshots()
-        .map((snapshot) => Team.fromJson(snapshot.docs.first.data()));
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) {
+            return Team.empty;
+          }
+          return Team.fromJson(snapshot.docs.first.data());
+        });
   }
 
   @override

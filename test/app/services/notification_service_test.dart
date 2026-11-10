@@ -220,6 +220,19 @@ void main() {
       },
     );
 
+    test('ignores messages with malformed or negative matchId', () async {
+      int? openedMatchId;
+      await notificationService.initialize(
+        onMatchNotificationOpened: (id) => openedMatchId = id,
+      );
+
+      const message = RemoteMessage(data: {'match': 'matchId:-5'});
+      onMessageOpenedAppController.add(message);
+      await pumpEventQueue();
+
+      expect(openedMatchId, isNull);
+    });
+
     test('onRegistered stream event triggers syncDeviceAndTopics', () async {
       await notificationService.initialize();
 

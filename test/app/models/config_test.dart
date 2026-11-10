@@ -7,6 +7,11 @@ void main() {
     const id = 'config_id';
     final date = DateTime.utc(2023);
 
+    test('empty creates empty instance', () {
+      expect(Config.empty.id, '');
+      expect(Config.empty.lastUpdate, DateTime.fromMillisecondsSinceEpoch(0));
+    });
+
     test('supports value comparisons', () {
       expect(
         Config(id: id, lastUpdate: date),

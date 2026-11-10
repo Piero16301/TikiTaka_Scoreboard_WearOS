@@ -18,6 +18,12 @@ class Config extends Equatable {
     );
   }
 
+  /// Instancia vacía de [Config]
+  static final empty = Config(
+    id: '',
+    lastUpdate: DateTime.fromMillisecondsSinceEpoch(0),
+  );
+
   /// Id de la configuración
   final String id;
 

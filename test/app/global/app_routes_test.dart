@@ -187,6 +187,51 @@ void main() {
         expect(generatedWithoutArgs, isA<TeamsPage>());
         expect((generatedWithoutArgs! as TeamsPage).leagueId, 0);
       });
+
+      testWidgets('routes handle string/invalid arguments safely', (
+        tester,
+      ) async {
+        Widget? generatedWithStrArgs;
+        Widget? generatedWithInvalidArgs;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            onGenerateRoute: (settings) {
+              if (settings.name == '/invalid') {
+                return MaterialPageRoute<void>(
+                  settings: const RouteSettings(
+                    name: '/',
+                    arguments: <String, dynamic>{},
+                  ),
+                  builder: (context) {
+                    generatedWithInvalidArgs =
+                        AppRoutes.routes[MatchPage.routeName]!(context);
+                    return const SizedBox();
+                  },
+                );
+              }
+              return MaterialPageRoute<void>(
+                settings: const RouteSettings(name: '/', arguments: '123'),
+                builder: (context) {
+                  generatedWithStrArgs = AppRoutes.routes[MatchPage.routeName]!(
+                    context,
+                  );
+                  return const SizedBox();
+                },
+              );
+            },
+          ),
+        );
+
+        await tester.pumpAndSettle();
+        expect((generatedWithStrArgs! as MatchPage).matchId, 123);
+
+        tester
+            .state<NavigatorState>(find.byType(Navigator))
+            .pushNamed('/invalid');
+        await tester.pumpAndSettle();
+        expect((generatedWithInvalidArgs! as MatchPage).matchId, 0);
+      });
     });
   });
 }

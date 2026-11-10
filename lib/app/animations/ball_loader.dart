@@ -52,20 +52,20 @@ class _BallLoaderState extends State<BallLoader>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return RepaintBoundary(
-          child: CustomPaint(
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return CustomPaint(
             size: Size(widget.size, widget.size),
             painter: _BallPainter(
               primary: widget.primary,
               secondary: widget.secondary,
               progress: _controller.value,
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

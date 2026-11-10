@@ -18,7 +18,8 @@ class TopCurvedTime extends StatefulWidget {
   State<TopCurvedTime> createState() => _TopCurvedTimeState();
 }
 
-class _TopCurvedTimeState extends State<TopCurvedTime> {
+class _TopCurvedTimeState extends State<TopCurvedTime>
+    with WidgetsBindingObserver {
   static final DateFormat _timeFormat = DateFormat.Hm();
   late String _timeString;
   Timer? _timer;
@@ -26,7 +27,13 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _timeString = _formatTime(DateTime.now());
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       final formatted = _formatTime(DateTime.now());
       if (_timeString != formatted) {
@@ -37,23 +44,45 @@ class _TopCurvedTimeState extends State<TopCurvedTime> {
     });
   }
 
-  String _formatTime(DateTime time) {
-    return _timeFormat.format(time);
+  void _stopTimer() {
+    _timer?.cancel();
+    _timer = null;
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final formatted = _formatTime(DateTime.now());
+      if (_timeString != formatted) {
+        setState(() {
+          _timeString = formatted;
+        });
+      }
+      _startTimer();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      _stopTimer();
+    }
+  }
+
+  String _formatTime(DateTime time) => _timeFormat.format(time);
+
+  @override
   void dispose() {
-    _timer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _stopTimer();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.labelLarge?.copyWith(
+    final labelLarge = Theme.of(context).textTheme.labelLarge;
+    final textStyle = labelLarge?.copyWith(
       fontVariations: <FontVariation>[
-        ...(Theme.of(context).textTheme.labelLarge?.fontVariations ??
-                const <FontVariation>[])
-            .where((v) => v.axis != 'wght'),
+        ...(labelLarge.fontVariations ?? const <FontVariation>[]).where(
+          (v) => v.axis != 'wght',
+        ),
         const FontVariation('wght', 700),
       ],
     );
@@ -98,17 +127,18 @@ class _CurvedTextPainter extends CustomPainter {
     final radius = this.radius;
     canvas.translate(size.width / 2, radius + 12);
 
-    final textPainter = TextPainter(textDirection: TextDirection.ltr);
-
     final chars = text.split('');
+    final charPainters = <TextPainter>[];
     final charAngles = <double>[];
     var totalAngle = 0.0;
 
     for (final char in chars) {
-      textPainter
-        ..text = TextSpan(text: char, style: textStyle)
-        ..layout();
-      final charAngle = (textPainter.width + 2.0) / radius;
+      final painter = TextPainter(
+        text: TextSpan(text: char, style: textStyle),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      charPainters.add(painter);
+      final charAngle = (painter.width + 2.0) / radius;
       charAngles.add(charAngle);
       totalAngle += charAngle;
     }
@@ -135,10 +165,7 @@ class _CurvedTextPainter extends CustomPainter {
     for (var i = 0; i < chars.length; i++) {
       final charAngle = charAngles[i];
       currentAngle += charAngle / 2;
-
-      textPainter
-        ..text = TextSpan(text: chars[i], style: textStyle)
-        ..layout();
+      final painter = charPainters[i];
 
       canvas
         ..save()
@@ -148,10 +175,7 @@ class _CurvedTextPainter extends CustomPainter {
         )
         ..rotate(currentAngle + math.pi / 2);
 
-      textPainter.paint(
-        canvas,
-        Offset(-textPainter.width / 2, -textPainter.height / 2),
-      );
+      painter.paint(canvas, Offset(-painter.width / 2, -painter.height / 2));
       canvas.restore();
 
       currentAngle += charAngle / 2;

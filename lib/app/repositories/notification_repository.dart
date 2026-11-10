@@ -67,26 +67,25 @@ class FirebaseNotificationRepository implements NotificationRepository {
       _crashService ??
       (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
 
+  void _setToken(String? token) {
+    if (token != null && token.isNotEmpty) {
+      _token = token;
+      if (kDebugMode) {
+        debugPrint('FCM Token: $token');
+      }
+    }
+  }
+
   @override
   Future<void> initialize() async {
     try {
-      _messaging.onRegistered.listen((token) {
-        _token = token;
-        if (kDebugMode) {
-          debugPrint('FCM Token: $token');
-        }
-      });
+      _messaging.onRegistered.listen(_setToken);
       await Future.wait([requestPermission(), register()]);
       if (_token.isEmpty) {
         // Fallback to getToken to obtain token if onRegistered has not emitted.
         // ignore: deprecated_member_use
         final token = await _messaging.getToken();
-        if (token != null && token.isNotEmpty) {
-          _token = token;
-          if (kDebugMode) {
-            debugPrint('FCM Token: $token');
-          }
-        }
+        _setToken(token);
       }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
@@ -107,12 +106,7 @@ class FirebaseNotificationRepository implements NotificationRepository {
       // Retrieve current FCM token since register() does not return it.
       // ignore: deprecated_member_use
       final token = await _messaging.getToken();
-      if (token != null && token.isNotEmpty) {
-        _token = token;
-        if (kDebugMode) {
-          debugPrint('FCM Token: $token');
-        }
-      }
+      _setToken(token);
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
@@ -139,17 +133,19 @@ class FirebaseNotificationRepository implements NotificationRepository {
   Future<void> requestPermission() async {
     final settings = await _messaging.requestPermission();
 
-    switch (settings.authorizationStatus) {
-      case AuthorizationStatus.authorized:
-        debugPrint('User granted permission');
-      case AuthorizationStatus.denied:
-        debugPrint('User denied permission');
-      case AuthorizationStatus.provisional:
-        debugPrint('User granted provisional permission');
-      case AuthorizationStatus.notDetermined:
-        debugPrint('User has not yet made a choice');
-      case AuthorizationStatus.deniedPermanently:
-        debugPrint('User denied permission permanently');
+    if (kDebugMode) {
+      switch (settings.authorizationStatus) {
+        case AuthorizationStatus.authorized:
+          debugPrint('User granted permission');
+        case AuthorizationStatus.denied:
+          debugPrint('User denied permission');
+        case AuthorizationStatus.provisional:
+          debugPrint('User granted provisional permission');
+        case AuthorizationStatus.notDetermined:
+          debugPrint('User has not yet made a choice');
+        case AuthorizationStatus.deniedPermanently:
+          debugPrint('User denied permission permanently');
+      }
     }
   }
 
@@ -181,7 +177,9 @@ class FirebaseNotificationRepository implements NotificationRepository {
   Future<void> subscribeToTopic(String topic) async {
     try {
       await _messaging.subscribeToTopic(topic);
-      debugPrint('Subscribed to topic: $topic');
+      if (kDebugMode) {
+        debugPrint('Subscribed to topic: $topic');
+      }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,
@@ -195,7 +193,9 @@ class FirebaseNotificationRepository implements NotificationRepository {
   Future<void> unsubscribeFromTopic(String topic) async {
     try {
       await _messaging.unsubscribeFromTopic(topic);
-      debugPrint('Unsubscribed from topic: $topic');
+      if (kDebugMode) {
+        debugPrint('Unsubscribed from topic: $topic');
+      }
     } on Exception catch (e, stackTrace) {
       _crash?.recordError(
         e,

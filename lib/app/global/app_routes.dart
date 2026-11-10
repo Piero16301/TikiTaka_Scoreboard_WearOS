@@ -13,20 +13,32 @@ import 'package:tiki_taka_scoreboard_wearos/typography/typography.dart';
 class AppRoutes {
   static Map<String, Widget Function(BuildContext)> routes = {
     HomePage.routeName: (_) => const HomePage(),
-    MatchPage.routeName: (context) => MatchPage(
-      matchId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-    ),
-    TeamPage.routeName: (context) => TeamPage(
-      teamId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-    ),
+    MatchPage.routeName: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final matchId = args is int
+          ? args
+          : int.tryParse(args?.toString() ?? '') ?? 0;
+      return MatchPage(matchId: matchId);
+    },
+    TeamPage.routeName: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final teamId = args is int
+          ? args
+          : int.tryParse(args?.toString() ?? '') ?? 0;
+      return TeamPage(teamId: teamId);
+    },
     SettingsPage.routeName: (_) => const SettingsPage(),
     LeaguesPage.routeName: (_) => const LeaguesPage(),
     LanguagesPage.routeName: (_) => const LanguagesPage(),
     ThemesPage.routeName: (_) => const ThemesPage(),
     TypographyPage.routeName: (_) => const TypographyPage(),
     NotificationsPage.routeName: (_) => const NotificationsPage(),
-    TeamsPage.routeName: (context) => TeamsPage(
-      leagueId: ModalRoute.of(context)!.settings.arguments as int? ?? 0,
-    ),
+    TeamsPage.routeName: (context) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+      final leagueId = args is int
+          ? args
+          : int.tryParse(args?.toString() ?? '') ?? 0;
+      return TeamsPage(leagueId: leagueId);
+    },
   };
 }

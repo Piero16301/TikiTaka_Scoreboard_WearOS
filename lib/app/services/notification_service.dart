@@ -30,39 +30,15 @@ class NotificationService {
   StreamSubscription<RemoteMessage>? _messageSubscription;
   StreamSubscription<RemoteMessage>? _messageOpenedAppSubscription;
 
-  DatabaseService get _db =>
-      _databaseService ??
-      (getIt.isRegistered<DatabaseService>()
-          ? getIt<DatabaseService>()
-          : null)!;
+  T? _resolve<T extends Object>(T? local) =>
+      local ?? (getIt.isRegistered<T>() ? getIt<T>() : null);
 
-  DeviceInfoService get _deviceInfo =>
-      _deviceInfoService ??
-      (getIt.isRegistered<DeviceInfoService>()
-          ? getIt<DeviceInfoService>()
-          : null)!;
-
-  LocalStorageService get _localStorage =>
-      _localStorageService ??
-      (getIt.isRegistered<LocalStorageService>()
-          ? getIt<LocalStorageService>()
-          : null)!;
-
-  PerformanceService? get _perf =>
-      _performanceService ??
-      (getIt.isRegistered<PerformanceService>()
-          ? getIt<PerformanceService>()
-          : null);
-
-  CrashService? get _crash =>
-      _crashService ??
-      (getIt.isRegistered<CrashService>() ? getIt<CrashService>() : null);
-
-  AnalyticsService? get _analytics =>
-      _analyticsService ??
-      (getIt.isRegistered<AnalyticsService>()
-          ? getIt<AnalyticsService>()
-          : null);
+  DatabaseService get _db => _resolve(_databaseService)!;
+  DeviceInfoService get _deviceInfo => _resolve(_deviceInfoService)!;
+  LocalStorageService get _localStorage => _resolve(_localStorageService)!;
+  PerformanceService? get _perf => _resolve(_performanceService);
+  CrashService? get _crash => _resolve(_crashService);
+  AnalyticsService? get _analytics => _resolve(_analyticsService);
 
   Future<void> initialize({
     void Function(int matchId)? onMatchNotificationOpened,
@@ -259,16 +235,29 @@ class NotificationService {
   }
 
   int? _parseMatchId(String raw) {
-    final directParsed = int.tryParse(raw);
-    if (directParsed != null) return directParsed;
-
-    if (raw.contains('matchId:')) {
-      final after = raw.split('matchId:')[1];
-      return int.tryParse(after.replaceAll(RegExp(r'[^\d]'), ''));
+    final directParsed = int.tryParse(raw.trim());
+    if (directParsed != null) {
+      return directParsed > 0 && directParsed <= 999999999
+          ? directParsed
+          : null;
     }
 
-    final digitsOnly = raw.replaceAll(RegExp(r'[^\d]'), '');
-    return int.tryParse(digitsOnly);
+    final matchIdToken = RegExp(r'matchId:\s*(-?\d+)').firstMatch(raw);
+    if (matchIdToken != null) {
+      final token = matchIdToken.group(1)!;
+      if (token.startsWith('-') || token.length > 9) return null;
+      final id = int.tryParse(token);
+      return (id != null && id > 0) ? id : null;
+    }
+
+    final firstNumber = RegExp(r'-?\d+').firstMatch(raw)?.group(0);
+    if (firstNumber == null ||
+        firstNumber.startsWith('-') ||
+        firstNumber.length > 9) {
+      return null;
+    }
+    final id = int.tryParse(firstNumber);
+    return (id != null && id > 0) ? id : null;
   }
 
   void _navigateToMatch(int matchId) {

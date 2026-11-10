@@ -43,23 +43,23 @@ class _AppLinearProgressBarState extends State<AppLinearProgressBar>
         widget.backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
     final indicatorColor = widget.indicatorColor ?? theme.colorScheme.primary;
 
-    return SizedBox(
-      height: widget.strokeWidth,
-      width: double.infinity,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, _) {
-          return RepaintBoundary(
-            child: CustomPaint(
+    return RepaintBoundary(
+      child: SizedBox(
+        height: widget.strokeWidth,
+        width: double.infinity,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, _) {
+            return CustomPaint(
               painter: _AppLinearProgressBarPainter(
                 animationValue: _controller.value,
                 backgroundColor: backgroundColor,
                 indicatorColor: indicatorColor,
                 strokeWidth: widget.strokeWidth,
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -100,7 +100,7 @@ class _AppLinearProgressBarPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
 
-    final progress = Curves.linear.transform(animationValue);
+    final progress = animationValue;
 
     final indicatorWidth = usableWidth * 0.3;
     final totalSpan = usableWidth + indicatorWidth;

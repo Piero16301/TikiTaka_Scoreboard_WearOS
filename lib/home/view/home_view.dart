@@ -60,14 +60,31 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
     }
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _scrollController.dispose();
+  static int _statusOrder(String? status) => switch (status) {
+    'LIVE' => 0,
+    'IN_PLAY' => 1,
+    'PAUSED' => 2,
+    'TIMED' => 3,
+    'SCHEDULED' => 4,
+    'FINISHED' => 5,
+    'POSTPONED' => 6,
+    'SUSPENDED' => 7,
+    'CANCELLED' => 8,
+    _ => 9,
+  };
+
+  void _stopMatchesTrace() {
     if (_matchesLoadTrace != null && getIt.isRegistered<PerformanceService>()) {
       getIt<PerformanceService>().stopTrace(_matchesLoadTrace!);
       _matchesLoadTrace = null;
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
+    _stopMatchesTrace();
     super.dispose();
   }
 
@@ -81,11 +98,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         if (!_hasLoggedInitialMatches &&
             (snapshot.hasData || snapshot.hasError)) {
           _hasLoggedInitialMatches = true;
-          if (_matchesLoadTrace != null &&
-              getIt.isRegistered<PerformanceService>()) {
-            getIt<PerformanceService>().stopTrace(_matchesLoadTrace!);
-            _matchesLoadTrace = null;
-          }
+          _stopMatchesTrace();
           if (snapshot.hasError && getIt.isRegistered<AnalyticsService>()) {
             getIt<AnalyticsService>().logEvent(
               name: 'home_matches_error',
@@ -118,21 +131,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
         final nowDate = DateTime.now();
         final matches = snapshot.data!.map((match) => match).toList()
           ..sort((a, b) {
-            final statusOrder = {
-              'LIVE': 0,
-              'IN_PLAY': 1,
-              'PAUSED': 2,
-              'TIMED': 3,
-              'SCHEDULED': 4,
-              'FINISHED': 5,
-              'POSTPONED': 6,
-              'SUSPENDED': 7,
-              'CANCELLED': 8,
-            };
-            final aStatus = a.status;
-            final bStatus = b.status;
-            final aOrder = statusOrder[aStatus] ?? 9;
-            final bOrder = statusOrder[bStatus] ?? 9;
+            final aOrder = _statusOrder(a.status);
+            final bOrder = _statusOrder(b.status);
             if (aOrder != bOrder) {
               return aOrder - bOrder;
             }
@@ -189,26 +189,50 @@ class LastUpdateHome extends StatefulWidget {
 
 class _LastUpdateHomeState extends State<LastUpdateHome>
     with WidgetsBindingObserver {
-  late StreamSubscription<void> _nowSubscription;
+  StreamSubscription<void>? _nowSubscription;
   final DatabaseService database = getIt<DatabaseService>();
   Stream<Config>? _configStream;
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _nowSubscription = Stream<void>.periodic(
-      const Duration(seconds: 1),
-    ).listen((_) => setState(() {}));
+    _startTimer();
     _configStream = database.getConfigStream(
       id: AppVariables.matchesCollection,
     );
-    super.initState();
+  }
+
+  void _startTimer() {
+    unawaited(_nowSubscription?.cancel());
+    _nowSubscription = Stream<void>.periodic(const Duration(seconds: 1)).listen(
+      (_) {
+        if (mounted) setState(() {});
+      },
+    );
+  }
+
+  void _stopTimer() {
+    unawaited(_nowSubscription?.cancel());
+    _nowSubscription = null;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (mounted) setState(() {});
+      _startTimer();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden) {
+      _stopTimer();
+    }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(_nowSubscription.cancel());
+    _stopTimer();
     super.dispose();
   }
 
