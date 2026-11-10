@@ -12,6 +12,18 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - 'lib/**'
+      - 'assets/**'
+      - 'android/**'
+      - '!android/.gitignore'
+      - '!android/app/src/debug/**'
+      - '!android/app/src/development/**'
+      - '!android/app/src/staging/**'
+      - 'pubspec.yaml'
+      - 'l10n.yaml'
+      - 'whatsnew/**'
+      - '.github/workflows/beta.yaml'
 
 jobs:
   semantic-pull-request:

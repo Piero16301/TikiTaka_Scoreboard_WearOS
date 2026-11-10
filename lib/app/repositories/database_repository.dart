@@ -463,8 +463,8 @@ class FirestoreDatabaseRepository implements DatabaseRepository {
 
   @override
   Stream<List<Match>> getMatchesStream({required List<String> enabledLeagues}) {
-    // final nowDate = DateTime.now();
-    final nowDate = DateTime(2026, 11, 08);
+    final nowDate = DateTime.now();
+    // final nowDate = DateTime(2026, 11, 08);
 
     const maxMatchDuration = Duration(hours: 2);
     final startOfDay = DateTime(nowDate.year, nowDate.month, nowDate.day);
